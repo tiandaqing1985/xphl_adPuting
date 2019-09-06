@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.today.mapper.ThTokenMapper">
+    
+    <resultMap type="ThToken" id="ThTokenResult">
+        <result property="id"    column="id"    />
+        <result property="code"    column="code"    />
+        <result property="accessToken"    column="access_token"    />
+        <result property="refreshToken"    column="refresh_token"    />
+        <result property="message"    column="message"    />
+        <result property="requestId"    column="request_id"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectThTokenVo">
+        select id, code, access_token, refresh_token, message, request_id, create_time from th_token
+    </sql>
+
+    <select id="selectThTokenList" parameterType="ThToken" resultMap="ThTokenResult">
+        <include refid="selectThTokenVo"/>
+        <where>  
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="accessToken != null  and accessToken != ''"> and access_token = #{accessToken}</if>
+            <if test="refreshToken != null  and refreshToken != ''"> and refresh_token = #{refreshToken}</if>
+            <if test="message != null  and message != ''"> and message = #{message}</if>
+            <if test="requestId != null  and requestId != ''"> and request_id = #{requestId}</if>
+        </where>
+    </select>
+    
+    <select id="selectThTokenById" parameterType="Long" resultMap="ThTokenResult">
+        <include refid="selectThTokenVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertThToken" parameterType="ThToken" useGeneratedKeys="true" keyProperty="id">
+        insert into th_token
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="code != null  and code != ''">code,</if>
+            <if test="accessToken != null  and accessToken != ''">access_token,</if>
+            <if test="refreshToken != null  and refreshToken != ''">refresh_token,</if>
+            <if test="message != null  and message != ''">message,</if>
+            <if test="requestId != null  and requestId != ''">request_id,</if>
+            create_time,
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="code != null  and code != ''">#{code},</if>
+            <if test="accessToken != null  and accessToken != ''">#{accessToken},</if>
+            <if test="refreshToken != null  and refreshToken != ''">#{refreshToken},</if>
+            <if test="message != null  and message != ''">#{message},</if>
+            <if test="requestId != null  and requestId != ''">#{requestId},</if>
+            SYSDATE(),
+         </trim>
+    </insert>
+
+    <update id="updateThToken" parameterType="ThToken">
+        update th_token
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null  and code != ''">code = #{code},</if>
+            <if test="accessToken != null  and accessToken != ''">access_token = #{accessToken},</if>
+            <if test="refreshToken != null  and refreshToken != ''">refresh_token = #{refreshToken},</if>
+            <if test="message != null  and message != ''">message = #{message},</if>
+            <if test="requestId != null  and requestId != ''">request_id = #{requestId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteThTokenById" parameterType="Long">
+        delete from th_token 
+        
+        <where> 
+        	<if test="id != null  and id != ''"> where  id = #{id}</if>
+        </where>
+    </delete>
+
+    <delete id="deleteThTokenByIds" parameterType="String">
+        delete from th_token where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.today.mapper.ThAdMapper">
+    
+    <resultMap type="ThAd" id="ThAdResult">
+        <result property="id"    column="id"    />
+        <result property="advertiserId"    column="advertiser_id"    />
+        <result property="advertiserName"    column="advertiser_name"    />
+        <result property="campaignId"    column="campaign_id"    />
+        <result property="campaignName"    column="campaign_name"    />
+        <result property="adId"    column="ad_id"    />
+        <result property="name"    column="name"    />
+        <result property="deliveryRange"    column="delivery_range"    />
+        <result property="budgetMode"    column="budget_mode"    />
+        <result property="budget"    column="budget"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="pricing"    column="pricing"    />
+        <result property="bid"    column="bid"    />
+        <result property="scheduleType"    column="schedule_type"    />
+        <result property="scheduleTime"    column="schedule_time"    />
+        <result property="flowControlMode"    column="flow_control_mode"    />
+        <result property="openUrl"    column="open_url"    />
+        <result property="downloadType"    column="download_type"    />
+        <result property="externalUrl"    column="external_url"    />
+        <result property="downloadUrl"    column="download_url"    />
+        <result property="appType"    column="app_type"    />
+        <result property="adPackage"    column="ad_package"    />
+        <result property="hideIfConverted"    column="hide_if_converted"    />
+        <result property="cpaBid"    column="cpa_bid"    />
+        <result property="convertId"    column="convert_id"    />
+        <result property="retargetingTagsInclude"    column="retargeting_tags_include"    />
+        <result property="retargetingTagsExclude"    column="retargeting_tags_exclude"    />
+        <result property="gender"    column="gender"    />
+        <result property="age"    column="age"    />
+        <result property="carrier"    column="carrier"    />
+        <result property="ac"    column="ac"    />
+        <result property="articleCategory"    column="article_category"    />
+        <result property="platform"    column="platform"    />
+        <result property="district"    column="district"    />
+        <result property="city"    column="city"    />
+        <result property="adTag"    column="ad_tag"    />
+        <result property="interestTags"    column="interest_tags"    />
+        <result property="appBehaviorTarget"    column="app_behavior_target"    />
+        <result property="appCategory"    column="app_category"    />
+        <result property="appIds"    column="app_ids"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="updateFlag" column="update_flag"/>
+
+        <result column="group_budget_mode" property="groupBudgetMode"/>
+        <result column="group_budget" property="groupBudget"/>
+        <result column="landing_type" property="landingType"/>
+    </resultMap>
+
+    <sql id="selectThAdVo">
+        select id, advertiser_id, advertiser_name, campaign_id, campaign_name, ad_id, name, delivery_range, budget_mode, budget, start_time, end_time, pricing, bid, schedule_type, schedule_time, flow_control_mode, open_url, download_type, external_url, download_url, app_type, ad_package, hide_if_converted, cpa_bid, convert_id, retargeting_tags_include, retargeting_tags_exclude, gender, age, carrier, ac, article_category, platform, district, city, ad_tag, interest_tags, app_behavior_target, app_category, app_ids, status, del_flag, create_by, create_time, update_by, update_time, remark,group_budget_mode,group_budget,landing_type,update_flag from th_ad
+    </sql>
+
+    <select id="selectThAdList" parameterType="ThAd" resultMap="ThAdResult">
+        <include refid="selectThAdVo"/>
+        <where>  
+            <if test="advertiserId != null "> and advertiser_id = #{advertiserId}</if>
+            <if test="advertiserName != null  and advertiserName != ''"> and advertiser_name like concat('%', #{advertiserName}, '%')</if>
+            <if test="campaignId != null "> and campaign_id = #{campaignId}</if>
+            <if test="campaignName != null  and campaignName != ''"> and campaign_name like concat('%', #{campaignName}, '%')</if>
+            <if test="adId != null "> and ad_id = #{adId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="deliveryRange != null  and deliveryRange != ''"> and delivery_range = #{deliveryRange}</if>
+            <if test="budgetMode != null  and budgetMode != ''"> and budget_mode = #{budgetMode}</if>
+            <if test="budget != null "> and budget = #{budget}</if>
+            <if test="startTime != null  and startTime != ''"> and start_time &lt;= #{startTime}</if>
+            <if test="endTime != null  and endTime != ''"> and end_time &lt;= #{endTime}</if>
+            <if test="pricing != null  and pricing != ''"> and pricing = #{pricing}</if>
+            <if test="bid != null "> and bid = #{bid}</if>
+            <if test="scheduleType != null  and scheduleType != ''"> and schedule_type = #{scheduleType}</if>
+            <if test="scheduleTime != null  and scheduleTime != ''"> and schedule_time = #{scheduleTime}</if>
+            <if test="flowControlMode != null  and flowControlMode != ''"> and flow_control_mode = #{flowControlMode}</if>
+            <if test="openUrl != null  and openUrl != ''"> and open_url = #{openUrl}</if>
+            <if test="downloadType != null  and downloadType != ''"> and download_type = #{downloadType}</if>
+            <if test="externalUrl != null  and externalUrl != ''"> and external_url = #{externalUrl}</if>
+            <if test="downloadUrl != null  and downloadUrl != ''"> and download_url = #{downloadUrl}</if>
+            <if test="appType != null  and appType != ''"> and app_type = #{appType}</if>
+            <if test="adPackage != null  and adPackage != ''"> and ad_package = #{adPackage}</if>
+            <if test="hideIfConverted != null  and hideIfConverted != ''"> and hide_if_converted = #{hideIfConverted}</if>
+            <if test="cpaBid != null "> and cpa_bid = #{cpaBid}</if>
+            <if test="convertId != null "> and convert_id = #{convertId}</if>
+            <if test="retargetingTagsInclude != null  and retargetingTagsInclude != ''"> and retargeting_tags_include = #{retargetingTagsInclude}</if>
+            <if test="retargetingTagsExclude != null  and retargetingTagsExclude != ''"> and retargeting_tags_exclude = #{retargetingTagsExclude}</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="age != null  and age != ''"> and age = #{age}</if>
+            <if test="carrier != null  and carrier != ''"> and carrier = #{carrier}</if>
+            <if test="ac != null  and ac != ''"> and ac = #{ac}</if>
+            <if test="articleCategory != null  and articleCategory != ''"> and article_category = #{articleCategory}</if>
+            <if test="platform != null  and platform != ''"> and platform = #{platform}</if>
+            <if test="district != null  and district != ''"> and district = #{district}</if>
+            <if test="city != null  and city != ''"> and city = #{city}</if>
+            <if test="adTag != null  and adTag != ''"> and ad_tag = #{adTag}</if>
+            <if test="interestTags != null  and interestTags != ''"> and interest_tags = #{interestTags}</if>
+            <if test="appBehaviorTarget != null  and appBehaviorTarget != ''"> and app_behavior_target = #{appBehaviorTarget}</if>
+            <if test="appCategory != null  and appCategory != ''"> and app_category = #{appCategory}</if>
+            <if test="appIds != null  and appIds != ''"> and app_ids = #{appIds}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="updateFlag != null  and updateFlag != ''"> and update_flag = #{updateFlag}</if>
+            <if test="start != null">
+                and create_time >= #{start}
+            </if>
+            <if test="end != null">
+                and <![CDATA[create_time <=]]> #{end}
+            </if>
+             and del_flag = '0'
+        </where>
+    </select>
+    
+    <select id="selectThAdById" parameterType="Long" resultMap="ThAdResult">
+        <include refid="selectThAdVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectThAdByAdId" parameterType="Long" resultMap="ThAdResult">
+        <include refid="selectThAdVo"/>
+        where ad_id = #{adId} and del_flag = '0'
+    </select>
+
+    <insert id="insertThAd" parameterType="ThAd">
+        insert into th_ad
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="advertiserId != null ">advertiser_id,</if>
+            <if test="advertiserName != null  and advertiserName != ''">advertiser_name,</if>
+            <if test="campaignId != null ">campaign_id,</if>
+            <if test="campaignName != null  and campaignName != ''">campaign_name,</if>
+            <if test="adId != null ">ad_id,</if>
+            <if test="name != null  and name != ''">name,</if>
+            <if test="deliveryRange != null  and deliveryRange != ''">delivery_range,</if>
+            <if test="budgetMode != null  and budgetMode != ''">budget_mode,</if>
+            <if test="budget != null ">budget,</if>
+            <if test="startTime != null  and startTime != ''">start_time,</if>
+            <if test="endTime != null  and endTime != ''">end_time,</if>
+            <if test="pricing != null  and pricing != ''">pricing,</if>
+            <if test="bid != null ">bid,</if>
+            <if test="scheduleType != null  and scheduleType != ''">schedule_type,</if>
+            <if test="scheduleTime != null  and scheduleTime != ''">schedule_time,</if>
+            <if test="flowControlMode != null  and flowControlMode != ''">flow_control_mode,</if>
+            <if test="openUrl != null  and openUrl != ''">open_url,</if>
+            <if test="downloadType != null  and downloadType != ''">download_type,</if>
+            <if test="externalUrl != null  and externalUrl != ''">external_url,</if>
+            <if test="downloadUrl != null  and downloadUrl != ''">download_url,</if>
+            <if test="appType != null  and appType != ''">app_type,</if>
+            <if test="adPackage != null  and adPackage != ''">ad_package,</if>
+            <if test="hideIfConverted != null  and hideIfConverted != ''">hide_if_converted,</if>
+            <if test="cpaBid != null ">cpa_bid,</if>
+            <if test="convertId != null ">convert_id,</if>
+            <if test="retargetingTagsInclude != null  and retargetingTagsInclude != ''">retargeting_tags_include,</if>
+            <if test="retargetingTagsExclude != null  and retargetingTagsExclude != ''">retargeting_tags_exclude,</if>
+            <if test="gender != null  and gender != ''">gender,</if>
+            <if test="age != null  and age != ''">age,</if>
+            <if test="carrier != null  and carrier != ''">carrier,</if>
+            <if test="ac != null  and ac != ''">ac,</if>
+            <if test="articleCategory != null  and articleCategory != ''">article_category,</if>
+            <if test="platform != null  and platform != ''">platform,</if>
+            <if test="district != null  and district != ''">district,</if>
+            <if test="city != null  and city != ''">city,</if>
+            <if test="adTag != null  and adTag != ''">ad_tag,</if>
+            <if test="interestTags != null  and interestTags != ''">interest_tags,</if>
+            <if test="appBehaviorTarget != null  and appBehaviorTarget != ''">app_behavior_target,</if>
+            <if test="appCategory != null  and appCategory != ''">app_category,</if>
+            <if test="appIds != null  and appIds != ''">app_ids,</if>
+            <if test="status != null  and status != ''">status,</if>
+            <if test="delFlag != null  and delFlag != ''">del_flag,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="updateFlag != null  and updateFlag != ''">update_flag,</if>
+            <if test="groupBudgetMode != null and groupBudgetMode != ''">group_budget_mode,</if>
+            <if test="groupBudget != null and groupBudget != ''">group_budget,</if>
+            <if test="landingType != null and landingType != ''">landing_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="advertiserId != null ">#{advertiserId},</if>
+            <if test="advertiserName != null  and advertiserName != ''">#{advertiserName},</if>
+            <if test="campaignId != null ">#{campaignId},</if>
+            <if test="campaignName != null  and campaignName != ''">#{campaignName},</if>
+            <if test="adId != null ">#{adId},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="deliveryRange != null  and deliveryRange != ''">#{deliveryRange},</if>
+            <if test="budgetMode != null  and budgetMode != ''">#{budgetMode},</if>
+            <if test="budget != null ">#{budget},</if>
+            <if test="startTime != null  and startTime != ''">#{startTime},</if>
+            <if test="endTime != null  and endTime != ''">#{endTime},</if>
+            <if test="pricing != null  and pricing != ''">#{pricing},</if>
+            <if test="bid != null ">#{bid},</if>
+            <if test="scheduleType != null  and scheduleType != ''">#{scheduleType},</if>
+            <if test="scheduleTime != null  and scheduleTime != ''">#{scheduleTime},</if>
+            <if test="flowControlMode != null  and flowControlMode != ''">#{flowControlMode},</if>
+            <if test="openUrl != null  and openUrl != ''">#{openUrl},</if>
+            <if test="downloadType != null  and downloadType != ''">#{downloadType},</if>
+            <if test="externalUrl != null  and externalUrl != ''">#{externalUrl},</if>
+            <if test="downloadUrl != null  and downloadUrl != ''">#{downloadUrl},</if>
+            <if test="appType != null  and appType != ''">#{appType},</if>
+            <if test="adPackage != null  and adPackage != ''">#{adPackage},</if>
+            <if test="hideIfConverted != null  and hideIfConverted != ''">#{hideIfConverted},</if>
+            <if test="cpaBid != null ">#{cpaBid},</if>
+            <if test="convertId != null ">#{convertId},</if>
+            <if test="retargetingTagsInclude != null  and retargetingTagsInclude != ''">#{retargetingTagsInclude},</if>
+            <if test="retargetingTagsExclude != null  and retargetingTagsExclude != ''">#{retargetingTagsExclude},</if>
+            <if test="gender != null  and gender != ''">#{gender},</if>
+            <if test="age != null  and age != ''">#{age},</if>
+            <if test="carrier != null  and carrier != ''">#{carrier},</if>
+            <if test="ac != null  and ac != ''">#{ac},</if>
+            <if test="articleCategory != null  and articleCategory != ''">#{articleCategory},</if>
+            <if test="platform != null  and platform != ''">#{platform},</if>
+            <if test="district != null  and district != ''">#{district},</if>
+            <if test="city != null  and city != ''">#{city},</if>
+            <if test="adTag != null  and adTag != ''">#{adTag},</if>
+            <if test="interestTags != null  and interestTags != ''">#{interestTags},</if>
+            <if test="appBehaviorTarget != null  and appBehaviorTarget != ''">#{appBehaviorTarget},</if>
+            <if test="appCategory != null  and appCategory != ''">#{appCategory},</if>
+            <if test="appIds != null  and appIds != ''">#{appIds},</if>
+            <if test="status != null  and status != ''">#{status},</if>
+            <if test="delFlag != null  and delFlag != ''">#{delFlag},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="updateFlag != null  and updateFlag != ''">#{updateFlag},</if>
+            <if test="groupBudgetMode != null and groupBudgetMode != ''">#{groupBudgetMode},</if>
+            <if test="groupBudget != null and groupBudget != ''">#{groupBudget},</if>
+            <if test="landingType != null and landingType != ''">#{landingType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateThAd" parameterType="ThAd">
+        update th_ad
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="advertiserId != null ">advertiser_id = #{advertiserId},</if>
+            <if test="advertiserName != null  and advertiserName != ''">advertiser_name = #{advertiserName},</if>
+            <if test="campaignId != null ">campaign_id = #{campaignId},</if>
+            <if test="campaignName != null  and campaignName != ''">campaign_name = #{campaignName},</if>
+            <if test="adId != null ">ad_id = #{adId},</if>
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="deliveryRange != null  and deliveryRange != ''">delivery_range = #{deliveryRange},</if>
+            <if test="budgetMode != null  and budgetMode != ''">budget_mode = #{budgetMode},</if>
+            <if test="budget != null ">budget = #{budget},</if>
+            <if test="startTime != null  and startTime != ''">start_time = #{startTime},</if>
+            <if test="endTime != null  and endTime != ''">end_time = #{endTime},</if>
+            <if test="pricing != null  and pricing != ''">pricing = #{pricing},</if>
+            <if test="bid != null ">bid = #{bid},</if>
+            <if test="scheduleType != null  and scheduleType != ''">schedule_type = #{scheduleType},</if>
+            <if test="scheduleTime != null  and scheduleTime != ''">schedule_time = #{scheduleTime},</if>
+            <if test="flowControlMode != null  and flowControlMode != ''">flow_control_mode = #{flowControlMode},</if>
+            <if test="openUrl != null  and openUrl != ''">open_url = #{openUrl},</if>
+            <if test="downloadType != null  and downloadType != ''">download_type = #{downloadType},</if>
+            <if test="externalUrl != null  and externalUrl != ''">external_url = #{externalUrl},</if>
+            <if test="downloadUrl != null  and downloadUrl != ''">download_url = #{downloadUrl},</if>
+            <if test="appType != null  and appType != ''">app_type = #{appType},</if>
+            <if test="adPackage != null  and adPackage != ''">ad_package = #{adPackage},</if>
+            <if test="hideIfConverted != null  and hideIfConverted != ''">hide_if_converted = #{hideIfConverted},</if>
+            <if test="cpaBid != null ">cpa_bid = #{cpaBid},</if>
+            <if test="convertId != null ">convert_id = #{convertId},</if>
+            <if test="retargetingTagsInclude != null  and retargetingTagsInclude != ''">retargeting_tags_include = #{retargetingTagsInclude},</if>
+            <if test="retargetingTagsExclude != null  and retargetingTagsExclude != ''">retargeting_tags_exclude = #{retargetingTagsExclude},</if>
+            <if test="gender != null  and gender != ''">gender = #{gender},</if>
+            <if test="age != null  and age != ''">age = #{age},</if>
+            <if test="carrier != null  and carrier != ''">carrier = #{carrier},</if>
+            <if test="ac != null  and ac != ''">ac = #{ac},</if>
+            <if test="articleCategory != null  and articleCategory != ''">article_category = #{articleCategory},</if>
+            <if test="platform != null  and platform != ''">platform = #{platform},</if>
+            <if test="district != null  and district != ''">district = #{district},</if>
+            <if test="city != null  and city != ''">city = #{city},</if>
+            <if test="adTag != null  and adTag != ''">ad_tag = #{adTag},</if>
+            <if test="interestTags != null  and interestTags != ''">interest_tags = #{interestTags},</if>
+            <if test="appBehaviorTarget != null  and appBehaviorTarget != ''">app_behavior_target = #{appBehaviorTarget},</if>
+            <if test="appCategory != null  and appCategory != ''">app_category = #{appCategory},</if>
+            <if test="appIds != null  and appIds != ''">app_ids = #{appIds},</if>
+            <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="delFlag != null  and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="updateFlag != null  and updateFlag != ''">update_flag = #{updateFlag},</if>
+        </trim>
+        where id = #{id} and del_flag = '0'
+    </update>
+
+    <update id="deleteThAdById" parameterType="Long">
+        update th_ad set del_flag = '2' where id = #{id}
+    </update>
+
+    <update id="deleteThAdByIds" parameterType="String">
+        update th_ad set del_flag = '2' where where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    
+</mapper>

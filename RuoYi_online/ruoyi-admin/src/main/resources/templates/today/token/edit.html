@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改token')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-token-edit" th:object="${thToken}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">返回码：</label>
+                <div class="col-sm-8">
+                    <input name="code" th:field="*{code}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">权限token：</label>
+                <div class="col-sm-8">
+                    <input name="accessToken" th:field="*{accessToken}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">刷新token：</label>
+                <div class="col-sm-8">
+                    <input name="refreshToken" th:field="*{refreshToken}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">返回信息：</label>
+                <div class="col-sm-8">
+                    <input name="message" th:field="*{message}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">requestID：</label>
+                <div class="col-sm-8">
+                    <input name="requestId" th:field="*{requestId}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "today/token";
+        $("#form-token-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-token-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

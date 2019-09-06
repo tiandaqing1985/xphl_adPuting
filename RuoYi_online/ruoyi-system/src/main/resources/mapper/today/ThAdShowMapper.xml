@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.today.mapper.ThAdShowMapper">
+    
+    <resultMap type="ThAdShow" id="ThAdShowResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="context"    column="context"    />
+        <result property="createBy"    column="create_By"    />
+        <result property="createTime"    column="create_Time"    />
+        <result property="updateBy"    column="update_By"    />
+        <result property="updateTime"    column="update_Time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectThAdShowVo">
+        select id, name, context, create_By, create_Time, update_By, update_Time, remark from th_ad_show
+    </sql>
+
+    <select id="selectThAdShowList" parameterType="ThAdShow" resultMap="ThAdShowResult">
+        <include refid="selectThAdShowVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectCountByCreateBy" parameterType="String" resultType="String">
+        select count(id) from th_ad_show where create_By = #{param1}
+    </select>
+
+    <select id="selectThAdShowById" parameterType="Long" resultMap="ThAdShowResult">
+        <include refid="selectThAdShowVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertThAdShow" parameterType="ThAdShow">
+        insert into th_ad_show
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="name != null  and name != ''">name,</if>
+            <if test="context != null  and context != ''">context,</if>
+            <if test="createBy != null  and createBy != ''">create_By,</if>
+            <if test="createTime != null ">create_Time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_By,</if>
+            <if test="updateTime != null ">update_Time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="context != null  and context != ''">#{context},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateThAdShow" parameterType="ThAdShow">
+        update th_ad_show
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="context != null  and context != ''">context = #{context},</if>
+            <if test="createBy != null  and createBy != ''">create_By = #{createBy},</if>
+            <if test="createTime != null ">create_Time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_By = #{updateBy},</if>
+            <if test="updateTime != null ">update_Time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteThAdShowById" parameterType="Long">
+        delete from th_ad_show where id = #{id}
+    </delete>
+
+    <delete id="deleteThAdShowByIds" parameterType="String">
+        delete from th_ad_show where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

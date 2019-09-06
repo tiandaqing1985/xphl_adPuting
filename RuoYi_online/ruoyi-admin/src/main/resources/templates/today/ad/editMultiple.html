@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('修改广告计划')"/>
+    <th:block th:include="include :: datetimepicker-css"/>
+    <th:block th:include="include :: select2-css"/>
+    <th:block th:include="include :: bootstrap-select-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-ad-edit">
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="advertiserId">广告主ID：</label>
+            <div class="col-sm-8">
+                <input name="advertiserId" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="advertiserName">广告主名称：</label>
+            <div class="col-sm-8">
+                <input name="advertiserName" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="campaignId">广告组ID：</label>
+            <div class="col-sm-8">
+                <input name="campaignId" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="campaignName">广告组名称：</label>
+            <div class="col-sm-8">
+                <input name="campaignName" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="adId">广告ID：</label>
+            <div class="col-sm-8">
+                <input name="adId" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="name">广告名称：</label>
+            <div class="col-sm-8">
+                <input name="name" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="deliveryRange">投放范围：</label>
+            <div class="col-sm-8">
+                <select name="deliveryRange" class="form-control m-b"
+                        th:with="type=${@dict.getType('th_ad_delivery_range')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="budgetMode">预算类型：</label>
+            <div class="col-sm-8">
+                <select name="budgetMode" class="form-control m-b" th:with="type=${@dict.getType('th_ad_budget_mode')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="budget">预算金额：</label>
+            <div class="col-sm-8">
+                <input name="budget" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="startTime">开始时间：</label>
+            <div class="col-sm-8">
+                <input id="startTime" name="startTime" class="form-control" placeholder="yyyy-MM-dd HH:mm:ss" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="endTime">结束时间：</label>
+            <div class="col-sm-8">
+                <input id="endTime" name="endTime" class="form-control" placeholder="yyyy-MM-dd HH:mm:ss" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="pricing">出价类型：</label>
+            <div class="col-sm-8">
+                <select name="pricing" class="form-control m-b" th:with="type=${@dict.getType('th_ad_pricing')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="bid">出价金额：</label>
+            <div class="col-sm-8">
+                <input name="bid" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="scheduleType">广告投放类型：</label>
+            <div class="col-sm-8">
+                <select name="scheduleType" class="form-control m-b"
+                        th:with="type=${@dict.getType('th_ad_schedule_type')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="scheduleTime">广告投放时段：</label>
+            <div class="col-sm-8">
+                <input name="scheduleTime" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="flowControlMode">投放速度类型：</label>
+            <div class="col-sm-8">
+                <select name="flowControlMode" class="form-control m-b"
+                        th:with="type=${@dict.getType('th_ad_flow_control_mode')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="openUrl">应用直达链接：</label>
+            <div class="col-sm-8">
+                <input name="openUrl" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="downloadType">应用下载方式：</label>
+            <div class="col-sm-8">
+                <input name="downloadType" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="externalUrl">广告落地页链接：</label>
+            <div class="col-sm-8">
+                <textarea name="externalUrl" class="form-control">[[*{externalUrl}]]</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="downloadUrl">广告应用下载链接：</label>
+            <div class="col-sm-8">
+                <textarea name="downloadUrl" class="form-control">[[*{downloadUrl}]]</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="appType">应用下载类型：</label>
+            <div class="col-sm-8">
+                <select name="appType" class="form-control m-b" th:with="type=${@dict.getType('th_ad_app_type')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="adPackage">广告应用下载包名：</label>
+            <div class="col-sm-8">
+                <input name="adPackage" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="hideIfConverted">过滤已转化用户类型：</label>
+            <div class="col-sm-8">
+                <select name="hideIfConverted" class="form-control m-b"
+                        th:with="type=${@dict.getType('th_ad_hide_if_converted')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="cpaBid">ocpm广告转化出价：</label>
+            <div class="col-sm-8">
+                <input name="cpaBid" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="convertId">转化ID：</label>
+            <div class="col-sm-8">
+                <input name="convertId" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="retargetingTagsInclude">定向人群包列表：</label>
+            <div class="col-sm-8">
+                <textarea name="retargetingTagsInclude" class="form-control">[[*{retargetingTagsInclude}]]</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="retargetingTagsExclude">排除人群包列表：</label>
+            <div class="col-sm-8">
+                <textarea name="retargetingTagsExclude" class="form-control">[[*{retargetingTagsExclude}]]</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="gender">受众性别：</label>
+            <div class="col-sm-8">
+                <select name="gender" class="form-control m-b" th:with="type=${@dict.getType('th_ad_gender')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="age">受众年龄区间：</label>
+            <div class="col-sm-8">
+                <!--                    form-control selectpicker noselect2-->
+                <!--                    multiple-->
+                <select name="age" class="form-control m-b" th:with="type=${@dict.getType('th_ad_age')}" multiple>
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="carrier">运营商：</label>
+            <div class="col-sm-8">
+                <select name="carrier" class="form-control m-b" th:with="type=${@dict.getType('th_ad_carrier')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="ac">网络类型：</label>
+            <div class="col-sm-8">
+                <select name="ac" class="form-control m-b" th:with="type=${@dict.getType('th_ad_ac')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="articleCategory">受众文章分类：</label>
+            <div class="col-sm-8">
+                <select name="articleCategory" class="form-control m-b"
+                        th:with="type=${@dict.getType('th_ad_article_category')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="platform">受众平台：</label>
+            <div class="col-sm-8">
+                <select name="platform" class="form-control m-b" th:with="type=${@dict.getType('th_ad_platform')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="district">地域类型：</label>
+            <div class="col-sm-8">
+                <select name="district" class="form-control m-b" th:with="type=${@dict.getType('th_ad_district')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="city">地域定向城市或者区县列表：</label>
+            <div class="col-sm-8">
+                <input name="city" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="adTag">兴趣分类：</label>
+            <div class="col-sm-8">
+                <input name="adTag" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="interestTags">兴趣关键词：</label>
+            <div class="col-sm-8">
+                <textarea name="interestTags" class="form-control">[[*{interestTags}]]</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="appBehaviorTarget">APP行为定向：</label>
+            <div class="col-sm-8">
+                <select name="appBehaviorTarget" class="form-control m-b"
+                        th:with="type=${@dict.getType('th_ad_behavior_target')}">
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="appCategory">APP行为按分类集合：</label>
+            <div class="col-sm-8">
+                <textarea name="appCategory" class="form-control">[[*{appCategory}]]</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><input type="checkbox" value="appIds">APP行为定向,APP集合：</label>
+            <div class="col-sm-8">
+                <textarea name="appIds" class="form-control">[[*{appIds}]]</textarea>
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: datetimepicker-js"/>
+<th:block th:include="include :: select2-js"/>
+<th:block th:include="include :: bootstrap-select-js"/>
+<script type="text/javascript" th:inline="javascript">
+    var prefix = ctx + "today/ad";
+    $("#form-ad-edit").validate({
+        focusCleanup: true
+    });
+
+    var ids = null;
+
+    $(function () {
+        ids = [[${ids}]];
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+
+            laydate.render({
+                elem: '#startTime',
+                type: 'datetime',
+                trigger: 'click'
+            });
+            laydate.render({
+                elem: '#endTime',
+                type: 'datetime',
+                trigger: 'click'
+            });
+
+        });
+    })
+
+    function submitHandler() {
+        getSubmitData();
+    }
+
+    $("input[name='startTime']").datetimepicker({
+        format: "yyyy-mm-dd",
+        minView: "month",
+        autoclose: true
+    });
+
+    function getSubmitData() {
+        var data = {};
+        $.each($('input:checkbox:checked'), function (index, val) {
+            var name = $(this).val();
+            data[name] = $("*[name=" + name + "]").val();
+        });
+        data["ids"] = ids;
+        $.operate.submit(prefix + "/edit", "post", "json", data, function (result) {
+            $.operate.successCallback(result);
+        });
+    }
+
+
+</script>
+</body>
+</html>
