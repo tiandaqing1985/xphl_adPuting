@@ -4,9 +4,10 @@ import java.util.List;
 
 import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.framework.util.ShiroUtils;
-import com.ruoyi.today.TouTiaoApiConfig;
+import com.ruoyi.today.domain.ThAdCreativityImport;
 import com.ruoyi.today.domain.ThAdvertiser;
 import com.ruoyi.today.service.IThAdvertiserService;
+import com.ruoyi.today.service.IThCreativityService;
 import com.ruoyi.web.controller.tool.HlExcelUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,14 @@ public class ThAdController extends BaseController {
     private IThAdService thAdService;
     @Autowired
     private IThAdvertiserService thAdvertiserService;
+    @Autowired
+    private IThCreativityService thCreativityService;
+
+    @RequiresPermissions("today:upload:view")
+    @GetMapping("up")
+    public String upload() {
+        return prefix + "/upload";
+    }
 
     @RequiresPermissions("today:ad:view")
     @GetMapping()
@@ -77,10 +86,10 @@ public class ThAdController extends BaseController {
     @PostMapping("/importData")
     @ResponseBody
     public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
-        HlExcelUtils<ThAd> util = new HlExcelUtils<ThAd>(ThAd.class);
-        List<ThAd> ads = util.importExcel(file.getInputStream());
+        HlExcelUtils<ThAdCreativityImport> util = new HlExcelUtils<ThAdCreativityImport>(ThAdCreativityImport.class);
+        List<ThAdCreativityImport> thAdCreativityImoprts = util.importExcel(file.getInputStream());
         String operName = ShiroUtils.getSysUser().getLoginName();
-        String message = thAdService.importThAd(ads, true, operName, file.getOriginalFilename());
+        String message = thAdService.importThAdAndThCreativity(thAdCreativityImoprts, true, operName, file.getOriginalFilename());
         return AjaxResult.success(message);
     }
 
@@ -92,7 +101,7 @@ public class ThAdController extends BaseController {
     @GetMapping("/importTemplate")
     @ResponseBody
     public AjaxResult importTemplate() {
-        ExcelUtil<ThAd> util = new ExcelUtil<ThAd>(ThAd.class);
+        ExcelUtil<ThAdCreativityImport> util = new ExcelUtil<ThAdCreativityImport>(ThAdCreativityImport.class);
         return util.importTemplateExcel("广告计划");
     }
 

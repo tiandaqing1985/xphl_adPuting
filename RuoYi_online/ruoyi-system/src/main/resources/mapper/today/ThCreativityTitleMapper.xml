@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.today.mapper.ThCreativityTitleMapper">
+    
+    <resultMap type="ThCreativityTitle" id="ThCreativityTitleResult">
+        <result property="id"    column="id"    />
+        <result property="creativityId"    column="creativity_id"    />
+        <result property="title"    column="title"    />
+        <result property="creativeWordIds"    column="creative_word_ids"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectThCreativityTitleVo">
+        select id, creativity_id, title, creative_word_ids, create_by, create_time, update_by, update_time, remark from th_creativity_title
+    </sql>
+
+    <select id="selectThCreativityTitleList" parameterType="ThCreativityTitle" resultMap="ThCreativityTitleResult">
+        <include refid="selectThCreativityTitleVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectThCreativityTitleById" parameterType="Long" resultMap="ThCreativityTitleResult">
+        <include refid="selectThCreativityTitleVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertThCreativityTitle" parameterType="ThCreativityTitle">
+        insert into th_creativity_title
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="creativityId != null ">creativity_id,</if>
+            <if test="title != null  and title != ''">title,</if>
+            <if test="creativeWordIds != null  and creativeWordIds != ''">creative_word_ids,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="creativityId != null ">#{creativityId},</if>
+            <if test="title != null  and title != ''">#{title},</if>
+            <if test="creativeWordIds != null  and creativeWordIds != ''">#{creativeWordIds},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateThCreativityTitle" parameterType="ThCreativityTitle">
+        update th_creativity_title
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="creativityId != null ">creativity_id = #{creativityId},</if>
+            <if test="title != null  and title != ''">title = #{title},</if>
+            <if test="creativeWordIds != null  and creativeWordIds != ''">creative_word_ids = #{creativeWordIds},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteThCreativityTitleById" parameterType="Long">
+        delete from th_creativity_title where id = #{id}
+    </delete>
+
+    <delete id="deleteThCreativityTitleByIds" parameterType="String">
+        delete from th_creativity_title where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

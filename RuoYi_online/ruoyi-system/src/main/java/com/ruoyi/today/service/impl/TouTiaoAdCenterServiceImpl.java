@@ -3,6 +3,7 @@ package com.ruoyi.today.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.today.TouTiaoApiConfig;
+import com.ruoyi.today.domain.ThAdMateria;
 import com.ruoyi.today.domain.request.AdGroupCreateRequest;
 import com.ruoyi.today.domain.request.AdGroupSelectRequest;
 import com.ruoyi.today.domain.request.PlanSyncRequest;
@@ -12,16 +13,17 @@ import com.ruoyi.today.service.AdCenterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +36,23 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
     HttpBuilder httpBuilder;
 
     private static Logger logger = LoggerFactory.getLogger(TouTiaoAdCenterServiceImpl.class);
+
+    public Object getIndustry() {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(touTiaoApiConfig.getTools().get("getIndustry"));
+
+        HttpHeaders headers = httpBuilder.buildTouTiaoHeader();
+        // 获取单例RestTemplate
+        RestTemplate restTemplate = httpBuilder.buildRestTemplate();
+        HttpEntity request = new HttpEntity(headers);
+        // 构造execute()执行所需要的参数。
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(request, JSONObject.class);
+        ResponseExtractor<ResponseEntity<JSONObject>> responseExtractor = restTemplate.responseEntityExtractor(JSONObject.class);
+        // 执行execute()，发送请求
+        ResponseEntity<JSONObject> responseObject = restTemplate.execute(builder.build().toUriString(), HttpMethod.GET, requestCallback, responseExtractor);
+        logger.info("同步头条行业列表响应报文：" + responseObject.getBody().toJSONString());
+        ResponseVO response = JSON.parseObject(responseObject.getBody().toJSONString(), ResponseVO.class);
+        return response;
+    }
 
     @Override
     public Object createAdPlan(Object plan) {
@@ -68,7 +87,7 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
         PlanUpdateResponse response = httpBuilder.buildRestTemplate().postForObject(touTiaoApiConfig.getAdPlanAPIUrls().get("updatePlan"), request, PlanUpdateResponse.class);
         logger.info("更新广告计划响应报文：" + JSON.toJSONString(response));
 
-        return  response;
+        return response;
 
     }
 
@@ -150,5 +169,34 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
         return response;
     }
 
+    /**
+     * 上传视频
+     */
+    public Object uploadVideo(Object object) {
+        ThAdMateria materia = (ThAdMateria) object;
+        //设置请求头
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("multipart/form-data");
+        headers.setContentType(type);
+        headers.set("Access-Token", "7facda5edd92593d99d23bd486d0497d7d296317");
+
+        //设置请求体，注意是LinkedMultiValueMap
+        FileSystemResource fileSystemResource = new FileSystemResource(new File(materia.getLocalPath()));
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.add("video_file", fileSystemResource);
+        form.add("advertiser_id", materia.getAdvertiserId());
+        form.add("video_signature", materia.getMd5());
+
+        //用HttpEntity封装整个请求报文
+        HttpEntity<MultiValueMap<String, Object>> files = new HttpEntity<>(form, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        long l1 = System.currentTimeMillis();
+        ResponseVO response = restTemplate.postForObject(touTiaoApiConfig.getTools().get("uploadVideo"), files, ResponseVO.class);
+        long l2 = System.currentTimeMillis();
+        logger.info("耗时：" + (l2 - l1) + "ms");
+        logger.info("上传视频响应报文：" + JSON.toJSONString(response));
+        return response;
+    }
 
 }

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.today.mapper.ThCreativityCreativesMapper">
+    
+    <resultMap type="ThCreativityCreatives" id="ThCreativityCreativesResult">
+        <result property="id"    column="id"    />
+        <result property="creativeId"    column="creative_id"    />
+        <result property="title"    column="title"    />
+        <result property="titleId"    column="title_id"    />
+        <result property="creativeWordIds"    column="creative_word_ids"    />
+        <result property="imageMode"    column="image_mode"    />
+        <result property="imageIds"    column="image_ids"    />
+        <result property="imageId"    column="image_id"    />
+        <result property="videoId"    column="video_id"    />
+        <result property="thirdPartyId"    column="third_party_id"    />
+        <result property="derivePosterCid"    column="derive_poster_cid"    />
+        <result property="dpaTemplate"    column="dpa_template"    />
+        <result property="creativityId"    column="creativity_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectThCreativityCreativesVo">
+        select id, creative_id, title, title_id, creative_word_ids, image_mode, image_ids, image_id, video_id, third_party_id, derive_poster_cid, dpa_template, creativity_id, create_by, create_time, update_by, update_time, remark from th_creativity_creatives
+    </sql>
+
+    <select id="selectThCreativityCreativesList" parameterType="ThCreativityCreatives" resultMap="ThCreativityCreativesResult">
+        <include refid="selectThCreativityCreativesVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectThCreativityCreativesById" parameterType="Long" resultMap="ThCreativityCreativesResult">
+        <include refid="selectThCreativityCreativesVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertThCreativityCreatives" parameterType="ThCreativityCreatives">
+        insert into th_creativity_creatives
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="creativeId != null  and creativeId != ''">creative_id,</if>
+            <if test="title != null  and title != ''">title,</if>
+            <if test="titleId != null ">title_id,</if>
+            <if test="creativeWordIds != null  and creativeWordIds != ''">creative_word_ids,</if>
+            <if test="imageMode != null  and imageMode != ''">image_mode,</if>
+            <if test="imageIds != null  and imageIds != ''">image_ids,</if>
+            <if test="imageId != null  and imageId != ''">image_id,</if>
+            <if test="videoId != null  and videoId != ''">video_id,</if>
+            <if test="thirdPartyId != null  and thirdPartyId != ''">third_party_id,</if>
+            <if test="derivePosterCid != null  and derivePosterCid != ''">derive_poster_cid,</if>
+            <if test="dpaTemplate != null  and dpaTemplate != ''">dpa_template,</if>
+            <if test="creativityId != null ">creativity_id,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="creativeId != null  and creativeId != ''">#{creativeId},</if>
+            <if test="title != null  and title != ''">#{title},</if>
+            <if test="titleId != null ">#{titleId},</if>
+            <if test="creativeWordIds != null  and creativeWordIds != ''">#{creativeWordIds},</if>
+            <if test="imageMode != null  and imageMode != ''">#{imageMode},</if>
+            <if test="imageIds != null  and imageIds != ''">#{imageIds},</if>
+            <if test="imageId != null  and imageId != ''">#{imageId},</if>
+            <if test="videoId != null  and videoId != ''">#{videoId},</if>
+            <if test="thirdPartyId != null  and thirdPartyId != ''">#{thirdPartyId},</if>
+            <if test="derivePosterCid != null  and derivePosterCid != ''">#{derivePosterCid},</if>
+            <if test="dpaTemplate != null  and dpaTemplate != ''">#{dpaTemplate},</if>
+            <if test="creativityId != null ">#{creativityId},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateThCreativityCreatives" parameterType="ThCreativityCreatives">
+        update th_creativity_creatives
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="creativeId != null  and creativeId != ''">creative_id = #{creativeId},</if>
+            <if test="title != null  and title != ''">title = #{title},</if>
+            <if test="titleId != null ">title_id = #{titleId},</if>
+            <if test="creativeWordIds != null  and creativeWordIds != ''">creative_word_ids = #{creativeWordIds},</if>
+            <if test="imageMode != null  and imageMode != ''">image_mode = #{imageMode},</if>
+            <if test="imageIds != null  and imageIds != ''">image_ids = #{imageIds},</if>
+            <if test="imageId != null  and imageId != ''">image_id = #{imageId},</if>
+            <if test="videoId != null  and videoId != ''">video_id = #{videoId},</if>
+            <if test="thirdPartyId != null  and thirdPartyId != ''">third_party_id = #{thirdPartyId},</if>
+            <if test="derivePosterCid != null  and derivePosterCid != ''">derive_poster_cid = #{derivePosterCid},</if>
+            <if test="dpaTemplate != null  and dpaTemplate != ''">dpa_template = #{dpaTemplate},</if>
+            <if test="creativityId != null ">creativity_id = #{creativityId},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteThCreativityCreativesById" parameterType="Long">
+        delete from th_creativity_creatives where id = #{id}
+    </delete>
+
+    <delete id="deleteThCreativityCreativesByIds" parameterType="String">
+        delete from th_creativity_creatives where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

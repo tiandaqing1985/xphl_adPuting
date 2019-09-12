@@ -18,6 +18,8 @@ public class TouTiaoApiConfig {
     private Map<String, String> advertiserAPIUrls = new HashMap<>();
     //广告组相关
     private Map<String, String> adGroupAPIUrls = new HashMap<>();
+    //头条字段值相关
+    private Map<String,String> tools = new HashMap<>();
 
     public Map<String, String> getAdPlanAPIUrls() {
         return adPlanAPIUrls;
@@ -41,5 +43,13 @@ public class TouTiaoApiConfig {
 
     public void setAdGroupAPIUrls(Map<String, String> adGroupAPIUrls) {
         this.adGroupAPIUrls = adGroupAPIUrls;
+    }
+
+    public Map<String, String> getTools() {
+        return tools;
+    }
+
+    public void setTools(Map<String, String> tools) {
+        this.tools = tools;
     }
 }

@@ -1,6 +1,7 @@
 package com.ruoyi.today.service;
 
 import com.ruoyi.today.domain.ThAd;
+import com.ruoyi.today.domain.ThAdCreativityImport;
 import com.ruoyi.today.domain.ThAdvertiser;
 
 import java.util.List;
@@ -91,4 +92,14 @@ public interface IThAdService
      * @return
      */
     public int updateTouTiaoPlanById(String id) throws Exception;
+
+    /**
+     * 导入广告计划和创意
+     * @param thAdCreativityImoprts
+     * @param b
+     * @param operName
+     * @param originalFilename
+     * @return
+     */
+    public String importThAdAndThCreativity(List<ThAdCreativityImport> thAdCreativityImoprts, boolean b, String operName, String originalFilename);
 }

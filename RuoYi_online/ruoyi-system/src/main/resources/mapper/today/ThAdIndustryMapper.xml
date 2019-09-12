@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.today.mapper.ThAdIndustryMapper">
+    
+    <resultMap type="ThAdIndustry" id="ThAdIndustryResult">
+        <result property="id"    column="id"    />
+        <result property="level"    column="level"    />
+        <result property="industryId"    column="industry_id"    />
+        <result property="industryName"    column="industry_name"    />
+        <result property="firstIndustryId"    column="first_industry_id"    />
+        <result property="firstIndustryName"    column="first_industry_name"    />
+        <result property="secondIndustryId"    column="second_industry_id"    />
+        <result property="secondIndustryName"    column="second_industry_name"    />
+        <result property="thirdIndustryId"    column="third_industry_id"    />
+        <result property="thirdIndustryName"    column="third_industry_name"    />
+    </resultMap>
+
+    <sql id="selectThAdIndustryVo">
+        select id, level, industry_id, industry_name, first_industry_id, first_industry_name, second_industry_id, second_industry_name, third_industry_id, third_industry_name from th_ad_industry
+    </sql>
+
+    <select id="selectThAdIndustryList" parameterType="ThAdIndustry" resultMap="ThAdIndustryResult">
+        <include refid="selectThAdIndustryVo"/>
+        <where>  
+            <if test="industryName != null  and industryName != ''"> and industry_name like concat('%', #{industryName}, '%')</if>
+            <if test="firstIndustryName != null  and firstIndustryName != ''"> and first_industry_name like concat('%', #{firstIndustryName}, '%')</if>
+            <if test="secondIndustryName != null  and secondIndustryName != ''"> and second_industry_name like concat('%', #{secondIndustryName}, '%')</if>
+            <if test="thirdIndustryName != null  and thirdIndustryName != ''"> and third_industry_name like concat('%', #{thirdIndustryName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectThAdIndustryById" parameterType="Long" resultMap="ThAdIndustryResult">
+        <include refid="selectThAdIndustryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertThAdIndustry" parameterType="ThAdIndustry">
+        insert into th_ad_industry
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="level != null  and level != ''">level,</if>
+            <if test="industryId != null  and industryId != ''">industry_id,</if>
+            <if test="industryName != null  and industryName != ''">industry_name,</if>
+            <if test="firstIndustryId != null  and firstIndustryId != ''">first_industry_id,</if>
+            <if test="firstIndustryName != null  and firstIndustryName != ''">first_industry_name,</if>
+            <if test="secondIndustryId != null  and secondIndustryId != ''">second_industry_id,</if>
+            <if test="secondIndustryName != null  and secondIndustryName != ''">second_industry_name,</if>
+            <if test="thirdIndustryId != null  and thirdIndustryId != ''">third_industry_id,</if>
+            <if test="thirdIndustryName != null  and thirdIndustryName != ''">third_industry_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="level != null  and level != ''">#{level},</if>
+            <if test="industryId != null  and industryId != ''">#{industryId},</if>
+            <if test="industryName != null  and industryName != ''">#{industryName},</if>
+            <if test="firstIndustryId != null  and firstIndustryId != ''">#{firstIndustryId},</if>
+            <if test="firstIndustryName != null  and firstIndustryName != ''">#{firstIndustryName},</if>
+            <if test="secondIndustryId != null  and secondIndustryId != ''">#{secondIndustryId},</if>
+            <if test="secondIndustryName != null  and secondIndustryName != ''">#{secondIndustryName},</if>
+            <if test="thirdIndustryId != null  and thirdIndustryId != ''">#{thirdIndustryId},</if>
+            <if test="thirdIndustryName != null  and thirdIndustryName != ''">#{thirdIndustryName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateThAdIndustry" parameterType="ThAdIndustry">
+        update th_ad_industry
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="level != null  and level != ''">level = #{level},</if>
+            <if test="industryId != null  and industryId != ''">industry_id = #{industryId},</if>
+            <if test="industryName != null  and industryName != ''">industry_name = #{industryName},</if>
+            <if test="firstIndustryId != null  and firstIndustryId != ''">first_industry_id = #{firstIndustryId},</if>
+            <if test="firstIndustryName != null  and firstIndustryName != ''">first_industry_name = #{firstIndustryName},</if>
+            <if test="secondIndustryId != null  and secondIndustryId != ''">second_industry_id = #{secondIndustryId},</if>
+            <if test="secondIndustryName != null  and secondIndustryName != ''">second_industry_name = #{secondIndustryName},</if>
+            <if test="thirdIndustryId != null  and thirdIndustryId != ''">third_industry_id = #{thirdIndustryId},</if>
+            <if test="thirdIndustryName != null  and thirdIndustryName != ''">third_industry_name = #{thirdIndustryName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteThAdIndustryById" parameterType="Long">
+        delete from th_ad_industry where id = #{id}
+    </delete>
+
+    <delete id="deleteThAdIndustryByIds" parameterType="String">
+        delete from th_ad_industry where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

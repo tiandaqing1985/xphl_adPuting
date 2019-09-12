@@ -24,7 +24,7 @@ public interface AdCenterService {
      */
     public Object updateAdPlanStatus(Object plan);
 
-    Object updateAdPlan(Object plan);
+    public Object updateAdPlan(Object plan);
 
     /**
      * 查询广告计划
@@ -40,5 +40,5 @@ public interface AdCenterService {
      */
     public Object selectGroup(Object request);
 
-    Object createGroup(Object group);
+    public Object createGroup(Object group);
 }

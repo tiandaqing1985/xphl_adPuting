@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.today.mapper.ThAdMediaMateriaMapper">
+    
+    <resultMap type="ThAdMediaMateria" id="ThAdMediaMateriaResult">
+        <result property="id"    column="id"    />
+        <result property="advertiserId"    column="advertiser_id"    />
+        <result property="mediaMateriaId"    column="media_materia_id"    />
+        <result property="materiaId"    column="materia_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectThAdMediaMateriaVo">
+        select id, advertiser_id, media_materia_id, materia_id, create_by, create_time, update_by, update_time, remark from th_ad_media_materia
+    </sql>
+
+    <select id="selectThAdMediaMateriaList" parameterType="ThAdMediaMateria" resultMap="ThAdMediaMateriaResult">
+        <include refid="selectThAdMediaMateriaVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectThAdMediaMateriaById" parameterType="Long" resultMap="ThAdMediaMateriaResult">
+        <include refid="selectThAdMediaMateriaVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertThAdMediaMateria" parameterType="ThAdMediaMateria">
+        insert into th_ad_media_materia
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="advertiserId != null ">advertiser_id,</if>
+            <if test="mediaMateriaId != null  and mediaMateriaId != ''">media_materia_id,</if>
+            <if test="materiaId != null  and materiaId != ''">materia_id,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="advertiserId != null ">#{advertiserId},</if>
+            <if test="mediaMateriaId != null  and mediaMateriaId != ''">#{mediaMateriaId},</if>
+            <if test="materiaId != null  and materiaId != ''">#{materiaId},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateThAdMediaMateria" parameterType="ThAdMediaMateria">
+        update th_ad_media_materia
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="advertiserId != null ">advertiser_id = #{advertiserId},</if>
+            <if test="mediaMateriaId != null  and mediaMateriaId != ''">media_materia_id = #{mediaMateriaId},</if>
+            <if test="materiaId != null  and materiaId != ''">materia_id = #{materiaId},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteThAdMediaMateriaById" parameterType="Long">
+        delete from th_ad_media_materia where id = #{id}
+    </delete>
+
+    <delete id="deleteThAdMediaMateriaByIds" parameterType="String">
+        delete from th_ad_media_materia where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

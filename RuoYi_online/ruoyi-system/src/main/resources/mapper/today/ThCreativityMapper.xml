@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.today.mapper.ThCreativityMapper">
+    
+    <resultMap type="ThCreativity" id="ThCreativityResult">
+        <result property="id"    column="id"    />
+        <result property="searchValue"    column="search_value"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="thAdId"    column="th_ad_id"    />
+        <result property="advertiserId"    column="advertiser_id"    />
+        <result property="adId"    column="ad_id"    />
+        <result property="trackUrl"    column="track_url"    />
+        <result property="actionTrackUrl"    column="action_track_url"    />
+        <result property="videoPlayEffectiveTrackUrl"    column="video_play_effective_track_url"    />
+        <result property="videoPlayDoneTrackUrl"    column="video_play_done_track_url"    />
+        <result property="videoPlayTrackUrl"    column="video_play_track_url"    />
+        <result property="isCommentDisable"    column="is_comment_disable"    />
+        <result property="closeVideoDetail"    column="close_video_detail"    />
+        <result property="creativeDisplayMode"    column="creative_display_mode"    />
+        <result property="smartInventory"    column="smart_inventory"    />
+        <result property="sceneInventory"    column="scene_inventory"    />
+        <result property="generateDerivedAd"    column="generate_derived_ad"    />
+        <result property="inventoryType"    column="inventory_type"    />
+        <result property="source"    column="source"    />
+        <result property="appName"    column="app_name"    />
+        <result property="webUrl"    column="web_url"    />
+        <result property="adKeywords"    column="ad_keywords"    />
+        <result property="thirdIndustryId"    column="third_industry_id"    />
+        <result property="advancedCreativeType"    column="advanced_creative_type"    />
+        <result property="advancedCreativeTitle"    column="advanced_creative_title"    />
+        <result property="phoneNumber"    column="phone_number"    />
+        <result property="buttonText"    column="button_text"    />
+        <result property="formUrl"    column="form_url"    />
+        <result property="creativeMaterialMode"    column="creative_material_mode"    />
+        <result property="isFeedAndFavSee"    column="is_feed_and_fav_see"    />
+        <result property="playableUrl"    column="playable_url"    />
+    </resultMap>
+
+    <sql id="selectThCreativityVo">
+        select id, search_value, create_by, create_time, update_by, update_time, remark, th_ad_id, advertiser_id, ad_id, track_url, action_track_url, video_play_effective_track_url, video_play_done_track_url, video_play_track_url, is_comment_disable, close_video_detail, creative_display_mode, smart_inventory, scene_inventory, generate_derived_ad, inventory_type, source, app_name, web_url, ad_keywords, third_industry_id, advanced_creative_type, advanced_creative_title, phone_number, button_text, form_url, creative_material_mode, is_feed_and_fav_see, playable_url from th_creativity
+    </sql>
+
+    <select id="selectThCreativityList" parameterType="ThCreativity" resultMap="ThCreativityResult">
+        <include refid="selectThCreativityVo"/>
+        <where>  
+            <if test="appName != null  and appName != ''"> and app_name like concat('%', #{appName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectThCreativityById" parameterType="Long" resultMap="ThCreativityResult">
+        <include refid="selectThCreativityVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertThCreativity" parameterType="ThCreativity" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into th_creativity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="searchValue != null  and searchValue != ''">search_value,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="thAdId != null ">th_ad_id,</if>
+            <if test="advertiserId != null  and advertiserId != ''">advertiser_id,</if>
+            <if test="adId != null  and adId != ''">ad_id,</if>
+            <if test="trackUrl != null  and trackUrl != ''">track_url,</if>
+            <if test="actionTrackUrl != null  and actionTrackUrl != ''">action_track_url,</if>
+            <if test="videoPlayEffectiveTrackUrl != null  and videoPlayEffectiveTrackUrl != ''">video_play_effective_track_url,</if>
+            <if test="videoPlayDoneTrackUrl != null  and videoPlayDoneTrackUrl != ''">video_play_done_track_url,</if>
+            <if test="videoPlayTrackUrl != null  and videoPlayTrackUrl != ''">video_play_track_url,</if>
+            <if test="isCommentDisable != null  and isCommentDisable != ''">is_comment_disable,</if>
+            <if test="closeVideoDetail != null  and closeVideoDetail != ''">close_video_detail,</if>
+            <if test="creativeDisplayMode != null  and creativeDisplayMode != ''">creative_display_mode,</if>
+            <if test="smartInventory != null  and smartInventory != ''">smart_inventory,</if>
+            <if test="sceneInventory != null  and sceneInventory != ''">scene_inventory,</if>
+            <if test="generateDerivedAd != null  and generateDerivedAd != ''">generate_derived_ad,</if>
+            <if test="inventoryType != null  and inventoryType != ''">inventory_type,</if>
+            <if test="source != null  and source != ''">source,</if>
+            <if test="appName != null  and appName != ''">app_name,</if>
+            <if test="webUrl != null  and webUrl != ''">web_url,</if>
+            <if test="adKeywords != null  and adKeywords != ''">ad_keywords,</if>
+            <if test="thirdIndustryId != null  and thirdIndustryId != ''">third_industry_id,</if>
+            <if test="advancedCreativeType != null  and advancedCreativeType != ''">advanced_creative_type,</if>
+            <if test="advancedCreativeTitle != null  and advancedCreativeTitle != ''">advanced_creative_title,</if>
+            <if test="phoneNumber != null  and phoneNumber != ''">phone_number,</if>
+            <if test="buttonText != null  and buttonText != ''">button_text,</if>
+            <if test="formUrl != null  and formUrl != ''">form_url,</if>
+            <if test="creativeMaterialMode != null  and creativeMaterialMode != ''">creative_material_mode,</if>
+            <if test="isFeedAndFavSee != null  and isFeedAndFavSee != ''">is_feed_and_fav_see,</if>
+            <if test="playableUrl != null  and playableUrl != ''">playable_url,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="searchValue != null  and searchValue != ''">#{searchValue},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="thAdId != null ">#{thAdId},</if>
+            <if test="advertiserId != null  and advertiserId != ''">#{advertiserId},</if>
+            <if test="adId != null  and adId != ''">#{adId},</if>
+            <if test="trackUrl != null  and trackUrl != ''">#{trackUrl},</if>
+            <if test="actionTrackUrl != null  and actionTrackUrl != ''">#{actionTrackUrl},</if>
+            <if test="videoPlayEffectiveTrackUrl != null  and videoPlayEffectiveTrackUrl != ''">#{videoPlayEffectiveTrackUrl},</if>
+            <if test="videoPlayDoneTrackUrl != null  and videoPlayDoneTrackUrl != ''">#{videoPlayDoneTrackUrl},</if>
+            <if test="videoPlayTrackUrl != null  and videoPlayTrackUrl != ''">#{videoPlayTrackUrl},</if>
+            <if test="isCommentDisable != null  and isCommentDisable != ''">#{isCommentDisable},</if>
+            <if test="closeVideoDetail != null  and closeVideoDetail != ''">#{closeVideoDetail},</if>
+            <if test="creativeDisplayMode != null  and creativeDisplayMode != ''">#{creativeDisplayMode},</if>
+            <if test="smartInventory != null  and smartInventory != ''">#{smartInventory},</if>
+            <if test="sceneInventory != null  and sceneInventory != ''">#{sceneInventory},</if>
+            <if test="generateDerivedAd != null  and generateDerivedAd != ''">#{generateDerivedAd},</if>
+            <if test="inventoryType != null  and inventoryType != ''">#{inventoryType},</if>
+            <if test="source != null  and source != ''">#{source},</if>
+            <if test="appName != null  and appName != ''">#{appName},</if>
+            <if test="webUrl != null  and webUrl != ''">#{webUrl},</if>
+            <if test="adKeywords != null  and adKeywords != ''">#{adKeywords},</if>
+            <if test="thirdIndustryId != null  and thirdIndustryId != ''">#{thirdIndustryId},</if>
+            <if test="advancedCreativeType != null  and advancedCreativeType != ''">#{advancedCreativeType},</if>
+            <if test="advancedCreativeTitle != null  and advancedCreativeTitle != ''">#{advancedCreativeTitle},</if>
+            <if test="phoneNumber != null  and phoneNumber != ''">#{phoneNumber},</if>
+            <if test="buttonText != null  and buttonText != ''">#{buttonText},</if>
+            <if test="formUrl != null  and formUrl != ''">#{formUrl},</if>
+            <if test="creativeMaterialMode != null  and creativeMaterialMode != ''">#{creativeMaterialMode},</if>
+            <if test="isFeedAndFavSee != null  and isFeedAndFavSee != ''">#{isFeedAndFavSee},</if>
+            <if test="playableUrl != null  and playableUrl != ''">#{playableUrl},</if>
+         </trim>
+    </insert>
+
+    <update id="updateThCreativity" parameterType="ThCreativity">
+        update th_creativity
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="searchValue != null  and searchValue != ''">search_value = #{searchValue},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="thAdId != null ">th_ad_id = #{thAdId},</if>
+            <if test="advertiserId != null  and advertiserId != ''">advertiser_id = #{advertiserId},</if>
+            <if test="adId != null  and adId != ''">ad_id = #{adId},</if>
+            <if test="trackUrl != null  and trackUrl != ''">track_url = #{trackUrl},</if>
+            <if test="actionTrackUrl != null  and actionTrackUrl != ''">action_track_url = #{actionTrackUrl},</if>
+            <if test="videoPlayEffectiveTrackUrl != null  and videoPlayEffectiveTrackUrl != ''">video_play_effective_track_url = #{videoPlayEffectiveTrackUrl},</if>
+            <if test="videoPlayDoneTrackUrl != null  and videoPlayDoneTrackUrl != ''">video_play_done_track_url = #{videoPlayDoneTrackUrl},</if>
+            <if test="videoPlayTrackUrl != null  and videoPlayTrackUrl != ''">video_play_track_url = #{videoPlayTrackUrl},</if>
+            <if test="isCommentDisable != null  and isCommentDisable != ''">is_comment_disable = #{isCommentDisable},</if>
+            <if test="closeVideoDetail != null  and closeVideoDetail != ''">close_video_detail = #{closeVideoDetail},</if>
+            <if test="creativeDisplayMode != null  and creativeDisplayMode != ''">creative_display_mode = #{creativeDisplayMode},</if>
+            <if test="smartInventory != null  and smartInventory != ''">smart_inventory = #{smartInventory},</if>
+            <if test="sceneInventory != null  and sceneInventory != ''">scene_inventory = #{sceneInventory},</if>
+            <if test="generateDerivedAd != null  and generateDerivedAd != ''">generate_derived_ad = #{generateDerivedAd},</if>
+            <if test="inventoryType != null  and inventoryType != ''">inventory_type = #{inventoryType},</if>
+            <if test="source != null  and source != ''">source = #{source},</if>
+            <if test="appName != null  and appName != ''">app_name = #{appName},</if>
+            <if test="webUrl != null  and webUrl != ''">web_url = #{webUrl},</if>
+            <if test="adKeywords != null  and adKeywords != ''">ad_keywords = #{adKeywords},</if>
+            <if test="thirdIndustryId != null  and thirdIndustryId != ''">third_industry_id = #{thirdIndustryId},</if>
+            <if test="advancedCreativeType != null  and advancedCreativeType != ''">advanced_creative_type = #{advancedCreativeType},</if>
+            <if test="advancedCreativeTitle != null  and advancedCreativeTitle != ''">advanced_creative_title = #{advancedCreativeTitle},</if>
+            <if test="phoneNumber != null  and phoneNumber != ''">phone_number = #{phoneNumber},</if>
+            <if test="buttonText != null  and buttonText != ''">button_text = #{buttonText},</if>
+            <if test="formUrl != null  and formUrl != ''">form_url = #{formUrl},</if>
+            <if test="creativeMaterialMode != null  and creativeMaterialMode != ''">creative_material_mode = #{creativeMaterialMode},</if>
+            <if test="isFeedAndFavSee != null  and isFeedAndFavSee != ''">is_feed_and_fav_see = #{isFeedAndFavSee},</if>
+            <if test="playableUrl != null  and playableUrl != ''">playable_url = #{playableUrl},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteThCreativityById" parameterType="Long">
+        delete from th_creativity where id = #{id}
+    </delete>
+
+    <delete id="deleteThCreativityByIds" parameterType="String">
+        delete from th_creativity where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,6 +1,7 @@
 package com.ruoyi.today.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -9,25 +10,23 @@ import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.PermissionUtils;
-import com.ruoyi.today.domain.ThAdvertiser;
-import com.ruoyi.today.domain.ThCampaign;
+import com.ruoyi.system.domain.SysDictData;
+import com.ruoyi.system.service.ISysDictDataService;
+import com.ruoyi.system.service.impl.SysDictDataServiceImpl;
+import com.ruoyi.today.domain.*;
 import com.ruoyi.today.domain.enums.TemplateEnum;
 import com.ruoyi.today.domain.request.PlanSyncRequest;
 import com.ruoyi.today.domain.request.PlanUpdateRequest;
 import com.ruoyi.today.domain.request.PlanUpdateStatusRequest;
 import com.ruoyi.today.domain.response.*;
 import com.ruoyi.today.mapper.ThAreaMapper;
-import com.ruoyi.today.service.AdCenterService;
-import com.ruoyi.today.service.IThAdvertiserService;
-import com.ruoyi.today.service.IThCampaignService;
+import com.ruoyi.today.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.today.mapper.ThAdMapper;
-import com.ruoyi.today.domain.ThAd;
-import com.ruoyi.today.service.IThAdService;
 import com.ruoyi.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +48,14 @@ public class ThAdServiceImpl implements IThAdService {
     private IThCampaignService thCampaignService;
     @Autowired
     private IThAdvertiserService iThAdvertiserService;
+    @Autowired
+    private IThCreativityService thCreativityService;
+    @Autowired
+    private ISysDictDataService sysDictDataService;
+    @Autowired
+    private IThAdMediaMateriaService thAdMediaMateriaService;
+    @Autowired
+    private IThAdMateriaService thAdMateriaService;
 
     private Logger log = LoggerFactory.getLogger(ThAdServiceImpl.class);
 
@@ -100,17 +107,17 @@ public class ThAdServiceImpl implements IThAdService {
         if (thAd.getStartTime() != null && !"".equals(thAd.getStartTime())) {
             try {
                 date = DateUtils.dateTime("yyyy-MM-dd HH:mm:ss", thAd.getStartTime());
-                thAd.setStartTime(DateUtils.parseDateToStr("yyyy-MM-dd HH:mm",date));
+                thAd.setStartTime(DateUtils.parseDateToStr("yyyy-MM-dd HH:mm", date));
             } catch (Exception e) {
-                log.error("广告计划："+thAd.getName()+thAd.getAdId()+"日期转换出现错误：",e);
+                log.error("广告计划：" + thAd.getName() + thAd.getAdId() + "日期转换出现错误：", e);
             }
         }
         if (thAd.getStartTime() != null && !"".equals(thAd.getStartTime())) {
             try {
                 date = DateUtils.dateTime("yyyy-MM-dd HH:mm:ss", thAd.getEndTime());
-                thAd.setEndTime(DateUtils.parseDateToStr("yyyy-MM-dd HH:mm",date));
+                thAd.setEndTime(DateUtils.parseDateToStr("yyyy-MM-dd HH:mm", date));
             } catch (Exception e) {
-                log.error("广告计划："+thAd.getName()+thAd.getAdId()+"日期转换出现错误：",e);
+                log.error("广告计划：" + thAd.getName() + thAd.getAdId() + "日期转换出现错误：", e);
             }
         }
         return thAdMapper.updateThAd(thAd);
@@ -151,6 +158,29 @@ public class ThAdServiceImpl implements IThAdService {
      */
     public int deleteThAdById(Long id) {
         return thAdMapper.deleteThAdById(id);
+    }
+
+    //根据模板组装广告
+    private void templateFill(String fileName, List<ThAdCreativityImport> ads) {
+        String[] str = fileName.split("-");
+        String templateName = str[str.length - 1];
+        TemplateEnum template = null;
+        try {
+            template = TemplateEnum.valueOf(templateName.substring(0, templateName.indexOf(".")));
+        } catch (IllegalArgumentException e) {
+            log.error("模板不存在：", e);
+        } catch (Exception e) {
+            log.error("出现未知错误：", e);
+            throw e;
+        }
+        if (template == null) {
+            return;
+        }
+        for (ThAdCreativityImport thAd : ads) {
+            thAd.setDeliveryRange(template.getDeliveryRange());
+            thAd.setPricing(template.getPricing());
+            thAd.setDownloadType(template.getDownloadType());
+        }
     }
 
     //根据模板组装广告
@@ -422,6 +452,247 @@ public class ThAdServiceImpl implements IThAdService {
         }
         return successMsg.toString();
     }
+
+    /**
+     * 导入广告计划和创意
+     *
+     * @param thAdCreativityImoprts
+     * @param b
+     * @param operName
+     * @param originalFilename
+     * @return
+     */
+    @Override
+    public String importThAdAndThCreativity(List<ThAdCreativityImport> thAdCreativityImoprts, boolean b, String operName, String originalFilename) {
+        if (StringUtils.isNull(thAdCreativityImoprts) || thAdCreativityImoprts.size() == 0) {
+            throw new BusinessException("导入用户数据不能为空！");
+        }
+        templateFill(originalFilename, thAdCreativityImoprts);
+        int successNum = 0;
+        int failureNum = 0;
+        StringBuilder successMsg = new StringBuilder();
+        StringBuilder failureMsg = new StringBuilder();
+
+        SimpleDateFormat sdf1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        //
+        ThAd isExit = null;
+        Date now = DateUtils.getNowDate();
+        for (ThAdCreativityImport thAdCreativityImoprt : thAdCreativityImoprts) {
+            try {
+
+                importOneThAdCreativityImoprt(thAdCreativityImoprt, sdf1, sdf2, now, operName);
+
+                successNum++;
+                successMsg.append("<br/>" + successNum + "、广告名称 " + thAdCreativityImoprt.getName() + " 导入成功");
+
+            } catch (Exception e) {
+                failureNum++;
+                String msg = "<br/>" + failureNum + "、广告名称 " + thAdCreativityImoprt.getName() + " 导入失败：";
+                failureMsg.append(msg + e.getMessage());
+                log.error(msg, e);
+            }
+        }
+        if (failureNum > 0) {
+            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
+            throw new BusinessException(failureMsg.toString());
+        } else {
+            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+        }
+        return successMsg.toString();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void importOneThAdCreativityImoprt(ThAdCreativityImport imoprt, SimpleDateFormat sdf1, SimpleDateFormat sdf2, Date now, String operName) throws Exception {
+        ThAd thAd = new ThAd();
+        BeanUtils.copyProperties(imoprt, thAd);
+        if (thAd.getStartTime() != null && !thAd.getStartTime().equals("")) {
+            thAd.setStartTime(sdf2.format(sdf1.parse(thAd.getStartTime())));
+        }
+        if (thAd.getEndTime() != null && !thAd.getEndTime().equals("")) {
+            thAd.setEndTime(sdf2.format(sdf1.parse(thAd.getEndTime())));
+        }
+        checkValue(thAd);
+        transferArea(thAd);
+        ThAd isExit = queryThAd(thAd);
+        if (isExit == null) {
+            //插入新信息
+            thAd.setCreateBy(operName);
+            thAd.setCreateTime(now);
+            thAd.setStatus("10");
+            this.insertThAd(thAd);
+        } else if ("1".equals(isExit.getUpdateFlag())) {
+            //如果存在更新状态的记录，直接更新这条记录
+            thAd.setCreateBy(isExit.getCreateBy());
+            thAd.setCreateTime(isExit.getCreateTime());
+            thAd.setUpdateBy(operName);
+            thAd.setUpdateTime(now);
+            thAd.setId(isExit.getId());
+            this.updateThAd(thAd);
+        } else if (isExit.getId() == null) {
+            //插入新信息
+            thAd.setCreateBy(operName);
+            thAd.setAdvertiserId(isExit.getAdvertiserId());
+            thAd.setCampaignId(isExit.getCampaignId());
+            thAd.setCreateTime(now);
+            thAd.setUpdateFlag("1");
+            this.insertThAd(thAd);
+        } else {
+            if (thAd.getAdId() != null) {
+                //插入新信息
+                thAd.setAdvertiserId(isExit.getAdvertiserId());
+                thAd.setCampaignId(isExit.getCampaignId());
+                thAd.setCreateBy(operName);
+                thAd.setCreateTime(now);
+                thAd.setUpdateFlag("1");
+                this.insertThAd(thAd);
+            } else {
+                if (isExit.getAdId() == null) {
+                    thAd.setCreateBy(isExit.getCreateBy());
+                    thAd.setCreateTime(isExit.getCreateTime());
+                    thAd.setUpdateBy(operName);
+                    thAd.setUpdateTime(now);
+                    thAd.setId(isExit.getId());
+                    this.updateThAd(thAd);
+                } else {
+                    //插入新信息
+                    thAd.setAdvertiserId(isExit.getAdvertiserId());
+                    thAd.setCampaignId(isExit.getCampaignId());
+                    thAd.setAdId(isExit.getAdId());
+                    thAd.setCreateBy(operName);
+                    thAd.setCreateTime(now);
+                    thAd.setUpdateFlag("1");
+                    this.insertThAd(thAd);
+                }
+            }
+        }
+
+        ThCreativity thCreativity = new ThCreativity();
+        BeanUtils.copyProperties(imoprt, thCreativity);
+        ThAd select = new ThAd();
+        select.setAdvertiserName(thAd.getAdvertiserName());
+        select.setCampaignName(thAd.getCampaignName());
+        select.setName(thAd.getName());
+        List<ThAd> thAds = selectThAdList(select);
+        if (thAds.size() == 1) {
+            thCreativity.setAdvertiserId(thAds.get(0).getAdvertiserId().toString());
+            if (thAds.get(0).getAdId() != null) {
+                thCreativity.setAdId(thAds.get(0).getAdId().toString());
+            }
+            thCreativity.setThAdId(thAds.get(0).getId().toString());
+        }
+        convertField(thCreativity, imoprt, now, operName);
+        thCreativityService.insertThCreativity(thCreativity);
+
+    }
+
+    private void convertField(ThCreativity thCreativity, ThAdCreativityImport imoprt, Date now, String operName) throws Exception {
+
+        String titleStr = imoprt.getTitleStr();
+        String imageStr = imoprt.getImageStr();
+        String creativesStr = imoprt.getCreativesStr();
+        ThCreativityTitle title = null;
+        ThCreativityImage image = null;
+        ThCreativityCreatives creatives = null;
+        if(thCreativity.getCreativeMaterialMode()!=null&&!"".equals(thCreativity.getCreativeMaterialMode())) {
+
+            //拆分标题列表
+            if (titleStr != null && !"".equals(titleStr)) {
+                thCreativity.setTitle_list(new ArrayList<>());
+                String[] titles = titleStr.split(",");
+                for (String tit : titles) {
+                    title = new ThCreativityTitle();
+                    title.setCreateBy(operName);
+                    title.setCreateTime(now);
+                    title.setTitle(tit);
+                    thCreativity.getTitle_list().add(title);
+                }
+            }
+            //拆分素材列表
+            if (imageStr != null && !"".equals(imageStr)) {
+                thCreativity.setImage_list(new ArrayList<>());
+                String[] images = imageStr.split("\n");
+                //每个素材
+                for (String imag : images) {
+                    image = new ThCreativityImage();
+                    //每个素材中的一个属性
+                    String[] imageField = imag.split(",");
+                    if (imageField.length > 1) {
+                        //查询素材类型对应code
+                        SysDictData selectVO = new SysDictData();
+                        selectVO.setDictLabel(imageField[0]);
+                        List<SysDictData> sysDictData = sysDictDataService.selectDictDataList(selectVO);
+                        if (sysDictData.size() != 0) {
+                            imageField[0] = sysDictData.get(0).getDictValue();
+                        }
+                        if (imageField[0].contains("VIDEO")) {
+                            if (imageField.length < 3) {
+                                throw new Exception(imoprt.getName() + "的视频素材资料不足");
+                            } else {
+                                String iamgeId = thAdMediaMateriaService.selectMediaMateriaIdByFileName();
+                                String videoId = thAdMediaMateriaService.selectMediaMateriaIdByFileName();
+                                image.setImageId(iamgeId);
+                                image.setVideoId(videoId);
+                                image.setImageMode(imageField[0]);
+                            }
+                        } else {
+                            if (imageField.length < 2) {
+                                throw new Exception(imoprt.getName() + "的图片素材资料不足");
+                            } else {
+                                for (int i = 1; i < imageField.length; i++) {
+                                    image.setImageIds((image.getImageIds() == null ? "" : image.getImageIds()) + imageField[i]);
+                                    if (i != imageField.length - 1) {
+                                        image.setImageIds(image.getImageIds() + ",");
+                                    }
+                                }
+                                image.setImageMode(imageField[0]);
+                            }
+                        }
+                        thCreativity.getImage_list().add(image);
+                    }
+                }
+            }
+        }else {
+
+            //拆分自定义创意
+            if (creativesStr != null && !"".equals(creativesStr)) {
+                thCreativity.setCreatives(new ArrayList<>());
+                String[] creativesArray = creativesStr.split("\n");
+                for (String creativy : creativesArray) {
+                    creatives = new ThCreativityCreatives();
+                    String[] creativiesField = creativy.split(",");
+                    if (creativiesField.length >= 3) {
+                        if (creativiesField[0].contains("VIDEO")) {
+                            if (creativiesField.length <= 3) {
+                                throw new Exception(imoprt.getName() + "的视频素材资料不足");
+                            } else {
+                                creatives.setImageMode(creativiesField[0]);
+                                creatives.setTitle(creativiesField[1]);
+                                creatives.setImageId(creativiesField[2]);
+                                creatives.setVideoId(creativiesField[3]);
+                            }
+                        } else {
+                            if (creativiesField.length < 3) {
+                                throw new Exception(imoprt.getName() + "的图片素材资料不足");
+                            } else {
+                                creatives.setImageMode(creativiesField[0]);
+                                creatives.setTitle(creativiesField[1]);
+                                for (int i = 2; i < creativiesField.length; i++) {
+                                    creatives.setImageIds((creatives.getImageIds() == null ? "" : creatives.getImageIds()) + creativiesField[i]);
+                                    if (i != creativiesField.length - 1) {
+                                        creatives.setImageIds(creatives.getImageIds() + ",");
+                                    }
+                                }
+                            }
+                        }
+                        thCreativity.getCreatives().add(creatives);
+                    }
+                }
+            }
+        }
+
+    }
+
 
     private void transferArea(ThAd thAd) {
 
