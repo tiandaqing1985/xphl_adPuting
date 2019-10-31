@@ -51,8 +51,11 @@ public class ThCreativityCreatives extends BaseEntity
     /** 图片ID（视频创意） */
     private String imageId;
 
+
     /** 视频ID（视频创意） */
     private String videoId;
+
+    private String filesUrl;
 
     /** 创意自定义参数（图片创意） */
     @JSONField(name = "third_party_id")
@@ -69,6 +72,14 @@ public class ThCreativityCreatives extends BaseEntity
     /** 创意公共属性ID */
     @JSONField(serialize = false)
     private Long creativityId;
+
+    public String getFilesUrl() {
+        return filesUrl;
+    }
+
+    public void setFilesUrl(String filesUrl) {
+        this.filesUrl = filesUrl;
+    }
 
     public String[] getCreative_word_ids() {
         return creative_word_ids;

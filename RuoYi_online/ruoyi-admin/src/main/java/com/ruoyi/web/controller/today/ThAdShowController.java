@@ -71,13 +71,12 @@ public class ThAdShowController extends BaseController {
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(ThAdShow thAdShow) {
-        String count = thAdShowService.selectCountByCreateBy(ShiroUtils.getLoginName());
+        String count = thAdShowService.selectCountByCreateBy(ShiroUtils.getLoginName(),thAdShow.getType());
         if (count != null) {
             int countNum = Integer.parseInt(count);
             if (countNum >= 5) {
                 return AjaxResult.error("最多保存5个方案！！");
             } else {
-                thAdShow.setName("方案"+(countNum+1));
                 thAdShow.setCreateBy(ShiroUtils.getLoginName());
                 return toAjax(thAdShowService.insertThAdShow(thAdShow));
             }

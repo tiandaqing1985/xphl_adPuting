@@ -25,7 +25,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectThCreativityImageList" parameterType="ThCreativityImage" resultMap="ThCreativityImageResult">
         <include refid="selectThCreativityImageVo"/>
-        <where>  
+        <where>
+            <if test="creativityId != null and creativityId != ''">and creativity_id = #{creativityId}</if>
         </where>
     </select>
     
@@ -94,5 +95,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
-    
+
+    <delete id="deleteThCreativityImageByCreativityId" parameterType="String">
+        delete from th_creativity_image where creativity_id = #{param1}
+    </delete>
+
 </mapper>

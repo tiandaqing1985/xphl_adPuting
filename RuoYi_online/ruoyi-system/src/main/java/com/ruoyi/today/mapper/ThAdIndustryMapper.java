@@ -59,4 +59,6 @@ public interface ThAdIndustryMapper
      * @return 结果
      */
     public int deleteThAdIndustryByIds(String[] ids);
+
+    public ThAdIndustry selectThAdIndustryByIndustryNameAndLevel(String industryName, String s);
 }

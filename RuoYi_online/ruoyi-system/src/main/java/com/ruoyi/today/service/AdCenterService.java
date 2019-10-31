@@ -1,7 +1,9 @@
 package com.ruoyi.today.service;
 
+import com.ruoyi.today.domain.ThCreativity;
 import com.ruoyi.today.domain.request.PlanSyncRequest;
 import com.ruoyi.today.domain.response.PlanSyncResponse;
+import com.ruoyi.today.domain.response.ResponseVO;
 
 import java.util.List;
 
@@ -40,5 +42,15 @@ public interface AdCenterService {
      */
     public Object selectGroup(Object request);
 
+    //创建广告组
     public Object createGroup(Object group);
+
+    //上传图片素材
+    public Object uploadImageFile(Object image);
+
+    //上传视频素材
+    public Object uploadVideoFile(Object video);
+
+    //创建创意
+    public Object createCreativity(Object creativity);
 }

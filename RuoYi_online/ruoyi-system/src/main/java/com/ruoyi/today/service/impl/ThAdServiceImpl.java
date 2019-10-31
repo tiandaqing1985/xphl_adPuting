@@ -56,6 +56,10 @@ public class ThAdServiceImpl implements IThAdService {
     private IThAdMediaMateriaService thAdMediaMateriaService;
     @Autowired
     private IThAdMateriaService thAdMateriaService;
+    @Autowired
+    private IThAdIndustryService adIndustryService;
+    @Autowired
+    private IThCreativityCreativesService creativityCreativesService;
 
     private Logger log = LoggerFactory.getLogger(ThAdServiceImpl.class);
 
@@ -504,6 +508,7 @@ public class ThAdServiceImpl implements IThAdService {
 
     @Transactional(rollbackFor = Exception.class)
     public void importOneThAdCreativityImoprt(ThAdCreativityImport imoprt, SimpleDateFormat sdf1, SimpleDateFormat sdf2, Date now, String operName) throws Exception {
+        //广告计划
         ThAd thAd = new ThAd();
         BeanUtils.copyProperties(imoprt, thAd);
         if (thAd.getStartTime() != null && !thAd.getStartTime().equals("")) {
@@ -566,7 +571,7 @@ public class ThAdServiceImpl implements IThAdService {
                 }
             }
         }
-
+        //广告创意创建
         ThCreativity thCreativity = new ThCreativity();
         BeanUtils.copyProperties(imoprt, thCreativity);
         ThAd select = new ThAd();
@@ -581,8 +586,34 @@ public class ThAdServiceImpl implements IThAdService {
             }
             thCreativity.setThAdId(thAds.get(0).getId().toString());
         }
+        //广告创意 素材信息等记录创建
         convertField(thCreativity, imoprt, now, operName);
+        //广告创意公共属性插入
         thCreativityService.insertThCreativity(thCreativity);
+
+        //如果是程序化创意
+        if (thCreativity.getCreativeMaterialMode() != null && !"".equals(thCreativity.getCreativeMaterialMode())) {
+            ThCreativityCreatives creativityCreatives = null;
+            //程序化创意 自动根据标题素材组合创意
+            for (ThCreativityTitle tit : thCreativity.getTitle_list()) {
+
+                for (ThCreativityImage creativityImage : thCreativity.getImage_list()) {
+
+                    creativityCreatives = new ThCreativityCreatives();
+                    creativityCreatives.setTitle(tit.getTitle());
+                    creativityCreatives.setTitleId(tit.getId());
+                    creativityCreatives.setCreativeWordIds(tit.getCreativeWordIds());
+                    creativityCreatives.setImageMode(creativityImage.getImageMode());
+                    creativityCreatives.setImageIds(creativityImage.getImageIds());
+                    creativityCreatives.setImageId(creativityImage.getImageId());
+                    creativityCreatives.setVideoId(creativityImage.getVideoId());
+                    creativityCreatives.setThirdPartyId(thCreativity.getThirdIndustryId());
+                    creativityCreatives.setCreativityId(thCreativity.getId());
+                    creativityCreativesService.insertThCreativityCreatives(creativityCreatives);
+                }
+
+            }
+        }
 
     }
 
@@ -594,11 +625,17 @@ public class ThAdServiceImpl implements IThAdService {
         ThCreativityTitle title = null;
         ThCreativityImage image = null;
         ThCreativityCreatives creatives = null;
-        if(thCreativity.getCreativeMaterialMode()!=null&&!"".equals(thCreativity.getCreativeMaterialMode())) {
+        //查询创意分类id值
+        String industryName = thCreativity.getThirdIndustryId();
+        ThAdIndustry industry = adIndustryService.selectThAdIndustryByIndustryNameAndLevel(industryName, "3");
+        thCreativity.setThirdIndustryId(industry.getIndustryId());
+
+        if (thCreativity.getCreativeMaterialMode() != null && !"".equals(thCreativity.getCreativeMaterialMode())) {
+            thCreativity.setTitle_list(new ArrayList<>());
+            thCreativity.setImage_list(new ArrayList<>());
 
             //拆分标题列表
             if (titleStr != null && !"".equals(titleStr)) {
-                thCreativity.setTitle_list(new ArrayList<>());
                 String[] titles = titleStr.split(",");
                 for (String tit : titles) {
                     title = new ThCreativityTitle();
@@ -610,7 +647,6 @@ public class ThAdServiceImpl implements IThAdService {
             }
             //拆分素材列表
             if (imageStr != null && !"".equals(imageStr)) {
-                thCreativity.setImage_list(new ArrayList<>());
                 String[] images = imageStr.split("\n");
                 //每个素材
                 for (String imag : images) {
@@ -625,22 +661,26 @@ public class ThAdServiceImpl implements IThAdService {
                         if (sysDictData.size() != 0) {
                             imageField[0] = sysDictData.get(0).getDictValue();
                         }
+                        //视频素材
                         if (imageField[0].contains("VIDEO")) {
                             if (imageField.length < 3) {
                                 throw new Exception(imoprt.getName() + "的视频素材资料不足");
                             } else {
-                                String iamgeId = thAdMediaMateriaService.selectMediaMateriaIdByFileName();
-                                String videoId = thAdMediaMateriaService.selectMediaMateriaIdByFileName();
+                                String iamgeId = thAdMediaMateriaService.selectMediaMateriaIdByFileName(imoprt, imageField[1]);
+                                String videoId = thAdMediaMateriaService.selectMediaMateriaIdByFileName(imoprt, imageField[2]);
                                 image.setImageId(iamgeId);
                                 image.setVideoId(videoId);
                                 image.setImageMode(imageField[0]);
                             }
                         } else {
+                            //图片素材
                             if (imageField.length < 2) {
                                 throw new Exception(imoprt.getName() + "的图片素材资料不足");
                             } else {
+                                String imageId = null;
                                 for (int i = 1; i < imageField.length; i++) {
-                                    image.setImageIds((image.getImageIds() == null ? "" : image.getImageIds()) + imageField[i]);
+                                    imageId = thAdMediaMateriaService.selectMediaMateriaIdByFileName(imoprt, imageField[i]);
+                                    image.setImageIds((image.getImageIds() == null ? "" : image.getImageIds()) + imageId);
                                     if (i != imageField.length - 1) {
                                         image.setImageIds(image.getImageIds() + ",");
                                     }
@@ -652,7 +692,9 @@ public class ThAdServiceImpl implements IThAdService {
                     }
                 }
             }
-        }else {
+
+
+        } else {
 
             //拆分自定义创意
             if (creativesStr != null && !"".equals(creativesStr)) {
@@ -697,7 +739,9 @@ public class ThAdServiceImpl implements IThAdService {
     private void transferArea(ThAd thAd) {
 
         String cit = areaMapper.selectIdByNames(Convert.toStrArray(thAd.getCity()));
-        thAd.setCity(cit);
+        if (cit != null) {
+            thAd.setCity(cit);
+        }
 
     }
 
@@ -743,6 +787,13 @@ public class ThAdServiceImpl implements IThAdService {
                 break;
             }
         }
+        //更新广告创意的状态
+        ThCreativity thCreativity = thCreativityService.selectThCreativityByThAdId(id);
+        if(thCreativity!=null&&thCreativity.getStatus()!=null&&!thCreativity.getStatus().equals("")){
+            thCreativity.setStatus("2");
+            thCreativityService.updateThCreativity(thCreativity);
+        }
+
         if (selectResult != null) {
             //广告组存在，直接创建广告计划
             thAd.setCampaignId(selectResult.getCampaignId());
@@ -760,6 +811,7 @@ public class ThAdServiceImpl implements IThAdService {
                 }
                 thAdMapper.updateThAd(thAd);
             } else {
+                //如果广告计划已经创建过，直接启用
                 row = updatePlanStatus(id, "enable");
             }
             if (row == 1 || response.getCode().equals("0")) {
@@ -916,10 +968,17 @@ public class ThAdServiceImpl implements IThAdService {
         request.setOpt_status(status);
         PlanUpdateStatusResponse response = (PlanUpdateStatusResponse) touTiaoAdCenterService.updateAdPlanStatus(request);
         if (response.getCode().equals("0")) {
+            //更新广告计划状态时，同时更新广告创意的状态
+            ThCreativity creativity = new ThCreativity();
+            creativity.setStatus(state);
+            creativity.setThAdId(id);
+            thCreativityService.updateThCreativityByThAdId(creativity);
             return 1;
         } else {
             throw new Exception("<br/><br/>广告计划'" + thAd.getName() + "'修改失败，平台错误码：" + response.getCode() + "，错误信息：" + response.getMessage());
         }
+
+
     }
 
 
@@ -1064,6 +1123,11 @@ public class ThAdServiceImpl implements IThAdService {
         } else {
             throw new Exception("查询该广告计划出现错误");
         }
+    }
+
+    //查询已经同步到头条的广告计划
+    public List<ThAd> selectSyncThAdList(ThAd thAd) {
+        return thAdMapper.selectSyncThAdList(thAd);
     }
 
 }

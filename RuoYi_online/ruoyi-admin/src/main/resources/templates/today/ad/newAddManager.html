@@ -229,6 +229,7 @@
 <script th:inline="javascript">
     var prefix3 = ctx + "today/ad";
     var prefix4 = ctx + "today/show";
+    var prefix5 = ctx + "today/creativity";
 
     var editFlag = [[${@permission.hasPermi('today:ad:edit')}]];
     var removeFlag = [[${@permission.hasPermi('today:ad:remove')}]];
@@ -322,7 +323,7 @@
         }
         $.modal.confirm("确认要启用选中的" + rows.length + "条计划吗?", function () {
             var url = prefix3 + "/startPlan"
-            var data = {"ids": rows.join()};
+            var data = {"ids": rows.join(),"opt":"add"};
             $.operate.submit(url, "post", "json", data);
         });
     }
@@ -456,6 +457,9 @@
             updateUrl: prefix3 + "/edit/{id}",
             removeUrl: prefix3 + "/remove",
             exportUrl: prefix3 + "/export",
+            onDblClickRow: function (row) {
+                $.modal.openTab('广告创意', prefix5+'/'+row.id);
+            },
             queryParams: function (params) {
                 var curParams = {
                     // 传递参数查询参数

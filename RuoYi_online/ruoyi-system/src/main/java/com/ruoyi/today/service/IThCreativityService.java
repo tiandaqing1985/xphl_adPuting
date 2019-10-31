@@ -59,4 +59,14 @@ public interface IThCreativityService
      * @return 结果
      */
     public int deleteThCreativityById(Long id);
+
+    //创建广告创意 id是广告计划的主键id
+    public void createCreativity(String id) throws Exception;
+
+    ThCreativity selectThCreativityByThAdId(String id);
+
+    //创建广告创意 id是广告创意公共字段表的主键
+    public int startCreativityById(String id) throws Exception;
+
+    void updateThCreativityByThAdId(ThCreativity creativity);
 }

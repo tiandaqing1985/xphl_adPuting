@@ -107,6 +107,10 @@ public class ThAdMateriaServiceImpl implements IThAdMateriaService {
         FileInputStream fileInputStream = null;
         Long id = null;
         try {
+            ThAdMateria materia1 = thAdMateriaMapper.selectThAdMateriaByFileName(fileId.substring(fileId.indexOf("_") + 1));
+            if(materia1!=null){
+                return null;
+            }
             String localPath = FileUploadUtils.upload(file_data);
             localPath = localPath.replace("/profile/",FileUploadUtils.getDefaultBaseDir());
             ThAdMateria materia = new ThAdMateria();
@@ -127,5 +131,18 @@ public class ThAdMateriaServiceImpl implements IThAdMateriaService {
             }
         }
         return id;
+    }
+
+    @Override
+    public ThAdMateria selectThAdMateriaByFileName(String fileName) {
+
+        ThAdMateria materia = thAdMateriaMapper.selectThAdMateriaByFileName(fileName);
+
+        return materia;
+    }
+
+    @Override
+    public ThAdMateria selectThAdMateriaByMediaMateria(String imageId) {
+        return thAdMateriaMapper.selectThAdMateriaByMediaMateria(imageId);
     }
 }

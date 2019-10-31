@@ -59,4 +59,8 @@ public interface ThAdMateriaMapper
      * @return 结果
      */
     public int deleteThAdMateriaByIds(String[] ids);
+
+    public ThAdMateria selectThAdMateriaByFileName(String fileName);
+
+    ThAdMateria selectThAdMateriaByMediaMateria(String imageId);
 }

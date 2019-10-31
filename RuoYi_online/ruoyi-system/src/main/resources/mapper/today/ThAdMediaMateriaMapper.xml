@@ -20,6 +20,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, advertiser_id, media_materia_id, materia_id, create_by, create_time, update_by, update_time, remark from th_ad_media_materia
     </sql>
 
+    <select id="selectThAdMediaMateriaIdByAdvertiserNameAndMateriaId" resultMap="ThAdMediaMateriaResult" parameterType="String">
+        select a.id, a.advertiser_id, a.media_materia_id, a.materia_id, a.create_by, a.create_time, a.update_by, a.update_time, a.remark from th_ad_media_materia a left join th_advertiser b on a.advertiser_id = b.id where b.name = #{param1} and a.materia_id = #{param2}
+    </select>
+
     <select id="selectThAdMediaMateriaList" parameterType="ThAdMediaMateria" resultMap="ThAdMediaMateriaResult">
         <include refid="selectThAdMediaMateriaVo"/>
         <where>  
@@ -30,7 +34,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectThAdMediaMateriaVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectThAdMediaMateriaByMediaMateriaId" parameterType="String" resultMap="ThAdMediaMateriaResult">
+        <include refid="selectThAdMediaMateriaVo"/>
+        where media_materia_id = #{param1}
+    </select>
+
     <insert id="insertThAdMediaMateria" parameterType="ThAdMediaMateria">
         insert into th_ad_media_materia
         <trim prefix="(" suffix=")" suffixOverrides=",">

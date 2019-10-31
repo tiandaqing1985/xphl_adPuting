@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增创意公共属性')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-creativity-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">搜索值：</label>
+                <div class="col-sm-8">
+                    <input name="searchValue" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">th_ad表主键值：</label>
+                <div class="col-sm-8">
+                    <input name="thAdId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">广告主ID：</label>
+                <div class="col-sm-8">
+                    <input name="advertiserId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">计划ID：</label>
+                <div class="col-sm-8">
+                    <input name="adId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">展示监测链接：</label>
+                <div class="col-sm-8">
+                    <input name="trackUrl" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">点击监测链接：</label>
+                <div class="col-sm-8">
+                    <input name="actionTrackUrl" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">视频有效播放监测链接：</label>
+                <div class="col-sm-8">
+                    <input name="videoPlayEffectiveTrackUrl" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">视频播放完毕监测链接：</label>
+                <div class="col-sm-8">
+                    <input name="videoPlayDoneTrackUrl" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">视频播放监测链接：</label>
+                <div class="col-sm-8">
+                    <input name="videoPlayTrackUrl" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否关闭评论：</label>
+                <div class="col-sm-8">
+                    <input name="isCommentDisable" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否关闭视频详情页落地页：</label>
+                <div class="col-sm-8">
+                    <input name="closeVideoDetail" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意展现方式：</label>
+                <div class="col-sm-8">
+                    <input name="creativeDisplayMode" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否使用优选广告位：</label>
+                <div class="col-sm-8">
+                    <input name="smartInventory" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">场景广告位：</label>
+                <div class="col-sm-8">
+                    <input name="sceneInventory" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否开启衍生计划：</label>
+                <div class="col-sm-8">
+                    <input name="generateDerivedAd" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意投放位置：</label>
+                <div class="col-sm-8">
+                    <select name="inventoryType" class="form-control m-b">
+                        <option value="">所有</option>
+                    </select>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 代码生成请选择字典属性</span>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">文章来源：</label>
+                <div class="col-sm-8">
+                    <input name="source" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">应用名：</label>
+                <div class="col-sm-8">
+                    <input name="appName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Android应用下载详情页：</label>
+                <div class="col-sm-8">
+                    <input name="webUrl" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意标签：</label>
+                <div class="col-sm-8">
+                    <input name="adKeywords" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意分类：</label>
+                <div class="col-sm-8">
+                    <input name="thirdIndustryId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">附加创意类型：</label>
+                <div class="col-sm-8">
+                    <select name="advancedCreativeType" class="form-control m-b">
+                        <option value="">所有</option>
+                    </select>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 代码生成请选择字典属性</span>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">副标题：</label>
+                <div class="col-sm-8">
+                    <input name="advancedCreativeTitle" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">电话号码：</label>
+                <div class="col-sm-8">
+                    <input name="phoneNumber" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">按钮文本：</label>
+                <div class="col-sm-8">
+                    <input name="buttonText" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">表单提交链接：</label>
+                <div class="col-sm-8">
+                    <input name="formUrl" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意类型：</label>
+                <div class="col-sm-8">
+                    <input name="creativeMaterialMode" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否隐藏抖音主页：</label>
+                <div class="col-sm-8">
+                    <input name="isFeedAndFavSee" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">试玩素材url：</label>
+                <div class="col-sm-8">
+                    <input name="playableUrl" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "system/creativity"
+        $("#form-creativity-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-creativity-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

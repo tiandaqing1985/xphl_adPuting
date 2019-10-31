@@ -58,12 +58,6 @@ public interface IThAdvertiserService
      * @return 结果
      */
     public int deleteThAdvertiserById(Long id);
-    
-    /**
-     * 从头条同步广告主数据
-     * @return
-     */
-    public int adMutual(String createBy);
 
     /**
      * 根据广告主名称查询广告主
@@ -71,4 +65,10 @@ public interface IThAdvertiserService
      * @return
      */
     public ThAdvertiser selectThAdvertiserByName(ThAdvertiser advertiser);
+
+    /**
+     * 从头条同步广告主数据
+     * @return
+     */
+    public int adMutual(String createBy);
 }

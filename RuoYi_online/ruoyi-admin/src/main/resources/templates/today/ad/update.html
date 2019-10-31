@@ -224,6 +224,7 @@
 <script th:inline="javascript">
     var prefix3 = ctx + "today/ad";
     var prefix4 = ctx + "today/show";
+    var prefix5 = ctx + "today/creativity";
 
     var editFlag = [[${@permission.hasPermi('today:ad:edit')}]];
     var removeFlag = [[${@permission.hasPermi('today:ad:remove')}]];
@@ -420,6 +421,9 @@
             fixedColumns: true,
             fixedNumber: 5,
             pagination: false,
+            onDblClickRow: function (row) {
+                $.modal.openTab('广告创意', prefix5+'/'+row.id);
+            },
             columns: [{
                 checkbox: true
             },

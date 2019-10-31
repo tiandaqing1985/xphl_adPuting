@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改创意公共属性')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-creativity-edit" th:object="${thCreativity}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">广告主ID：</label>
+                <div class="col-sm-8">
+                    <input name="advertiserId" readonly th:field="*{advertiserId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">计划ID：</label>
+                <div class="col-sm-8">
+                    <input name="adId" readonly th:field="*{adId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">展示监测链接：</label>
+                <div class="col-sm-8">
+                    <input name="trackUrl" th:field="*{trackUrl}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">点击监测链接：</label>
+                <div class="col-sm-8">
+                    <input name="actionTrackUrl" th:field="*{actionTrackUrl}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">视频有效播放监测链接：</label>
+                <div class="col-sm-8">
+                    <input name="videoPlayEffectiveTrackUrl" th:field="*{videoPlayEffectiveTrackUrl}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">视频播放完毕监测链接：</label>
+                <div class="col-sm-8">
+                    <input name="videoPlayDoneTrackUrl" th:field="*{videoPlayDoneTrackUrl}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">视频播放监测链接：</label>
+                <div class="col-sm-8">
+                    <input name="videoPlayTrackUrl" th:field="*{videoPlayTrackUrl}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否关闭评论：</label>
+                <div class="col-sm-8">
+                    <select name="isCommentDisable" class="form-control m-b" th:with="type=${@dict.getType('th_ad_yes_no')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{isCommentDisable}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否关闭视频详情页落地页：</label>
+                <div class="col-sm-8">
+                    <select name="closeVideoDetail" class="form-control m-b" th:with="type=${@dict.getType('th_ad_yes_no')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{closeVideoDetail}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意展现方式：</label>
+                <div class="col-sm-8">
+                    <select name="creativeDisplayMode" class="form-control m-b" th:with="type=${@dict.getType('th_ad_creativeDisplayMode')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{creativeDisplayMode}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否使用优选广告位：</label>
+                <div class="col-sm-8">
+                    <select name="smartInventory" class="form-control m-b" th:with="type=${@dict.getType('th_ad_yes_no')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{smartInventory}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">场景广告位：</label>
+                <div class="col-sm-8">
+                    <select name="sceneInventory" class="form-control m-b" th:with="type=${@dict.getType('th_ad_sceneInventory')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{sceneInventory}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否开启衍生计划：</label>
+                <div class="col-sm-8">
+                    <select name="generateDerivedAd" class="form-control m-b" th:with="type=${@dict.getType('th_ad_yes_no')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{generateDerivedAd}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意投放位置：</label>
+                <div class="col-sm-8">
+                    <select name="inventoryType" class="form-control m-b" th:with="type=${@dict.getType('th_ad_inventoryType')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{inventoryType}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">文章来源：</label>
+                <div class="col-sm-8">
+                    <input name="source" th:field="*{source}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">应用名：</label>
+                <div class="col-sm-8">
+                    <input name="appName" th:field="*{appName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Android应用下载详情页：</label>
+                <div class="col-sm-8">
+                    <input name="webUrl" th:field="*{webUrl}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意标签：</label>
+                <div class="col-sm-8">
+                    <input name="adKeywords" th:field="*{adKeywords}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意分类：</label>
+                <div class="col-sm-8">
+                    <input name="thirdIndustryId" th:field="*{thirdIndustryId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">附加创意类型：</label>
+                <div class="col-sm-8">
+                    <select name="advancedCreativeType" class="form-control m-b" th:with="type=${@dict.getType('th_ad_advancedCreativeType')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{advancedCreativeType}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">副标题：</label>
+                <div class="col-sm-8">
+                    <input name="advancedCreativeTitle" th:field="*{advancedCreativeTitle}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">电话号码：</label>
+                <div class="col-sm-8">
+                    <input name="phoneNumber" th:field="*{phoneNumber}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">按钮文本：</label>
+                <div class="col-sm-8">
+                    <input name="buttonText" th:field="*{buttonText}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">表单提交链接：</label>
+                <div class="col-sm-8">
+                    <input name="formUrl" th:field="*{formUrl}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意类型：</label>
+                <div class="col-sm-8">
+                    <select name="creativeMaterialMode" class="form-control m-b" th:with="type=${@dict.getType('th_ad_creative_material_mode')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{creativeMaterialMode}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否隐藏抖音主页：</label>
+                <div class="col-sm-8">
+                    <select name="isFeedAndFavSee" class="form-control m-b" th:with="type=${@dict.getType('th_ad_yes_no')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{isFeedAndFavSee}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">试玩素材url：</label>
+                <div class="col-sm-8">
+                    <input name="playableUrl" th:field="*{playableUrl}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "today/creativity";
+        $("#form-creativity-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-creativity-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

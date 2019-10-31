@@ -118,5 +118,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
-    
+
+    <delete id="deleteThCreativityCreativesByCreativityId" parameterType="String">
+        delete from th_creativity_creatives where creativity_id = #{param1}
+    </delete>
+
 </mapper>

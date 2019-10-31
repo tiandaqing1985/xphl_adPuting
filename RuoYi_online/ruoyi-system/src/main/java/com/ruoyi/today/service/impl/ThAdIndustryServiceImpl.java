@@ -91,4 +91,9 @@ public class ThAdIndustryServiceImpl implements IThAdIndustryService
     {
         return thAdIndustryMapper.deleteThAdIndustryById(id);
     }
+
+    @Override
+    public ThAdIndustry selectThAdIndustryByIndustryNameAndLevel(String industryName, String s) {
+        return thAdIndustryMapper.selectThAdIndustryByIndustryNameAndLevel(industryName,s);
+    }
 }

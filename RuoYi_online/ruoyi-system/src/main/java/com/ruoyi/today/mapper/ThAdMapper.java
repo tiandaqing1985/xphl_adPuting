@@ -67,4 +67,6 @@ public interface ThAdMapper
      * @return
      */
     public ThAd selectThAdByAdId(ThAd adVO);
+    //查询已经同步到头条的广告计划
+    public List<ThAd> selectSyncThAdList(ThAd thAd);
 }

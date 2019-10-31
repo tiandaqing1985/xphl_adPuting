@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('创意公共属性列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-sm-12 select-table table-striped">
+                <div class="btn-group-sm" id="toolbar3" role="group">
+                    <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()">
+                        <i class="fa fa-remove"></i> 删除
+                    </a>
+                    <a class="btn btn-primary" onclick="startCreativity()">
+                        <i class="fa fa-upload"></i> 启用
+                    </a>
+                    <a class="btn btn-success" onclick="showField()" style="float: right">
+                        <i class="fa fa-plus"></i> 显示方案
+                    </a>
+                </div>
+
+                <div class="col-sm-12 select-table table-striped" id="fieldDiv" style="display: none">
+                    <div class="row" id="checkBoxDiv">
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <input type="checkbox" name="allSelect" checked="checked" >全选
+                            <button class="btn btn-primary " type="button"
+                                    onclick="saveFields()"><i class="fa fa-check"></i>&nbsp;保存
+                            </button>
+                        </div>
+                        <div class="col-sm-5" id="fieldBtnGroup">
+
+                        </div>
+                    </div>
+                </div>
+
+                <table id="bootstrap-table" data-mobile-responsive="true"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+</body>
+</html>
+
+
+
+
+
+
+
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:creativity:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('system:creativity:remove')}]];
+    var prefix = ctx + "today/creativity";
+    var prefix4 = ctx + "today/show";
+    var prefix6 = ctx + "today/creatives";//创意
+
+    var advancedCreativeType = [[${@dict.getType('th_ad_advancedCreativeType')}]];//附加创意类型
+    var inventoryType = [[${@dict.getType('th_ad_inventoryType')}]];//创意投放位置
+    var sceneInventory = [[${@dict.getType('th_ad_sceneInventory')}]];//场景广告位
+    var creativeDisplayMode = [[${@dict.getType('th_ad_creativeDisplayMode')}]];//创意展现方式
+    var yesNo = [[${@dict.getType('th_ad_yes_no')}]];//头条是否
+    var imageMode = [[${@dict.getType('th_ad_image_mode')}]];//素材类型
+    var creativeMaterialMode = [[${@dict.getType('th_ad_creative_material_mode')}]];//创意类型
+    var adStatus = [[${@dict.getType('th_ad_status')}]];
+    var thirdIndustryId = [[${@dict.getType('th_ad_thirdIndustryId')}]];
+
+    var showFieldCase;
+
+    function useShowFieldCase(name) {
+        var fields = showFieldCase[name];
+        $('.field:checkbox:checked').prop("checked",false);
+        var showArray = fields.split(",");
+        var showJson = {};
+        showArray.forEach(function (item,index) {
+            showJson[item] = true;
+            $(".field:checkbox[value='" + item + "']").prop("checked",true);
+        });
+
+        options.columns.forEach(function (item,index) {
+            if(item.field!=undefined){
+                if(showJson[options.columns[index].field]==undefined){
+                    options.columns[index].visible = false;
+                }else {
+                    options.columns[index].visible = true;
+                }
+            }
+        });
+
+        $.table.destroy();
+        $.table.init(options);
+    }
+
+    function initFieldGroup() {
+        showFieldCase = {};
+        var config = {
+            url: prefix4 + "/list",
+            type: "post",
+            dataType: "json",
+            data: {"type":"creativity"},
+            success: function(result) {
+                var html = [];
+                result.forEach(function(item,index){
+                    showFieldCase[item.id] = item.context;
+                    html.push("<button class='btn btn-danger ' type='button' onclick='useShowFieldCase("+item.id+")'>&nbsp;"+item.name+"</button>&nbsp;")
+                });
+                $("#fieldBtnGroup").html(html.join(""));
+            }
+        };
+        $.ajax(config);
+    }
+
+    function saveFields() {
+
+        var data = {};
+        var context;
+        layer.prompt({title: '请输入显示方案名称', formType: 2}, function(text, index){
+
+            if(text==undefined){
+                layer.msg("方案名称不能为空");
+            }else{
+                layer.close(index);
+                $.each($('.field:checkbox:checked'), function (index, val) {
+                    var name = $(this).val();
+                    if ($.common.isEmpty(context)) {
+                        context = name;
+                    }else{
+                        context = context + "," + name;
+                    }
+                });
+                data["name"] = text;
+                data["context"] = context;
+                data["type"] = "creativity";
+                $.operate.submit(prefix4 + "/add", "post", "json", data, function (result) {
+                    initFieldGroup();
+                });
+            }
+        });
+
+    }
+
+    function showField() {
+        var state = $("#fieldDiv").attr("style");
+        if (state == "display:block") {
+            $("#fieldDiv").attr("style", "display:none");//隐藏div
+        } else {
+            $("#fieldDiv").attr("style", "display:block");//显示div
+            initFieldGroup();
+        }
+    }
+
+    function startCreativity() {
+        var rows = $.common.isEmpty($.table._option.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.uniqueId);
+        if (rows.length == 0) {
+            $.modal.alertWarning("请至少选择一条记录");
+            return;
+        }
+        $.modal.confirm("确认要启用选中的创意吗?", function () {
+            var url = prefix + "/startCreativity"
+            var data = {"ids": rows.join()};
+            $.operate.submit(url, "post", "json", data);
+        });
+    }
+
+    var options = {
+        url: prefix + "/list",
+        createUrl: prefix + "/add",
+        updateUrl: prefix + "/edit/{id}",
+        removeUrl: prefix + "/remove",
+        exportUrl: prefix + "/export",
+        modalName: "创意公共属性",
+        showSearch: false,
+        showRefresh: false,
+        showToggle: false,
+        showColumns: false,
+        showExport: false,
+        fixedColumns: true,
+        onDblClickRow: function (row) {
+            $.modal.openTab('创意列表', prefix6+'/'+row.id);
+        },
+        queryParams: function (params) {
+            var curParams = {
+                // 传递参数查询参数
+                pageSize: params.limit,
+                pageNum: params.offset / params.limit + 1,
+                searchValue: params.search,
+                orderByColumn: params.sort,
+                isAsc: params.order
+            };
+            var currentId = $.common.isEmpty($.table._option.formId) ? $('form').attr('id') : $.table._option.formId;
+            return $.extend(curParams, {"thAdId": [[${id}]]});
+        },
+        columns: [{
+            checkbox: true
+        },
+            {
+                title: '操作',
+                align: 'center',
+                formatter: function(value, row, index) {
+                    var actions = [];
+                    actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                    actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                    return actions.join('');
+                }
+            },
+            {
+                field : 'status',
+                title : '状态',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictLabel(adStatus, value);
+                }
+            },
+            {
+                field : 'id',
+                title : '主键id',
+                visible: false
+            },
+            {
+                field : 'trackUrl',
+                title : '展示监测链接'
+            },
+            {
+                field : 'actionTrackUrl',
+                title : '点击监测链接'
+            },
+            {
+                field : 'videoPlayEffectiveTrackUrl',
+                title : '视频有效播放监测链接'
+            },
+            {
+                field : 'videoPlayDoneTrackUrl',
+                title : '视频播放完毕监测链接'
+            },
+            {
+                field : 'videoPlayTrackUrl',
+                title : '视频播放监测链接'
+            },
+            {
+                field : 'isCommentDisable',
+                title : '是否关闭评论',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictLabel(yesNo, value);
+                }
+            },
+            {
+                field : 'closeVideoDetail',
+                title : '是否关闭视频详情页落地页',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictLabel(yesNo, value);
+                }
+            },
+            {
+                field : 'creativeDisplayMode',
+                title : '创意展现方式',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictLabel(creativeDisplayMode, value);
+                }
+            },
+            {
+                field : 'smartInventory',
+                title : '是否使用优选广告位',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictLabel(yesNo, value);
+                }
+            },
+            {
+                field : 'sceneInventory',
+                title : '场景广告位',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictLabel(sceneInventory, value);
+                }
+            },
+            {
+                field : 'generateDerivedAd',
+                title : '是否开启衍生计划',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictLabel(yesNo, value);
+                }
+            },
+            {
+                field : 'inventoryType',
+                title : '创意投放位置',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictLabel(inventoryType, value);
+                }
+            },
+            {
+                field : 'source',
+                title : '文章来源'
+            },
+            {
+                field : 'appName',
+                title : '应用名'
+            },
+            {
+                field : 'webUrl',
+                title : 'Android应用下载详情页'
+            },
+            {
+                field : 'adKeywords',
+                title : '创意标签'
+            },
+            {
+                field : 'thirdIndustryId',
+                title : '创意分类',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictLabel(thirdIndustryId, value);
+                }
+            },
+            {
+                field : 'advancedCreativeType',
+                title : '附加创意类型',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictLabel(advancedCreativeType, value);
+                }
+            },
+            {
+                field : 'advancedCreativeTitle',
+                title : '副标题'
+            },
+            {
+                field : 'phoneNumber',
+                title : '电话号码'
+            },
+            {
+                field : 'buttonText',
+                title : '按钮文本'
+            },
+            {
+                field : 'formUrl',
+                title : '表单提交链接'
+            },
+            {
+                field : 'creativeMaterialMode',
+                title : '创意类型',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictLabel(creativeMaterialMode, value);
+                }
+            },
+            {
+                field : 'isFeedAndFavSee',
+                title : '是否隐藏抖音主页',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictLabel(yesNo, value);
+                }
+            },
+            {
+                field : 'playableUrl',
+                title : '试玩素材url'
+            }]
+    };
+
+    function checkBoxChange(ob){
+        var o = $(ob).prop("checked");
+        var field = $(ob).attr("value");
+        if (o) {
+            isShow[field] = true;
+            $.table.showColumn(field)
+        } else {
+            isShow[field] = false;
+            $.table.hideColumn(field)
+        }
+    }
+
+    var isShow = {};
+
+    $(function() {
+        var id = [[${id}]];
+        if(id!="null"){
+            $("#formId").parent().attr("style", "display:none");//隐藏div
+        }
+        $.table.init(options);
+        //创建显示行的checkbox
+        var html = [];
+        var visible;
+        options.columns.forEach(function (item,index) {
+            if(item.field!=undefined){
+                isShow[item.field] = true;
+                if(item.visible==undefined||item.visible){
+                    html.push("<div class='col-sm-1'><input type='checkbox' onchange='checkBoxChange(this)' class='field' checked='checked' value='"+item.field+"'>"+item.title+"</div>");
+                }else{
+                    isShow[item.field] = false;
+                    html.push("<div class='col-sm-1'><input type='checkbox' onchange='checkBoxChange(this)' class='field' value='"+item.field+"'>"+item.title+"</div>");
+                }
+            }
+        });
+        $("#checkBoxDiv").html(html.join(""));
+
+        $("input[name='allSelect']").change(function () {
+            var o = $(this).prop("checked");
+            $(".field").prop("checked",o);
+            options.columns.forEach(function (item,index) {
+                if(item.field!=undefined){
+                    options.columns[index].visible = o;
+                }
+            });
+            $.table.destroy();
+            $.table.init(options);
+        });
+
+    });
+</script>

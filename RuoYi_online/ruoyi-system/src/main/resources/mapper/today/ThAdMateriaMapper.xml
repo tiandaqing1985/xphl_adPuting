@@ -28,12 +28,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
         </where>
     </select>
-    
+
+    <select id="selectThAdMateriaByFileName" parameterType="String" resultMap="ThAdMateriaResult">
+        <include refid="selectThAdMateriaVo"/>
+        where file_name = #{param1}
+    </select>
+
     <select id="selectThAdMateriaById" parameterType="Long" resultMap="ThAdMateriaResult">
         <include refid="selectThAdMateriaVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectThAdMateriaByMediaMateria" parameterType="String" resultMap="ThAdMateriaResult">
+        select b.id, b.file_name, b.local_path, b.remote_path, b.md5, b.materia_id, b.create_by, b.create_time, b.update_by, b.update_time, b.remark from th_ad_media_materia a left join th_ad_materia b on a.materia_id = b.id where a.media_materia_id = #{param1}
+    </select>
+
     <insert id="insertThAdMateria" parameterType="ThAdMateria" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into th_ad_materia
         <trim prefix="(" suffix=")" suffixOverrides=",">

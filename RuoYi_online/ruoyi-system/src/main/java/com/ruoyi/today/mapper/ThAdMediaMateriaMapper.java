@@ -59,4 +59,12 @@ public interface ThAdMediaMateriaMapper
      * @return 结果
      */
     public int deleteThAdMediaMateriaByIds(String[] ids);
+
+    //查询素材id
+    public String selectThAdMediaMateriaIdByFileName(String advertiserName, String fileName);
+
+    //查询上传媒体后的素材id
+    public ThAdMediaMateria selectThAdMediaMateriaIdByAdvertiserNameAndMateriaId(String advertiserName, String id);
+
+    ThAdMediaMateria selectThAdMediaMateriaByMediaMateriaId(String imageId);
 }

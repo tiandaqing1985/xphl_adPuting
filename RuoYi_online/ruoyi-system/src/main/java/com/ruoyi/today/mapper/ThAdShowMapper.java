@@ -63,6 +63,6 @@ public interface ThAdShowMapper
     /**
      * 根据创建人查询出满足记录的记录条数
      */
-    public String selectCountByCreateBy(String createBy);
+    public String selectCountByCreateBy(String createBy,String type);
 
 }

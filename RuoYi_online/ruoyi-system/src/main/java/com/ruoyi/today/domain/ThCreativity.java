@@ -18,6 +18,9 @@ public class ThCreativity extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    @JSONField(serialize = false)
+    private String status;//状态
+
     /** 主键id */
     private Long id;
 
@@ -187,6 +190,14 @@ public class ThCreativity extends BaseEntity
 
     //素材信息, 投放位置和创意类型决定素材规格
     private List<ThCreativityCreatives> creatives;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getTitleStr() {
         return titleStr;

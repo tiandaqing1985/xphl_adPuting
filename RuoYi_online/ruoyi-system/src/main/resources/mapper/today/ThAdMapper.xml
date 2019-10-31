@@ -118,7 +118,60 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              and del_flag = '0'
         </where>
     </select>
-    
+    <select id="selectSyncThAdList" parameterType="ThAd" resultMap="ThAdResult">
+        <include refid="selectThAdVo"/>
+        <where>
+            <if test="advertiserId != null "> and advertiser_id = #{advertiserId}</if>
+            <if test="advertiserName != null  and advertiserName != ''"> and advertiser_name like concat('%', #{advertiserName}, '%')</if>
+            <if test="campaignId != null "> and campaign_id = #{campaignId}</if>
+            <if test="campaignName != null  and campaignName != ''"> and campaign_name like concat('%', #{campaignName}, '%')</if>
+            <if test="adId != null "> and ad_id = #{adId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="deliveryRange != null  and deliveryRange != ''"> and delivery_range = #{deliveryRange}</if>
+            <if test="budgetMode != null  and budgetMode != ''"> and budget_mode = #{budgetMode}</if>
+            <if test="budget != null "> and budget = #{budget}</if>
+            <if test="startTime != null  and startTime != ''"> and start_time &lt;= #{startTime}</if>
+            <if test="endTime != null  and endTime != ''"> and end_time &lt;= #{endTime}</if>
+            <if test="pricing != null  and pricing != ''"> and pricing = #{pricing}</if>
+            <if test="bid != null "> and bid = #{bid}</if>
+            <if test="scheduleType != null  and scheduleType != ''"> and schedule_type = #{scheduleType}</if>
+            <if test="scheduleTime != null  and scheduleTime != ''"> and schedule_time = #{scheduleTime}</if>
+            <if test="flowControlMode != null  and flowControlMode != ''"> and flow_control_mode = #{flowControlMode}</if>
+            <if test="openUrl != null  and openUrl != ''"> and open_url = #{openUrl}</if>
+            <if test="downloadType != null  and downloadType != ''"> and download_type = #{downloadType}</if>
+            <if test="externalUrl != null  and externalUrl != ''"> and external_url = #{externalUrl}</if>
+            <if test="downloadUrl != null  and downloadUrl != ''"> and download_url = #{downloadUrl}</if>
+            <if test="appType != null  and appType != ''"> and app_type = #{appType}</if>
+            <if test="adPackage != null  and adPackage != ''"> and ad_package = #{adPackage}</if>
+            <if test="hideIfConverted != null  and hideIfConverted != ''"> and hide_if_converted = #{hideIfConverted}</if>
+            <if test="cpaBid != null "> and cpa_bid = #{cpaBid}</if>
+            <if test="convertId != null "> and convert_id = #{convertId}</if>
+            <if test="retargetingTagsInclude != null  and retargetingTagsInclude != ''"> and retargeting_tags_include = #{retargetingTagsInclude}</if>
+            <if test="retargetingTagsExclude != null  and retargetingTagsExclude != ''"> and retargeting_tags_exclude = #{retargetingTagsExclude}</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="age != null  and age != ''"> and age = #{age}</if>
+            <if test="carrier != null  and carrier != ''"> and carrier = #{carrier}</if>
+            <if test="ac != null  and ac != ''"> and ac = #{ac}</if>
+            <if test="articleCategory != null  and articleCategory != ''"> and article_category = #{articleCategory}</if>
+            <if test="platform != null  and platform != ''"> and platform = #{platform}</if>
+            <if test="district != null  and district != ''"> and district = #{district}</if>
+            <if test="city != null  and city != ''"> and city = #{city}</if>
+            <if test="adTag != null  and adTag != ''"> and ad_tag = #{adTag}</if>
+            <if test="interestTags != null  and interestTags != ''"> and interest_tags = #{interestTags}</if>
+            <if test="appBehaviorTarget != null  and appBehaviorTarget != ''"> and app_behavior_target = #{appBehaviorTarget}</if>
+            <if test="appCategory != null  and appCategory != ''"> and app_category = #{appCategory}</if>
+            <if test="appIds != null  and appIds != ''"> and app_ids = #{appIds}</if>
+            <if test="updateFlag != null  and updateFlag != ''"> and update_flag = #{updateFlag}</if>
+            <if test="start != null">
+                and create_time >= #{start}
+            </if>
+            <if test="end != null">
+                and <![CDATA[create_time <=]]> #{end}
+            </if>
+             and del_flag = '0' and status != '10' and status is not null
+        </where>
+    </select>
+
     <select id="selectThAdById" parameterType="Long" resultMap="ThAdResult">
         <include refid="selectThAdVo"/>
         where id = #{id}

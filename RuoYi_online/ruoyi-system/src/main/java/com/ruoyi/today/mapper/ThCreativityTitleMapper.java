@@ -59,4 +59,6 @@ public interface ThCreativityTitleMapper
      * @return 结果
      */
     public int deleteThCreativityTitleByIds(String[] ids);
+
+    public void deleteThCreativityTitleByCreativityId(String id);
 }

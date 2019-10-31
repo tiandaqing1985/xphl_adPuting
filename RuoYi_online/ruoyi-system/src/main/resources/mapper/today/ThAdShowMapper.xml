@@ -13,21 +13,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_By"    />
         <result property="updateTime"    column="update_Time"    />
         <result property="remark"    column="remark"    />
+        <result property="type" column="type"/>
     </resultMap>
 
     <sql id="selectThAdShowVo">
-        select id, name, context, create_By, create_Time, update_By, update_Time, remark from th_ad_show
+        select type,id, name, context, create_By, create_Time, update_By, update_Time, remark from th_ad_show
     </sql>
 
     <select id="selectThAdShowList" parameterType="ThAdShow" resultMap="ThAdShowResult">
         <include refid="selectThAdShowVo"/>
         <where>  
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="createBy != null and createBy != ''"> and create_By = #{createBy}</if>
+            <if test="type != null and type != ''"> and type = #{type}</if>
         </where>
     </select>
 
     <select id="selectCountByCreateBy" parameterType="String" resultType="String">
-        select count(id) from th_ad_show where create_By = #{param1}
+        select count(id) from th_ad_show where create_By = #{param1} and type = #{param2}
     </select>
 
     <select id="selectThAdShowById" parameterType="Long" resultMap="ThAdShowResult">
@@ -46,6 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''">update_By,</if>
             <if test="updateTime != null ">update_Time,</if>
             <if test="remark != null  and remark != ''">remark,</if>
+            <if test="type != null and type != ''">type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null ">#{id},</if>
@@ -56,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null ">#{updateTime},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="type != null and type != ''">#{type},</if>
          </trim>
     </insert>
 

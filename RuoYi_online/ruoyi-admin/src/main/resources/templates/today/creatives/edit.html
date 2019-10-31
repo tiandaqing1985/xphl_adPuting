@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改创意')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-creatives-edit" th:object="${thCreativityCreatives}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">头条创意ID：</label>
+                <div class="col-sm-8">
+                    <input name="creativeId" th:field="*{creativeId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意标题：</label>
+                <div class="col-sm-8">
+                    <input name="title" th:field="*{title}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">程序化创意标题ID：</label>
+                <div class="col-sm-8">
+                    <input name="titleId" th:field="*{titleId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">动态词包ID：</label>
+                <div class="col-sm-8">
+                    <input name="creativeWordIds" th:field="*{creativeWordIds}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">素材类型：</label>
+                <div class="col-sm-8">
+                    <input name="imageMode" th:field="*{imageMode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">图片ID列表：</label>
+                <div class="col-sm-8">
+                    <input name="imageIds" th:field="*{imageIds}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">图片ID：</label>
+                <div class="col-sm-8">
+                    <input name="imageId" th:field="*{imageId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">视频ID：</label>
+                <div class="col-sm-8">
+                    <input name="videoId" th:field="*{videoId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意自定义参数：</label>
+                <div class="col-sm-8">
+                    <input name="thirdPartyId" th:field="*{thirdPartyId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否将视频的封面和标题同步到图片创意：</label>
+                <div class="col-sm-8">
+                    <input name="derivePosterCid" th:field="*{derivePosterCid}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">使用商品库视频模版：</label>
+                <div class="col-sm-8">
+                    <input name="dpaTemplate" th:field="*{dpaTemplate}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">创意公共属性ID：</label>
+                <div class="col-sm-8">
+                    <input name="creativityId" th:field="*{creativityId}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "today/creatives";
+        $("#form-creatives-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-creatives-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

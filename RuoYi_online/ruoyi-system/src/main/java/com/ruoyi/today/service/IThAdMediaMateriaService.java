@@ -1,5 +1,7 @@
 package com.ruoyi.today.service;
 
+import com.ruoyi.today.domain.ThAdCreativityImport;
+import com.ruoyi.today.domain.ThAdMateria;
 import com.ruoyi.today.domain.ThAdMediaMateria;
 
 import java.util.List;
@@ -59,4 +61,15 @@ public interface IThAdMediaMateriaService
      * @return 结果
      */
     public int deleteThAdMediaMateriaById(Long id);
+
+    //查询素材在上传到媒体上的id
+    public String selectMediaMateriaIdByFileName(ThAdCreativityImport imoprt, String s) throws Exception;
+
+    //上传文件到媒体(图片)
+    String uploadImageFileToMedia(ThAdMateria materia) throws Exception;
+
+    //上传文件到媒体
+    String uploadVideoFileToMedia(ThAdMateria materia) throws Exception;
+
+    ThAdMediaMateria selectThAdMediaMateriaByMediaMateriaId(String imageId);
 }

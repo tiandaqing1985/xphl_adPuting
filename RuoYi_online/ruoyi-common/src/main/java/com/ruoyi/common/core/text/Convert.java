@@ -373,7 +373,7 @@ public class Convert
      * @param split 被转换的值
      * @return 结果
      */
-    public static String[] toStrArray(String split, String str)
+    public static String[]  toStrArray(String split, String str)
     {
         return str.split(split);
     }

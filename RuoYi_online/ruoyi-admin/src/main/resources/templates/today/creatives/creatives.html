@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('创意列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse" style="display: none">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>头条创意ID：</p>
+                                <input type="text" name="creativeId"/>
+                            </li>
+                            <li>
+                                <p>创意标题：</p>
+                                <input type="text" name="title"/>
+                            </li>
+                            <li>
+                                <p>程序化创意标题ID：</p>
+                                <input type="text" name="titleId"/>
+                            </li>
+                            <li>
+                                <p>动态词包ID：</p>
+                                <input type="text" name="creativeWordIds"/>
+                            </li>
+                            <li>
+                                <p>素材类型：</p>
+                                <input type="text" name="imageMode"/>
+                            </li>
+                            <li>
+                                <p>图片ID列表：</p>
+                                <input type="text" name="imageIds"/>
+                            </li>
+                            <li>
+                                <p>图片ID：</p>
+                                <input type="text" name="imageId"/>
+                            </li>
+                            <li>
+                                <p>视频ID：</p>
+                                <input type="text" name="videoId"/>
+                            </li>
+                            <li>
+                                <p>创意自定义参数：</p>
+                                <input type="text" name="thirdPartyId"/>
+                            </li>
+                            <li>
+                                <p>是否将视频的封面和标题同步到图片创意：</p>
+                                <input type="text" name="derivePosterCid"/>
+                            </li>
+                            <li>
+                                <p>使用商品库视频模版：</p>
+                                <input type="text" name="dpaTemplate"/>
+                            </li>
+                            <li>
+                                <p>创意公共属性ID：</p>
+                                <input type="text" name="creativityId"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table" data-mobile-responsive="true"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('system:creatives:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('system:creatives:remove')}]];
+        var prefix = ctx + "today/creatives";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "创意",
+                queryParams: function (params) {
+                    var curParams = {
+                        // 传递参数查询参数
+                        pageSize: params.limit,
+                        pageNum: params.offset / params.limit + 1,
+                        searchValue: params.search,
+                        orderByColumn: params.sort,
+                        isAsc: params.order
+                    };
+                    var currentId = $.common.isEmpty($.table._option.formId) ? $('form').attr('id') : $.table._option.formId;
+                    return $.extend(curParams, {"creativityId": [[${id}]]});
+                },
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field : 'id', 
+                    title : '创意主键',
+                    visible: false
+                },
+                {
+                    field : 'creativeId', 
+                    title : '头条创意ID',
+                    visible: false
+                },
+                {
+                    field : 'title', 
+                    title : '创意标题'
+                },
+                {
+                    field : 'filesUrl',
+                    title : '创意素材',
+                    formatter: function(value, row, index) {
+                        var html = [];
+                        var fileArray = value.split(",");
+                        if(fileArray[0] == "image"){
+                            fileArray.forEach(function (value1, index1) {
+                                if(index1!=0){
+                                    html.push("<img src='/"+value1+"' width='300px' height='300px' data-target='self'/>");
+                                }
+                            });
+                        }else if(fileArray[0] == "video"){
+                            html.push("<img class='img-lg' src='/"+fileArray[1]+"' width='auto' height='auto' data-target='self'/>");
+                            html.push("<div style='float: left;width: 100px;height: 300px'><video class='kv-preview-data file-preview-video' controls style='width: 50%;height: 50%'>" +
+                                            "<source src='/"+fileArray[2]+"' type='video/"+fileArray[2].split(".")[1]+"'>" +
+                                    "</video></div>")
+                        }
+                        return html.join("");
+                    }
+                },
+                {
+                    field : 'remark', 
+                    title : '备注'
+                }]
+                // {
+                //     title: '操作',
+                //     align: 'center',
+                //     formatter: function(value, row, index) {
+                //         var actions = [];
+                //         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                //         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                //         return actions.join('');
+                //     }
+                // }]
+            };
+            $.table.init(options);
+        });
+
+        //图片预览路径
+        function getObjectURL(file) {
+            var url = null;
+            if(window.createObjectURL != undefined) { // basic
+                url = window.createObjectURL(file);
+            } else if(window.URL != undefined) { // mozilla(firefox)
+                url = window.URL.createObjectURL(file);
+            } else if(window.webkitURL != undefined) { // webkit or chrome
+                url = window.webkitURL.createObjectURL(file);
+            }
+            return url;
+        }
+
+    </script>
+</body>
+</html>

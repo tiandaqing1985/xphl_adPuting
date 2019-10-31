@@ -2,8 +2,11 @@ package com.ruoyi.web.controller.today;
 
 import java.util.List;
 
+import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.today.domain.ThCreativity;
+import com.ruoyi.today.service.AdCenterService;
 import com.ruoyi.today.service.IThCreativityService;
+import com.ruoyi.today.service.impl.TouTiaoAdCenterServiceImpl;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,34 +25,31 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 创意公共属性Controller
- * 
+ *
  * @author ruoyi
  * @date 2019-09-09
  */
 @Controller
-@RequestMapping("/system/creativity")
-public class ThCreativityController extends BaseController
-{
-    private String prefix = "system/creativity";
+@RequestMapping("/today/creativity")
+public class ThCreativityController extends BaseController {
+    private String prefix = "today/creativity";
 
     @Autowired
     private IThCreativityService thCreativityService;
 
     @RequiresPermissions("system:creativity:view")
-    @GetMapping()
-    public String creativity()
-    {
+    @GetMapping("/{id}")
+    public String creativity(@PathVariable("id") String id, ModelMap mmap) {
+        mmap.put("id", id);
         return prefix + "/creativity";
     }
 
     /**
      * 查询创意公共属性列表
      */
-    @RequiresPermissions("system:creativity:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(ThCreativity thCreativity)
-    {
+    public TableDataInfo list(ThCreativity thCreativity) {
         startPage();
         List<ThCreativity> list = thCreativityService.selectThCreativityList(thCreativity);
         return getDataTable(list);
@@ -58,11 +58,9 @@ public class ThCreativityController extends BaseController
     /**
      * 导出创意公共属性列表
      */
-    @RequiresPermissions("system:creativity:export")
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ThCreativity thCreativity)
-    {
+    public AjaxResult export(ThCreativity thCreativity) {
         List<ThCreativity> list = thCreativityService.selectThCreativityList(thCreativity);
         ExcelUtil<ThCreativity> util = new ExcelUtil<ThCreativity>(ThCreativity.class);
         return util.exportExcel(list, "creativity");
@@ -72,20 +70,17 @@ public class ThCreativityController extends BaseController
      * 新增创意公共属性
      */
     @GetMapping("/add")
-    public String add()
-    {
+    public String add() {
         return prefix + "/add";
     }
 
     /**
      * 新增保存创意公共属性
      */
-    @RequiresPermissions("system:creativity:add")
     @Log(title = "创意公共属性", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(ThCreativity thCreativity)
-    {
+    public AjaxResult addSave(ThCreativity thCreativity) {
         return toAjax(thCreativityService.insertThCreativity(thCreativity));
     }
 
@@ -93,34 +88,52 @@ public class ThCreativityController extends BaseController
      * 修改创意公共属性
      */
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Long id, ModelMap mmap)
-    {
+    public String edit(@PathVariable("id") Long id, ModelMap mmap) {
         ThCreativity thCreativity = thCreativityService.selectThCreativityById(id);
         mmap.put("thCreativity", thCreativity);
         return prefix + "/edit";
     }
+    /**
+     * 启用广告计划
+     */
+    @Log(title = "广告创意")
+    @PostMapping("/startCreativity")
+    @ResponseBody
+    public AjaxResult startPlan(String ids) {
+        String[] idArray = Convert.toStrArray(ids);
+        StringBuilder msg = new StringBuilder();
+        for (String id : idArray) {
+            try {
 
+                int i = thCreativityService.startCreativityById(id);
+            } catch (Exception e) {
+                logger.error("启用广告创意出现错误：", e);
+                msg.append(e.getMessage());
+            }
+        }
+        if (msg.length() == 0) {
+            return AjaxResult.success();
+        } else {
+            return AjaxResult.error(msg.toString());
+        }
+    }
     /**
      * 修改保存创意公共属性
      */
-    @RequiresPermissions("system:creativity:edit")
     @Log(title = "创意公共属性", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(ThCreativity thCreativity)
-    {
+    public AjaxResult editSave(ThCreativity thCreativity) {
         return toAjax(thCreativityService.updateThCreativity(thCreativity));
     }
 
     /**
      * 删除创意公共属性
      */
-    @RequiresPermissions("system:creativity:remove")
     @Log(title = "创意公共属性", businessType = BusinessType.DELETE)
-    @PostMapping( "/remove")
+    @PostMapping("/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
-    {
+    public AjaxResult remove(String ids) {
         return toAjax(thCreativityService.deleteThCreativityByIds(ids));
     }
 }

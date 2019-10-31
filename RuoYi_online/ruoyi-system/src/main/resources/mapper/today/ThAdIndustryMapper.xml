@@ -35,7 +35,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectThAdIndustryVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectThAdIndustryByIndustryNameAndLevel" parameterType="String" resultMap="ThAdIndustryResult">
+        <include refid="selectThAdIndustryVo"/> where industry_name = #{param1} and level = #{param2}
+    </select>
+
     <insert id="insertThAdIndustry" parameterType="ThAdIndustry">
         insert into th_ad_industry
         <trim prefix="(" suffix=")" suffixOverrides=",">

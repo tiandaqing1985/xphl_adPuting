@@ -7,15 +7,14 @@ import java.util.List;
 
 /**
  * 素材Service接口
- * 
+ *
  * @author ruoyi
  * @date 2019-09-11
  */
-public interface IThAdMateriaService 
-{
+public interface IThAdMateriaService {
     /**
      * 查询素材
-     * 
+     *
      * @param id 素材ID
      * @return 素材
      */
@@ -23,7 +22,7 @@ public interface IThAdMateriaService
 
     /**
      * 查询素材列表
-     * 
+     *
      * @param thAdMateria 素材
      * @return 素材集合
      */
@@ -31,7 +30,7 @@ public interface IThAdMateriaService
 
     /**
      * 新增素材
-     * 
+     *
      * @param thAdMateria 素材
      * @return 结果
      */
@@ -39,7 +38,7 @@ public interface IThAdMateriaService
 
     /**
      * 修改素材
-     * 
+     *
      * @param thAdMateria 素材
      * @return 结果
      */
@@ -47,7 +46,7 @@ public interface IThAdMateriaService
 
     /**
      * 批量删除素材
-     * 
+     *
      * @param ids 需要删除的数据ID
      * @return 结果
      */
@@ -55,7 +54,7 @@ public interface IThAdMateriaService
 
     /**
      * 删除素材信息
-     * 
+     *
      * @param id 素材ID
      * @return 结果
      */
@@ -63,8 +62,14 @@ public interface IThAdMateriaService
 
     /**
      * 上传素材
+     *
      * @param file_data
      * @param fileId
      */
     public Long uploadMateria(MultipartFile file_data, String fileId) throws Exception;
+
+    //根据文件名称查询
+    public ThAdMateria selectThAdMateriaByFileName(String fileName);
+
+    ThAdMateria selectThAdMateriaByMediaMateria(String imageId);
 }

@@ -59,4 +59,6 @@ public interface IThAdIndustryService
      * @return 结果
      */
     public int deleteThAdIndustryById(Long id);
+
+    public ThAdIndustry selectThAdIndustryByIndustryNameAndLevel(String industryName, String s);
 }

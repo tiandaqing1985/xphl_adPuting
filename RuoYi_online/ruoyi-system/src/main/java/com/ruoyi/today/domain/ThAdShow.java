@@ -27,7 +27,18 @@ public class ThAdShow extends BaseEntity
     @Excel(name = "方案内容")
     private String context;
 
-    public void setId(Long id) 
+    //显示方案类型
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

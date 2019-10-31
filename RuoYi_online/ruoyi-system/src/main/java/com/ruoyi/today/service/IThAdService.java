@@ -102,4 +102,7 @@ public interface IThAdService
      * @return
      */
     public String importThAdAndThCreativity(List<ThAdCreativityImport> thAdCreativityImoprts, boolean b, String operName, String originalFilename);
+
+    //查询已经同步到头条的广告计划
+    public List<ThAd> selectSyncThAdList(ThAd thAd);
 }

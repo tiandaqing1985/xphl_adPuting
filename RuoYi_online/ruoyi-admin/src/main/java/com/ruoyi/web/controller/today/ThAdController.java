@@ -6,9 +6,11 @@ import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.today.domain.ThAdCreativityImport;
 import com.ruoyi.today.domain.ThAdvertiser;
+import com.ruoyi.today.domain.ThCreativity;
 import com.ruoyi.today.service.IThAdvertiserService;
 import com.ruoyi.today.service.IThCreativityService;
 import com.ruoyi.web.controller.tool.HlExcelUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -68,9 +70,14 @@ public class ThAdController extends BaseController {
      */
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(ThAd thAd) {
+    public TableDataInfo list(ThAd thAd, String opt) {
         startPage();
-        List<ThAd> list = thAdService.selectThAdList(thAd);
+        List<ThAd> list = null;
+        if ("normal".equals(opt)) {
+            list = thAdService.selectSyncThAdList(thAd);
+        } else {
+            list = thAdService.selectThAdList(thAd);
+        }
         return getDataTable(list);
     }
 
@@ -197,7 +204,6 @@ public class ThAdController extends BaseController {
             try {
 
                 int i = thAdService.stopPlanById(id);
-
             } catch (Exception e) {
                 logger.error("停用广告计划出现错误：", e);
                 msg.append(e.getMessage());
@@ -216,14 +222,17 @@ public class ThAdController extends BaseController {
     @Log(title = "广告计划")
     @PostMapping("/startPlan")
     @ResponseBody
-    public AjaxResult startPlan(String ids) {
+    public AjaxResult startPlan(String ids, String opt) {
         String[] idArray = Convert.toStrArray(ids);
         StringBuilder msg = new StringBuilder();
         for (String id : idArray) {
             try {
 
                 int i = thAdService.startPlanById(id);
-
+                //如果是新增界面发送的请求，则同时创建广告创意
+                if ("add".equals(opt)) {
+                    thCreativityService.createCreativity(id);
+                }
             } catch (Exception e) {
                 logger.error("启用广告计划出现错误：", e);
                 msg.append(e.getMessage());

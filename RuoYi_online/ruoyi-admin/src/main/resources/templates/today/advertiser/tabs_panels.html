@@ -127,6 +127,7 @@
             <div id="tab-3" class="tab-pane">
                 <div class="panel-body">
                     <div class="row">
+
                         <div class="col-sm-12 search-collapse">
                             <form id="formId3">
                                 <input name="updateFlag" value="0" type="hidden">
@@ -154,6 +155,7 @@
                                 </div>
                             </form>
                         </div>
+
                         <div class="col-sm-12 select-table table-striped">
                             <div class="btn-group-sm" role="group" id="toolbar3">
                                 <a class="btn btn-danger multiple"
@@ -187,6 +189,7 @@
                                     <i class="fa fa-plus"></i> 显示方案
                                 </a>
                             </div>
+
                             <div class="col-sm-12 select-table table-striped" id="fieldDiv" style="display: none">
                                 <div class="row">
                                     <div class="col-sm-1"><input type="checkbox" class="field" checked="checked"
@@ -357,6 +360,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <table class="freeTable" id="bootstrap-table-3" data-mobile-responsive="true"></table>
                         </div>
                     </div>
@@ -372,6 +376,8 @@
     var prefix2 = ctx + "today/campaign";
     var prefix3 = ctx + "today/ad";
     var prefix4 = ctx + "today/show";
+    var prefix5 = ctx + "today/creativity";
+
 
     var advertiserId = undefined;
     var campaignId = undefined;
@@ -418,7 +424,7 @@
             url: prefix4 + "/list",
             type: "post",
             dataType: "json",
-            data: {},
+            data: {"type":"adplan"},
             success: function(result) {
                 var html = [];
                 result.forEach(function(item,index){
@@ -435,19 +441,31 @@
 
         var data = {};
         var context;
-        $.each($('.field:checkbox:checked'), function (index, val) {
-            var name = $(this).val();
-            if ($.common.isEmpty(context)) {
-                context = name;
+        layer.prompt({title: '请输入显示方案名称', formType: 2}, function(text, index){
+
+            if(text==undefined){
+                layer.msg("方案名称不能为空");
             }else{
-                context = context + "," + name;
+                layer.close(index);
+                $.each($('.field:checkbox:checked'), function (index, val) {
+                    var name = $(this).val();
+                    if ($.common.isEmpty(context)) {
+                        context = name;
+                    }else{
+                        context = context + "," + name;
+                    }
+                });
+                data["name"] = text;
+                data["context"] = context;
+                data["type"] = "adplan";
+                $.operate.submit(prefix4 + "/add", "post", "json", data, function (result) {
+                    initFieldGroup();
+                });
             }
         });
-        data["context"] = context;
-        $.operate.submit(prefix4 + "/add", "post", "json", data, function (result) {
-            initFieldGroup();
-        });
+
     }
+
 
     function showField() {
         var state = $("#fieldDiv").attr("style");
@@ -548,7 +566,7 @@
         }
         $.modal.confirm("确认要启用选中的" + rows.length + "条计划吗?", function () {
             var url = prefix3 + "/startPlan"
-            var data = {"ids": rows.join()};
+            var data = {"ids": rows.join(),"opt":"start"};
             $.operate.submit(url, "post", "json", data);
         });
     }
@@ -833,6 +851,9 @@
             updateUrl: prefix3 + "/edit/{id}",
             removeUrl: prefix3 + "/remove",
             exportUrl: prefix3 + "/export",
+            onDblClickRow: function (row) {
+                $.modal.openTab('广告创意', prefix5+'/'+row.id);
+            },
             queryParams: function (params) {
                 var curParams = {
                     // 传递参数查询参数
@@ -843,7 +864,7 @@
                     isAsc: params.order
                 };
                 var currentId = $.common.isEmpty($.table._option.formId) ? $('form').attr('id') : $.table._option.formId;
-                return $.extend(curParams, {"updateFlag": "0"});
+                return $.extend(curParams, {"updateFlag": "0","opt":"normal"});
             },
             modalName: "广告计划",
             showSearch: false,

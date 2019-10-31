@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.today.TouTiaoApiConfig;
 import com.ruoyi.today.domain.ThAdMateria;
+import com.ruoyi.today.domain.ThCreativity;
 import com.ruoyi.today.domain.request.AdGroupCreateRequest;
 import com.ruoyi.today.domain.request.AdGroupSelectRequest;
 import com.ruoyi.today.domain.request.PlanSyncRequest;
@@ -172,16 +173,19 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
     /**
      * 上传视频
      */
-    public Object uploadVideo(Object object) {
+    @Override
+    public Object uploadVideoFile(Object object) {
         ThAdMateria materia = (ThAdMateria) object;
         //设置请求头
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = httpBuilder.buildTouTiaoHeader();
         MediaType type = MediaType.parseMediaType("multipart/form-data");
         headers.setContentType(type);
-        headers.set("Access-Token", "7facda5edd92593d99d23bd486d0497d7d296317");
 
         //设置请求体，注意是LinkedMultiValueMap
-        FileSystemResource fileSystemResource = new FileSystemResource(new File(materia.getLocalPath()));
+//        File reNameFile = new File(materia.getLocalPath().substring(0, materia.getLocalPath().lastIndexOf("/")) + "/" + materia.getFileName());
+        File file = new File(materia.getLocalPath());
+//        file.renameTo(reNameFile);
+        FileSystemResource fileSystemResource = new FileSystemResource(file);
         MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
         form.add("video_file", fileSystemResource);
         form.add("advertiser_id", materia.getAdvertiserId());
@@ -199,4 +203,45 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
         return response;
     }
 
+    @Override
+    public Object uploadImageFile(Object image) {
+        ThAdMateria materia = (ThAdMateria) image;
+        //设置请求头
+        HttpHeaders headers = httpBuilder.buildTouTiaoHeader();
+        MediaType type = MediaType.parseMediaType("multipart/form-data");
+        headers.setContentType(type);
+
+        //设置请求体，注意是LinkedMultiValueMap
+//        File reNameFile = new File(materia.getLocalPath().substring(0, materia.getLocalPath().lastIndexOf("/")) + "/" + materia.getFileName());
+        File file = new File(materia.getLocalPath());
+//        file.renameTo(reNameFile);
+        FileSystemResource fileSystemResource = new FileSystemResource(file);
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.add("image_file", fileSystemResource);
+        form.add("advertiser_id", materia.getAdvertiserId());
+        form.add("image_signature", materia.getMd5());
+
+        //用HttpEntity封装整个请求报文
+        HttpEntity<MultiValueMap<String, Object>> files = new HttpEntity<>(form, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        long l1 = System.currentTimeMillis();
+        ResponseVO response = restTemplate.postForObject(touTiaoApiConfig.getTools().get("uploadImage"), files, ResponseVO.class);
+        long l2 = System.currentTimeMillis();
+        logger.info("耗时：" + (l2 - l1) + "ms");
+        logger.info("上传视频响应报文：" + JSON.toJSONString(response));
+        return response;
+    }
+
+    @Override
+    public Object createCreativity(Object creativity) {
+
+        HttpHeaders headers = httpBuilder.buildTouTiaoHeader();
+        HttpEntity<String> request = new HttpEntity<>(JSON.toJSONString(creativity), headers);
+        logger.info("创建广告创意请求报文：" + JSON.toJSONString(request));
+        ResponseVO response = httpBuilder.buildRestTemplate().postForObject(touTiaoApiConfig.getAdCreativityAPIUrls().get("createCreativity"), request, ResponseVO.class);
+        logger.info("创建广告创意响应报文：" + JSON.toJSONString(response));
+
+        return response;
+    }
 }
