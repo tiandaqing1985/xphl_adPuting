@@ -105,4 +105,12 @@ public interface IThAdService
 
     //查询已经同步到头条的广告计划
     public List<ThAd> selectSyncThAdList(ThAd thAd);
+
+    /**
+     * 创建广告计划
+     * @param thAd
+     */
+    void createPlan(ThAd thAd) throws Exception;
+
+    public List<ThAd> selectThAdListByAdvertiesIds(List<String> advertiserIds);
 }

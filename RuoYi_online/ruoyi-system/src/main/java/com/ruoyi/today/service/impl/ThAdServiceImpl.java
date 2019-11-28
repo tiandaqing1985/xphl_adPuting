@@ -6,13 +6,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.alibaba.fastjson.JSONArray;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.security.PermissionUtils;
 import com.ruoyi.system.domain.SysDictData;
 import com.ruoyi.system.service.ISysDictDataService;
-import com.ruoyi.system.service.impl.SysDictDataServiceImpl;
 import com.ruoyi.today.domain.*;
 import com.ruoyi.today.domain.enums.TemplateEnum;
 import com.ruoyi.today.domain.request.PlanSyncRequest;
@@ -21,6 +21,7 @@ import com.ruoyi.today.domain.request.PlanUpdateStatusRequest;
 import com.ruoyi.today.domain.response.*;
 import com.ruoyi.today.mapper.ThAreaMapper;
 import com.ruoyi.today.service.*;
+import org.jsoup.helper.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -789,7 +790,7 @@ public class ThAdServiceImpl implements IThAdService {
         }
         //更新广告创意的状态
         ThCreativity thCreativity = thCreativityService.selectThCreativityByThAdId(id);
-        if(thCreativity!=null&&thCreativity.getStatus()!=null&&!thCreativity.getStatus().equals("")){
+        if (thCreativity != null && thCreativity.getStatus() != null && !thCreativity.getStatus().equals("")) {
             thCreativity.setStatus("2");
             thCreativityService.updateThCreativity(thCreativity);
         }
@@ -864,11 +865,42 @@ public class ThAdServiceImpl implements IThAdService {
      * @throws Exception
      */
     private ThAd converThAd(PlanSyncThAdVO adVO) {
+        adVO.setLaunchPrice(StringUtils.join(adVO.getAudience().getLaunch_price(), ","));
+        adVO.setGeolocations(StringUtils.join(adVO.getAudience().getGeolocation(), "~"));
+        adVO.setExternalActions(StringUtils.join(adVO.getAudience().getExternal_actions(), ","));
+        adVO.setOpenUrlParams(adVO.getAudience().getOpen_url_params());
+        adVO.setUnionVideoType(adVO.getAudience().getUnion_video_type());
+        adVO.setDeepBidType(adVO.getAudience().getDeep_bid_type());
+        adVO.setDeepCpabid(adVO.getAudience().getDeep_cpabid());
+        adVO.setRoiGoal(adVO.getAudience().getRoi_goal());
+        adVO.setInventoryType(StringUtils.join(adVO.getAudience().getInventory_type(), ","));
+        adVO.setExternalUrlParams(adVO.getAudience().getExternal_url_params());
+        adVO.setDpaOpenUrls(StringUtils.join(adVO.getAudience().getDpa_open_urls(), ","));
+        adVO.setDpaProducts(StringUtils.join(adVO.getAudience().getDpa_products(), ","));
+        adVO.setDpaCategories(StringUtils.join(adVO.getAudience().getDpa_categories(), ","));
+        adVO.setCategoryType(StringUtils.join(adVO.getAudience().getCategory_type(), ","));
+        adVO.setDpaExternalUrls(StringUtils.join(adVO.getAudience().getDpa_external_urls(), ","));
+        adVO.setAdvertiserStoreIds(StringUtils.join(adVO.getAudience().getAdvertiser_store_ids(), ","));
+        adVO.setProductPlatformId(adVO.getAudience().getProduct_platform_id());
+        adVO.setDpaAdtype(StringUtils.join(adVO.getAudience().getDpa_adtype(), ","));
+        adVO.setDpaLocalAudience(adVO.getAudience().getDpa_local_audience());
+        adVO.setAutoExtendTargets(StringUtils.join(adVO.getAudience().getAuto_extend_targets(), ","));
+        adVO.setRetargetingType(adVO.getAudience().getRetargeting_type());
+        adVO.setSuperiorPopularityType(adVO.getAudience().getSuperior_popularity_type());
         adVO.setAc(StringUtils.join(adVO.getAudience().getAc(), ","));
+        adVO.setExcludeCustomActions(StringUtils.join(adVO.getAudience().getExclude_custom_actions(), "~"));
         adVO.setAppIds(StringUtils.join(adVO.getAudience().getApp_ids(), ","));
+        adVO.setDeviceType(StringUtils.join(adVO.getAudience().getDevice_type(), ","));
         adVO.setInterestTags(StringUtils.join(adVO.getAudience().getInterest_tags()));
+        adVO.setAndroidOsv(adVO.getAudience().getAndroid_osv());
         adVO.setCity(StringUtils.join(adVO.getAudience().getCity(), ","));
         adVO.setDistrict(adVO.getAudience().getDistrict());
+        adVO.setExcludeFlowPackage(StringUtils.join(adVO.getAudience().getExclude_flow_package(), ","));
+        adVO.setIncludeCustomActions(StringUtils.join(adVO.getAudience().getInclude_custom_actions(), "~"));
+        adVO.setActivateType(StringUtils.join(adVO.getAudience().getActivate_type(), ","));
+        adVO.setIosOsv(adVO.getAudience().getIos_osv());
+        adVO.setAutoExtendEnabled(adVO.getAudience().getAuto_extend_enabled());
+        adVO.setDeviceBrand(StringUtils.join(adVO.getAudience().getDevice_brand(), ","));
         adVO.setPlatform(StringUtils.join(adVO.getAudience().getPlatform(), ","));
         adVO.setAdTag(StringUtils.join(adVO.getAudience().getAd_tag(), ","));
         adVO.setAppCategory(StringUtils.join(adVO.getAudience().getApp_category(), ","));
@@ -879,6 +911,8 @@ public class ThAdServiceImpl implements IThAdService {
         adVO.setGender(adVO.getAudience().getGender());
         adVO.setAge(StringUtils.join(adVO.getAudience().getAge(), ","));
         adVO.setCarrier(StringUtils.join(adVO.getAudience().getCarrier(), ","));
+        adVO.setBusinessIds(StringUtils.join(adVO.getAudience().getBusiness_ids(), ","));
+        adVO.setLocationType(adVO.getAudience().getLocation_type());
         if (adVO.getOpt_status() != null && adVO.getOpt_status().equals("AD_STATUS_ENABLE")) {
             adVO.setStatus("2");
         } else {
@@ -911,6 +945,7 @@ public class ThAdServiceImpl implements IThAdService {
         if (response.getCode().equals("0")) {
 
             List<PlanSyncThAdVO> adVOS = response.getData().getJSONArray("list").toJavaList(PlanSyncThAdVO.class);
+
             for (PlanSyncThAdVO adVO : adVOS) {
                 try {
                     thCampaign = thCampaignService.selectThCampaignById(adVO.getCampaignId());
@@ -1069,6 +1104,175 @@ public class ThAdServiceImpl implements IThAdService {
         } else {
             thAd.setRetargeting_tags_exclude(new String[]{});
         }
+        //商圈id
+        str = thAd.getBusinessIds();
+        if (str != null && !str.equals("")) {
+            thAd.setBusiness_ids(Convert.toStrArray(str));
+        } else {
+            thAd.setBusiness_ids(new String[]{});
+        }
+        //门店ids
+        str = thAd.getAdvertiserStoreIds();
+        if (str != null && !str.equals("")) {
+            thAd.setAdvertiser_store_ids(Convert.toStrArray(str));
+        } else {
+            thAd.setAdvertiser_store_ids(new String[]{});
+        }
+        //转化类型
+        str = thAd.getExternalActions();
+        if (str != null && !str.equals("")) {
+            thAd.setExternal_actions(Convert.toStrArray(str));
+        } else {
+            thAd.setExternal_actions(new String[]{});
+        }
+        //手机品牌
+        str = thAd.getDeviceBrand();
+        if (str != null && !str.equals("")) {
+            thAd.setDevice_brand(Convert.toStrArray(str));
+        } else {
+            thAd.setDevice_brand(new String[]{});
+        }
+        //用户首次激活时间
+        str = thAd.getActivateType();
+        if (str != null && !str.equals("")) {
+            thAd.setActivate_type(Convert.toStrArray(str));
+        } else {
+            thAd.setActivate_type(new String[]{});
+        }
+        //包含人群包
+        str = thAd.getIncludeCustomActions();
+        if (str != null && !str.equals("")) {
+            thAd.setInclude_custom_actions(Convert.toStrArray("~", str));
+        } else {
+            thAd.setInclude_custom_actions(new String[]{});
+        }
+        //排除人群包
+        str = thAd.getExcludeCustomActions();
+        if (str != null && !str.equals("")) {
+            thAd.setExclude_custom_actions(Convert.toStrArray("~", str));
+        } else {
+            thAd.setExclude_custom_actions(new String[]{});
+        }
+        //定向流量包ID数组
+        str = thAd.getFlowPackage();
+        if (str != null && !str.equals("")) {
+            thAd.setFlow_package(Convert.toStrArray(str));
+        } else {
+            thAd.setFlow_package(new String[]{});
+        }
+        //排除流量包ID数组
+        str = thAd.getExcludeFlowPackage();
+        if (str != null && !str.equals("")) {
+            thAd.setExclude_flow_package(Convert.toStrArray(str));
+        } else {
+            thAd.setExclude_flow_package(new String[]{});
+        }
+        //设备类型
+        str = thAd.getDeviceType();
+        if (str != null && !str.equals("")) {
+            thAd.setDevice_type(Convert.toStrArray(str));
+        } else {
+            thAd.setDevice_type(new String[]{});
+        }
+        //可放开定向
+        str = thAd.getAutoExtendTargets();
+        if (str != null && !str.equals("")) {
+            thAd.setAuto_extend_targets(Convert.toStrArray(str));
+        } else {
+            thAd.setDevice_type(null);
+        }
+        //手机价格定向
+        str = thAd.getLaunchPrice();
+        if (str != null && !str.equals("")) {
+            thAd.setLaunch_price(Convert.toStrArray(str));
+        } else {
+            thAd.setLaunch_price(new String[]{});
+        }
+        //行为场景
+        str = thAd.getActionScene();
+        if (str != null && !str.equals("")) {
+            thAd.setAction_scene(Convert.toStrArray(str));
+        } else {
+            thAd.setAction_scene(new String[]{});
+        }
+        //行为类目
+        str = thAd.getActionCategories();
+        if (str != null && !str.equals("")) {
+            thAd.setAction_categories(Convert.toStrArray(str));
+        } else {
+            thAd.setAction_categories(new String[]{});
+        }
+        //行为关键词
+        str = thAd.getActionWords();
+        if (str != null && !str.equals("")) {
+            thAd.setAction_words(Convert.toStrArray(str));
+        } else {
+            thAd.setAction_words(new String[]{});
+        }
+        //兴趣分类,
+        str = thAd.getInterestCategories();
+        if (str != null && !str.equals("")) {
+            thAd.setInterest_categories(Convert.toStrArray(str));
+        } else {
+            thAd.setInterest_categories(new String[]{});
+        }
+        //兴趣关键词,
+        str = thAd.getInterestWords();
+        if (str != null && !str.equals("")) {
+            thAd.setInterest_words(Convert.toStrArray(str));
+        } else {
+            thAd.setInterest_words(new String[]{});
+        }
+        //账号粉丝相似人群
+        str = thAd.getAwemeFansNumbers();
+        if (str != null && !str.equals("")) {
+            thAd.setAweme_fans_numbers(Convert.toStrArray(str));
+        } else {
+            thAd.setAweme_fans_numbers(new String[]{});
+        }
+        //商品投放范围
+        str = thAd.getCategoryType();
+        if (str != null && !str.equals("")) {
+            thAd.setCategory_type(Convert.toStrArray(str));
+        } else {
+            thAd.setCategory_type(new String[]{});
+        }
+        //分类列表
+        str = thAd.getDpaCategories();
+        if (str != null && !str.equals("")) {
+            thAd.setDpa_categories(Convert.toStrArray(str));
+        } else {
+            thAd.setDpa_categories(new String[]{});
+        }
+        //商品列表
+        str = thAd.getDpaProducts();
+        if (str != null && !str.equals("")) {
+            thAd.setDpa_products(Convert.toStrArray(str));
+        } else {
+            thAd.setDpa_products(new String[]{});
+        }
+        //落地页链接列表
+        str = thAd.getDpaExternalUrls();
+        if (str != null && !str.equals("")) {
+            thAd.setDpa_external_urls(Convert.toStrArray(str));
+        } else {
+            thAd.setDpa_external_urls(new String[]{});
+        }
+        //直达链接列表
+        str = thAd.getDpaOpenUrls();
+        if (str != null && !str.equals("")) {
+            thAd.setDpa_open_urls(Convert.toStrArray(str));
+        } else {
+            thAd.setDpa_open_urls(new String[]{});
+        }
+        //地图
+        str = thAd.getGeolocations();
+        if (str != null && !str.equals("")) {
+            str = "[" + str.replaceAll("~", ",") + "]";
+            thAd.setGeolocation(JSONArray.parseArray(str));
+        } else {
+            thAd.setGeolocation(new JSONArray());
+        }
     }
 
     /**
@@ -1130,4 +1334,23 @@ public class ThAdServiceImpl implements IThAdService {
         return thAdMapper.selectSyncThAdList(thAd);
     }
 
+    @Override
+    @Transactional
+    public void createPlan(ThAd thAd) throws Exception {
+        convert(thAd);
+        ResponseVO response = (PlanCreateResponse) touTiaoAdCenterService.createAdPlan(thAd);
+        if (response.getCode().equals("0")) {
+            thAd.setAdId(((PlanCreateResponse) response).getData().getLong("ad_id"));
+        } else {
+            throw new Exception("广告计划'" + thAd.getName() + "'创建失败，错误信息：" + response.getMessage());
+        }
+        thAd.setCreateTime(DateUtils.getNowDate());
+        thAdMapper.insertThAd(thAd);
+
+    }
+
+    @Override
+    public List<ThAd> selectThAdListByAdvertiesIds(List<String> advertiserIds) {
+        return thAdMapper.selectThAdListByAdvertiesIds(advertiserIds);
+    }
 }

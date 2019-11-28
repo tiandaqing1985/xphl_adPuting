@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.today.TouTiaoApiConfig;
 import com.ruoyi.today.domain.ThAdMateria;
 import com.ruoyi.today.domain.ThCreativity;
+import com.ruoyi.today.domain.request.AdCreativitySelectRequest;
 import com.ruoyi.today.domain.request.AdGroupCreateRequest;
 import com.ruoyi.today.domain.request.AdGroupSelectRequest;
 import com.ruoyi.today.domain.request.PlanSyncRequest;
@@ -163,9 +164,9 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
 
         HttpHeaders headers = httpBuilder.buildTouTiaoHeader();
         HttpEntity<String> request = new HttpEntity<>(JSON.toJSONString(group), headers);
-        logger.info("创建广告计划请求报文：" + JSON.toJSONString(request));
+        logger.info("创建广告组请求报文：" + JSON.toJSONString(request));
         AdGroupCreateResponse response = httpBuilder.buildRestTemplate().postForObject(touTiaoApiConfig.getAdGroupAPIUrls().get("createGroup"), request, AdGroupCreateResponse.class);
-        logger.info("创建广告计划响应报文：" + JSON.toJSONString(response));
+        logger.info("创建广告组响应报文：" + JSON.toJSONString(response));
 
         return response;
     }
@@ -244,4 +245,30 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
 
         return response;
     }
+
+    //查询创意
+    public Object selectCreativity(Object creativity) {
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(touTiaoApiConfig.getAdCreativityAPIUrls().get("readCreativityDetail"));
+
+        HttpHeaders headers = httpBuilder.buildTouTiaoHeader();
+        // 获取单例RestTemplate
+        RestTemplate restTemplate = httpBuilder.buildRestTemplate();
+        HttpEntity request = new HttpEntity(headers);
+        // 构造execute()执行所需要的参数。
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(request, JSONObject.class);
+        ResponseExtractor<ResponseEntity<JSONObject>> responseExtractor = restTemplate.responseEntityExtractor(JSONObject.class);
+        //查询条件
+        AdCreativitySelectRequest syncRequest = (AdCreativitySelectRequest) creativity;
+        Map<String, Object> params = syncRequest.requestMap();
+        params.entrySet().stream().forEach(o -> builder.queryParam(o.getKey(), o.getValue()));
+        // 执行execute()，发送请求
+        logger.info("查询创意详情请求报文：" + JSON.toJSONString(creativity));
+        ResponseEntity<JSONObject> responseObject = restTemplate.execute(builder.build().toUriString(), HttpMethod.GET, requestCallback, responseExtractor);
+        logger.info("查询创意详情响应报文：" + responseObject.getBody().toJSONString());
+        ResponseVO response = JSON.parseObject(responseObject.getBody().toJSONString(), ResponseVO.class);
+        return response;
+
+    }
+
 }

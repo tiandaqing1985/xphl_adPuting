@@ -62,4 +62,6 @@ public interface ThCampaignMapper
      * @return 结果
      */
     public int deleteThCampaignByIds(String[] campaignIds);
+
+    public void deleteThCampaignByAdvertiserId(Long id);
 }

@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 广告主对象 th_advertiser
  *
@@ -33,6 +35,16 @@ public class ThAdvertiser extends BaseEntity {
 
     //同步广告计划时使用的字段
     private Long campaignId;
+
+    private List<String> advertiesIds;
+
+    public List<String> getAdvertiesIds() {
+        return advertiesIds;
+    }
+
+    public void setAdvertiesIds(List<String> advertiesIds) {
+        this.advertiesIds = advertiesIds;
+    }
 
     public Long getCampaignId() {
         return campaignId;

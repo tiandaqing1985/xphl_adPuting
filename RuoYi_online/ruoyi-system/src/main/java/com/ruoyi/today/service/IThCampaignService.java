@@ -1,5 +1,6 @@
 package com.ruoyi.today.service;
 
+import com.ruoyi.today.domain.ThAd;
 import com.ruoyi.today.domain.ThAdvertiser;
 import com.ruoyi.today.domain.ThCampaign;
 import java.util.List;
@@ -75,4 +76,11 @@ public interface IThCampaignService
      * @param advertiser
      */
     public void syncCampaign(ThAdvertiser advertiser) throws Exception;
+
+    /**
+     * 复制广告组和计划和创意
+     * @param copyCampaign
+     * @param copyThAds
+     */
+    void copy(ThCampaign copyCampaign, List<ThAd> copyThAds) throws Exception;
 }

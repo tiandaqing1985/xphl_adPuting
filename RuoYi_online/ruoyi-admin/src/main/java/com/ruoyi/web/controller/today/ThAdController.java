@@ -1,14 +1,14 @@
 package com.ruoyi.web.controller.today;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.framework.util.ShiroUtils;
-import com.ruoyi.today.domain.ThAdCreativityImport;
-import com.ruoyi.today.domain.ThAdvertiser;
-import com.ruoyi.today.domain.ThCreativity;
+import com.ruoyi.today.domain.*;
 import com.ruoyi.today.service.IThAdvertiserService;
 import com.ruoyi.today.service.IThCreativityService;
+import com.ruoyi.today.service.IThUserAdvertiserService;
 import com.ruoyi.web.controller.tool.HlExcelUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.today.domain.ThAd;
 import com.ruoyi.today.service.IThAdService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -47,6 +46,8 @@ public class ThAdController extends BaseController {
     private IThAdvertiserService thAdvertiserService;
     @Autowired
     private IThCreativityService thCreativityService;
+    @Autowired
+    private IThUserAdvertiserService thUserAdvertiserService;
 
     @RequiresPermissions("today:upload:view")
     @GetMapping("up")
@@ -71,11 +72,20 @@ public class ThAdController extends BaseController {
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(ThAd thAd, String opt) {
-        startPage();
         List<ThAd> list = null;
+        ThUserAdvertiser thUserAdvertiser = new ThUserAdvertiser();
+        thUserAdvertiser.setUserName(ShiroUtils.getLoginName());
+        List<ThUserAdvertiser> thUserAdvertisers = thUserAdvertiserService.selectThUserAdvertiserList(thUserAdvertiser);
+        List<String> advertiesIds = new ArrayList<>();
+        for (ThUserAdvertiser userAdvertiser : thUserAdvertisers) {
+            advertiesIds.add(userAdvertiser.getAdvertiserId());
+        }
+        thAd.setAdvertiesIds(advertiesIds);
         if ("normal".equals(opt)) {
+            startPage();
             list = thAdService.selectSyncThAdList(thAd);
         } else {
+            startPage();
             list = thAdService.selectThAdList(thAd);
         }
         return getDataTable(list);

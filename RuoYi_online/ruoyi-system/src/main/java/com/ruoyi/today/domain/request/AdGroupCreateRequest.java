@@ -17,6 +17,19 @@ public class AdGroupCreateRequest {
 
     private String unique_fk;//第三方唯一键
 
+    /** 广告组状态
+     允许值: "enable","disable"
+     默认值：enable开启状态 */
+    private String operation;
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
     public String getAdvertiser_id() {
         return advertiser_id;
     }

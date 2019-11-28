@@ -62,5 +62,5 @@ public interface ThCreativityMapper
 
     public ThCreativity  selectThCreativityByThAdId(String id);
 
-    void updateThCreativityByThAdId(ThCreativity creativity);
+    public void updateThCreativityByThAdId(ThCreativity creativity);
 }

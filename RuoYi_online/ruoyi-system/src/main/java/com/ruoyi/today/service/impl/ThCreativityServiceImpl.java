@@ -153,7 +153,9 @@ public class ThCreativityServiceImpl implements IThCreativityService {
         return thCreativityMapper.selectThCreativityByThAdId(id);
     }
 
-    private void createCreativity(ThCreativity creativity) throws Exception {
+    @Transactional
+    @Override
+    public void createCreativity(ThCreativity creativity) throws Exception {
         //字符串转换为数组
         if (creativity.getInventoryType() != null) {
             creativity.setInventory_type(Convert.toStrArray(creativity.getInventoryType()));

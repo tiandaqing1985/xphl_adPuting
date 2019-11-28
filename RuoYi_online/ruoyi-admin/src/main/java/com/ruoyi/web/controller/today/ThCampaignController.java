@@ -1,9 +1,15 @@
 package com.ruoyi.web.controller.today;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.ruoyi.framework.util.ShiroUtils;
+import com.ruoyi.today.domain.ThAd;
 import com.ruoyi.today.domain.ThAdvertiser;
+import com.ruoyi.today.domain.ThUserAdvertiser;
+import com.ruoyi.today.service.IThAdService;
 import com.ruoyi.today.service.IThAdvertiserService;
+import com.ruoyi.today.service.IThUserAdvertiserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,6 +43,10 @@ public class ThCampaignController extends BaseController {
     private IThCampaignService thCampaignService;
     @Autowired
     private IThAdvertiserService thAdvertiserService;
+    @Autowired
+    private IThAdService thAdService;
+    @Autowired
+    private IThUserAdvertiserService thUserAdvertiserService;
 
     @RequiresPermissions("today:campaign:view")
     @GetMapping()
@@ -45,12 +55,71 @@ public class ThCampaignController extends BaseController {
     }
 
     /**
+     * 复制广告组
+     */
+    @PostMapping("/copy")
+    @ResponseBody
+    public AjaxResult copy(String id, String level, Integer num, String name) {
+
+        //判断是复制广告计划还是广告组
+        if (level == null || num == null || id == null || num <= 0) {
+            return AjaxResult.error("参数错误");
+        }
+        ThCampaign copyCampaign = null;
+        List<ThAd> copyThAds = null;
+        String baseName = name;
+        try {
+            for (int i = 1; i <= num; i++) {
+                name = baseName + i;
+                if (level.equals("campaign")) {
+                    //查出要复制的广告组
+                    copyCampaign = thCampaignService.selectThCampaignById(Long.valueOf(id));
+                    copyCampaign.setOperation("disable");
+                    copyCampaign.setCampaignName(name);
+                    copyCampaign.setCampaignId(null);
+                    //查询要复制的广告组下面的计划
+                    ThAd thAd = new ThAd();
+                    thAd.setCampaignId(Long.valueOf(id));
+                    copyThAds = thAdService.selectThAdList(thAd);
+                } else if (level.equals("plan")) {
+                    //查出要复制的广告计划
+                    copyThAds = new ArrayList<>();
+                    ThAd selectThAd = new ThAd();
+                    selectThAd.setAdId(Long.valueOf(id));
+                    List<ThAd> thAds = thAdService.selectThAdList(selectThAd);
+                    for(ThAd d:thAds){
+                        d.setName(name);
+                    }
+                    copyThAds.addAll(thAds);
+                } else {
+                    return AjaxResult.error("参数错误");
+                }
+                thCampaignService.copy(copyCampaign, copyThAds);
+            }
+        } catch (Exception e) {
+            logger.error("id=" + id + ",复制时出现错误", e);
+            return AjaxResult.error("复制时出现错误:" + e.getMessage());
+        }
+
+
+        return AjaxResult.success("复制成功");
+    }
+
+    /**
      * 查询广告组列表
      */
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(ThCampaign thCampaign) {
+        ThUserAdvertiser thUserAdvertiser = new ThUserAdvertiser();
+        thUserAdvertiser.setUserName(ShiroUtils.getLoginName());
+        List<ThUserAdvertiser> thUserAdvertisers = thUserAdvertiserService.selectThUserAdvertiserList(thUserAdvertiser);
+        List<String> advertiesIds = new ArrayList<>();
+        for (ThUserAdvertiser userAdvertiser : thUserAdvertisers) {
+            advertiesIds.add(userAdvertiser.getAdvertiserId());
+        }
         startPage();
+        thCampaign.setAdvertiesIds(advertiesIds);
         List<ThCampaign> list = thCampaignService.selectThCampaignList(thCampaign);
         return getDataTable(list);
     }

@@ -54,14 +54,60 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="remark"    column="remark"    />
         <result property="updateFlag" column="update_flag"/>
-
+        <result property="businessIds" column="business_ids"/>
         <result column="group_budget_mode" property="groupBudgetMode"/>
         <result column="group_budget" property="groupBudget"/>
         <result column="landing_type" property="landingType"/>
+        <result property="locationType" column="location_type"/>
+        <result property="audiencePackageId" column="audience_package_id"/>
+        <result property="launchPrice" column="launch_price"/>
+        <result property="interestActionMode" column="interest_action_mode"/>
+        <result property="actionScene" column="action_scene"/>
+        <result property="actionDays" column="action_days"/>
+        <result property="actionCategories" column="action_categories"/>
+        <result property="actionWords" column="action_words"/>
+        <result property="interestCategories" column="interest_categories"/>
+        <result property="interestWords" column="interest_words"/>
+        <result property="awemeFansNumbers" column="aweme_fans_numbers"/>
+        <result property="filterAwemeAbnormalActive" column="filter_aweme_abnormal_active"/>
+        <result property="filterAwemeFansCount" column="filter_aweme_fans_count"/>
+        <result property="filterOwnAwemeNumber" column="filter_own_aweme_number"/>
+        <result property="hideIfExists" column="hide_if_exists"/>
+        <result property="retargetingType" column="retargeting_type"/>
+        <result property="advertiserStoreIds" column="advertiser_store_ids"/>
+        <result property="androidOsv" column="android_osv"/>
+        <result property="iosOsv" column="ios_osv"/>
+        <result property="deviceBrand" column="device_brand"/>
+        <result property="activateType" column="activate_type"/>
+        <result property="productPlatformId" column="product_platform_id"/>
+        <result property="dpaAdtype" column="dpa_adtype"/>
+        <result property="dpaExternalUrls" column="dpa_external_urls"/>
+        <result property="dpaOpenUrls" column="dpa_open_urls"/>
+        <result property="categoryType" column="category_type"/>
+        <result property="dpaCategories" column="dpa_categories"/>
+        <result property="dpaProducts" column="dpa_products"/>
+        <result property="externalUrlParams" column="external_url_params"/>
+        <result property="openUrlParams" column="open_url_params"/>
+        <result property="dpaLocalAudience" column="dpa_local_audience"/>
+        <result property="includeCustomActions" column="include_custom_actions"/>
+        <result property="excludeCustomActions" column="exclude_custom_actions"/>
+        <result property="unionVideoType" column="union_video_type"/>
+        <result property="superiorPopularityType" column="superior_popularity_type"/>
+        <result property="flowPackage" column="flow_package"/>
+        <result property="excludeFlowPackage" column="exclude_flow_package"/>
+        <result property="deviceType" column="device_type"/>
+        <result property="autoExtendTargets" column="auto_extend_targets"/>
+        <result property="inventoryType" column="inventory_type"/>
+        <result property="autoExtendEnabled" column="auto_extend_enabled"/>
+        <result property="deepBidType" column="deep_bid_type"/>
+        <result property="deepCpabid" column="deep_cpabid"/>
+        <result property="roiGoal" column="roi_goal"/>
+        <result property="externalActions" column="external_actions"/>
+        <result property="geolocations" column="geolocations"/>
     </resultMap>
 
     <sql id="selectThAdVo">
-        select id, advertiser_id, advertiser_name, campaign_id, campaign_name, ad_id, name, delivery_range, budget_mode, budget, start_time, end_time, pricing, bid, schedule_type, schedule_time, flow_control_mode, open_url, download_type, external_url, download_url, app_type, ad_package, hide_if_converted, cpa_bid, convert_id, retargeting_tags_include, retargeting_tags_exclude, gender, age, carrier, ac, article_category, platform, district, city, ad_tag, interest_tags, app_behavior_target, app_category, app_ids, status, del_flag, create_by, create_time, update_by, update_time, remark,group_budget_mode,group_budget,landing_type,update_flag from th_ad
+        select external_actions,roi_goal,deep_cpabid,deep_bid_type,auto_extend_enabled,inventory_type,auto_extend_targets,device_type,exclude_flow_package,flow_package,superior_popularity_type,union_video_type,exclude_custom_actions,include_custom_actions,dpa_local_audience,open_url_params,external_url_params,dpa_products,dpa_categories,category_type,dpa_open_urls,dpa_external_urls,dpa_adtype,product_platform_id,activate_type,device_brand,ios_osv,android_osv,advertiser_store_ids,retargeting_type,hide_if_exists,filter_own_aweme_number,filter_aweme_fans_count,filter_aweme_abnormal_active,aweme_fans_numbers,geolocations,interest_words,interest_categories,action_words,action_categories,action_days,action_scene,interest_action_mode,launch_price,audience_package_id,location_type,business_ids,id, advertiser_id, advertiser_name, campaign_id, campaign_name, ad_id, name, delivery_range, budget_mode, budget, start_time, end_time, pricing, bid, schedule_type, schedule_time, flow_control_mode, open_url, download_type, external_url, download_url, app_type, ad_package, hide_if_converted, cpa_bid, convert_id, retargeting_tags_include, retargeting_tags_exclude, gender, age, carrier, ac, article_category, platform, district, city, ad_tag, interest_tags, app_behavior_target, app_category, app_ids, status, del_flag, create_by, create_time, update_by, update_time, remark,group_budget_mode,group_budget,landing_type,update_flag from th_ad
     </sql>
 
     <select id="selectThAdList" parameterType="ThAd" resultMap="ThAdResult">
@@ -117,6 +163,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
              and del_flag = '0'
         </where>
+        order by create_time desc
     </select>
     <select id="selectSyncThAdList" parameterType="ThAd" resultMap="ThAdResult">
         <include refid="selectThAdVo"/>
@@ -168,8 +215,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="end != null">
                 and <![CDATA[create_time <=]]> #{end}
             </if>
+            <if test="advertiesIds != null">
+                and advertiser_id in
+                <foreach collection="advertiesIds" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
              and del_flag = '0' and status != '10' and status is not null
         </where>
+        order by create_time desc
     </select>
 
     <select id="selectThAdById" parameterType="Long" resultMap="ThAdResult">
@@ -182,7 +236,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where ad_id = #{adId} and del_flag = '0'
     </select>
 
-    <insert id="insertThAd" parameterType="ThAd">
+    <select id="selectThAdListByAdvertiesIds" resultMap="ThAdResult" parameterType="List">
+        <include refid="selectThAdVo"/>
+        where advertiser_id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <insert id="insertThAd" parameterType="ThAd" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
         insert into th_ad
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null ">id,</if>
@@ -237,6 +299,53 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="groupBudgetMode != null and groupBudgetMode != ''">group_budget_mode,</if>
             <if test="groupBudget != null and groupBudget != ''">group_budget,</if>
             <if test="landingType != null and landingType != ''">landing_type,</if>
+            <if test="businessIds != null and businessIds != ''">business_ids,</if>
+            <if test="locationType != null and locationType != ''">location_type,</if>
+            <if test="audiencePackageId != null and audiencePackageId != ''">audience_package_id,</if>
+            <if test="launchPrice != null and launchPrice != ''">launch_price,</if>
+            <if test="interestActionMode != null and interestActionMode != ''">interest_action_mode,</if>
+            <if test="actionScene != null and actionScene != ''">action_scene,</if>
+            <if test="actionDays != null and actionDays != ''">action_days,</if>
+            <if test="actionCategories != null and actionCategories != ''">action_categories,</if>
+            <if test="actionWords != null and actionWords != ''">action_words,</if>
+            <if test="interestCategories != null and interestCategories != ''">interest_categories,</if>
+            <if test="interestWords != null and interestWords != ''">interest_words,</if>
+            <if test="geolocations != null and geolocations != ''">geolocations,</if>
+            <if test="awemeFansNumbers != null and awemeFansNumbers != ''">aweme_fans_numbers,</if>
+            <if test="filterAwemeAbnormalActive != null and filterAwemeAbnormalActive != ''">filter_aweme_abnormal_active,</if>
+            <if test="filterAwemeFansCount != null and filterAwemeFansCount != ''">filter_aweme_fans_count,</if>
+            <if test="filterOwnAwemeNumber != null and filterOwnAwemeNumber != ''">filter_own_aweme_number,</if>
+            <if test="hideIfExists != null and hideIfExists != ''">hide_if_exists,</if>
+            <if test="retargetingType != null and retargetingType != ''">retargeting_type,</if>
+            <if test="advertiserStoreIds != null and advertiserStoreIds != ''">advertiser_store_ids,</if>
+            <if test="androidOsv != null and androidOsv != ''">android_osv,</if>
+            <if test="iosOsv != null and iosOsv != ''">ios_osv,</if>
+            <if test="deviceBrand != null and deviceBrand != ''">device_brand,</if>
+            <if test="activateType != null and activateType != ''">activate_type,</if>
+            <if test="productPlatformId != null and productPlatformId != ''">product_platform_id,</if>
+            <if test="dpaAdtype != null and dpaAdtype != ''">dpa_adtype,</if>
+            <if test="dpaExternalUrls != null and dpaExternalUrls != ''">dpa_external_urls,</if>
+            <if test="dpaOpenUrls != null and dpaOpenUrls != ''">dpa_open_urls,</if>
+            <if test="categoryType != null and categoryType != ''">category_type,</if>
+            <if test="dpaCategories != null and dpaCategories != ''">dpa_categories,</if>
+            <if test="dpaProducts != null and dpaProducts != ''">dpa_products,</if>
+            <if test="externalUrlParams != null and externalUrlParams != ''">external_url_params,</if>
+            <if test="openUrlParams != null and openUrlParams != ''">open_url_params,</if>
+            <if test="dpaLocalAudience != null and dpaLocalAudience != ''">dpa_local_audience,</if>
+            <if test="includeCustomActions != null and includeCustomActions != ''">include_custom_actions,</if>
+            <if test="excludeCustomActions != null and excludeCustomActions != ''">exclude_custom_actions,</if>
+            <if test="unionVideoType != null and unionVideoType != ''">union_video_type,</if>
+            <if test="superiorPopularityType != null and superiorPopularityType != ''">superior_popularity_type,</if>
+            <if test="flowPackage != null and flowPackage != ''">flow_package,</if>
+            <if test="excludeFlowPackage != null and excludeFlowPackage != ''">exclude_flow_package,</if>
+            <if test="deviceType != null and deviceType != ''">device_type,</if>
+            <if test="autoExtendTargets != null and autoExtendTargets != ''">auto_extend_targets,</if>
+            <if test="inventoryType != null and inventoryType != ''">inventory_type,</if>
+            <if test="autoExtendEnabled != null and autoExtendEnabled != ''">auto_extend_enabled,</if>
+            <if test="deepBidType != null and deepBidType != ''">deep_bid_type,</if>
+            <if test="deepCpabid != null and deepCpabid != ''">deep_cpabid,</if>
+            <if test="roiGoal != null and roiGoal != ''">roi_goal,</if>
+            <if test="externalActions != null and externalActions != ''">external_actions,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null ">#{id},</if>
@@ -291,6 +400,53 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="groupBudgetMode != null and groupBudgetMode != ''">#{groupBudgetMode},</if>
             <if test="groupBudget != null and groupBudget != ''">#{groupBudget},</if>
             <if test="landingType != null and landingType != ''">#{landingType},</if>
+            <if test="businessIds != null and businessIds != ''">#{businessIds},</if>
+            <if test="locationType != null and locationType != ''">#{locationType},</if>
+            <if test="audiencePackageId != null and audiencePackageId != ''">#{audiencePackageId},</if>
+            <if test="launchPrice != null and launchPrice != ''">#{launchPrice},</if>
+            <if test="interestActionMode != null and interestActionMode != ''">#{interestActionMode},</if>
+            <if test="actionScene != null and actionScene != ''">#{actionScene},</if>
+            <if test="actionDays != null and actionDays != ''">#{actionDays},</if>
+            <if test="actionCategories != null and actionCategories != ''">#{actionCategories},</if>
+            <if test="actionWords != null and actionWords != ''">#{actionWords},</if>
+            <if test="interestCategories != null and interestCategories != ''">#{interestCategories},</if>
+            <if test="interestWords != null and interestWords != ''">#{interestWords},</if>
+            <if test="geolocations != null and geolocations != ''">#{geolocations},</if>
+            <if test="awemeFansNumbers != null and awemeFansNumbers != ''">#{awemeFansNumbers},</if>
+            <if test="filterAwemeAbnormalActive != null and filterAwemeAbnormalActive != ''">#{filterAwemeAbnormalActive},</if>
+            <if test="filterAwemeFansCount != null and filterAwemeFansCount != ''">#{filterAwemeFansCount},</if>
+            <if test="filterOwnAwemeNumber != null and filterOwnAwemeNumber != ''">#{filterOwnAwemeNumber},</if>
+            <if test="hideIfExists != null and hideIfExists != ''">#{hideIfExists},</if>
+            <if test="retargetingType != null and retargetingType != ''">#{retargetingType},</if>
+            <if test="advertiserStoreIds != null and advertiserStoreIds != ''">#{advertiserStoreIds},</if>
+            <if test="androidOsv != null and androidOsv != ''">#{androidOsv},</if>
+            <if test="iosOsv != null and iosOsv != ''">#{iosOsv},</if>
+            <if test="deviceBrand != null and deviceBrand != ''">#{deviceBrand},</if>
+            <if test="activateType != null and activateType != ''">#{activateType},</if>
+            <if test="productPlatformId != null and productPlatformId != ''">#{productPlatformId},</if>
+            <if test="dpaAdtype != null and dpaAdtype != ''">#{dpaAdtype},</if>
+            <if test="dpaExternalUrls != null and dpaExternalUrls != ''">#{dpaExternalUrls},</if>
+            <if test="dpaOpenUrls != null and dpaOpenUrls != ''">#{dpaOpenUrls},</if>
+            <if test="categoryType != null and categoryType != ''">#{categoryType},</if>
+            <if test="dpaCategories != null and dpaCategories != ''">#{dpaCategories},</if>
+            <if test="dpaProducts != null and dpaProducts != ''">#{dpaProducts},</if>
+            <if test="externalUrlParams != null and externalUrlParams != ''">#{externalUrlParams},</if>
+            <if test="openUrlParams != null and openUrlParams != ''">#{openUrlParams},</if>
+            <if test="dpaLocalAudience != null and dpaLocalAudience != ''">#{dpaLocalAudience},</if>
+            <if test="includeCustomActions != null and includeCustomActions != ''">#{includeCustomActions},</if>
+            <if test="excludeCustomActions != null and excludeCustomActions != ''">#{excludeCustomActions},</if>
+            <if test="unionVideoType != null and unionVideoType != ''">#{unionVideoType},</if>
+            <if test="superiorPopularityType != null and superiorPopularityType != ''">#{superiorPopularityType},</if>
+            <if test="flowPackage != null and flowPackage != ''">#{flowPackage},</if>
+            <if test="excludeFlowPackage != null and excludeFlowPackage != ''">#{excludeFlowPackage},</if>
+            <if test="deviceType != null and deviceType != ''">#{deviceType},</if>
+            <if test="autoExtendTargets != null and autoExtendTargets != ''">#{autoExtendTargets},</if>
+            <if test="inventoryType != null and inventoryType != ''">#{inventoryType},</if>
+            <if test="autoExtendEnabled != null and autoExtendEnabled != ''">#{autoExtendEnabled},</if>
+            <if test="deepBidType != null and deepBidType != ''">#{deepBidType},</if>
+            <if test="deepCpabid != null and deepCpabid != ''">#{deepCpabid},</if>
+            <if test="roiGoal != null and roiGoal != ''">#{roiGoal},</if>
+            <if test="externalActions != null and externalActions != ''">#{externalActions},</if>
          </trim>
     </insert>
 
@@ -331,6 +487,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="articleCategory != null  and articleCategory != ''">article_category = #{articleCategory},</if>
             <if test="platform != null  and platform != ''">platform = #{platform},</if>
             <if test="district != null  and district != ''">district = #{district},</if>
+            <if test="businessIds != null  and businessIds != ''">business_ids = #{businessIds},</if>
+            <if test="locationType != null  and locationType != ''">location_type = #{locationType},</if>
             <if test="city != null  and city != ''">city = #{city},</if>
             <if test="adTag != null  and adTag != ''">ad_tag = #{adTag},</if>
             <if test="interestTags != null  and interestTags != ''">interest_tags = #{interestTags},</if>
@@ -344,7 +502,56 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="groupBudgetMode != null  and groupBudgetMode != ''">group_budget_mode = #{groupBudgetMode},</if>
+            <if test="groupBudget != null ">group_budget = #{groupBudget},</if>
+            <if test="landingType != null  and landingType != ''">landing_type = #{landingType},</if>
             <if test="updateFlag != null  and updateFlag != ''">update_flag = #{updateFlag},</if>
+<!--            <if test="modifyTime != null  and modifyTime != ''">modify_time = #{modifyTime},</if>-->
+            <if test="audiencePackageId != null  and audiencePackageId != ''">audience_package_id = #{audiencePackageId},</if>
+            <if test="launchPrice != null  and launchPrice != ''">launch_price = #{launchPrice},</if>
+            <if test="interestActionMode != null  and interestActionMode != ''">interest_action_mode = #{interestActionMode},</if>
+            <if test="actionScene != null  and actionScene != ''">action_scene = #{actionScene},</if>
+            <if test="actionDays != null  and actionDays != ''">action_days = #{actionDays},</if>
+            <if test="actionCategories != null  and actionCategories != ''">action_categories = #{actionCategories},</if>
+            <if test="actionWords != null  and actionWords != ''">action_words = #{actionWords},</if>
+            <if test="interestCategories != null  and interestCategories != ''">interest_categories = #{interestCategories},</if>
+            <if test="interestWords != null  and interestWords != ''">interest_words = #{interestWords},</if>
+            <if test="geolocations != null  and geolocations != ''">geolocations = #{geolocations},</if>
+            <if test="awemeFansNumbers != null  and awemeFansNumbers != ''">aweme_fans_numbers = #{awemeFansNumbers},</if>
+            <if test="filterAwemeAbnormalActive != null  and filterAwemeAbnormalActive != ''">filter_aweme_abnormal_active = #{filterAwemeAbnormalActive},</if>
+            <if test="filterAwemeFansCount != null  and filterAwemeFansCount != ''">filter_aweme_fans_count = #{filterAwemeFansCount},</if>
+            <if test="filterOwnAwemeNumber != null  and filterOwnAwemeNumber != ''">filter_own_aweme_number = #{filterOwnAwemeNumber},</if>
+            <if test="hideIfExists != null  and hideIfExists != ''">hide_if_exists = #{hideIfExists},</if>
+            <if test="retargetingType != null  and retargetingType != ''">retargeting_type = #{retargetingType},</if>
+            <if test="advertiserStoreIds != null  and advertiserStoreIds != ''">advertiser_store_ids = #{advertiserStoreIds},</if>
+            <if test="androidOsv != null  and androidOsv != ''">android_osv = #{androidOsv},</if>
+            <if test="iosOsv != null  and iosOsv != ''">ios_osv = #{iosOsv},</if>
+            <if test="deviceBrand != null  and deviceBrand != ''">device_brand = #{deviceBrand},</if>
+            <if test="activateType != null  and activateType != ''">activate_type = #{activateType},</if>
+            <if test="productPlatformId != null  and productPlatformId != ''">product_platform_id = #{productPlatformId},</if>
+            <if test="dpaAdtype != null  and dpaAdtype != ''">dpa_adtype = #{dpaAdtype},</if>
+            <if test="dpaExternalUrls != null  and dpaExternalUrls != ''">dpa_external_urls = #{dpaExternalUrls},</if>
+            <if test="dpaOpenUrls != null  and dpaOpenUrls != ''">dpa_open_urls = #{dpaOpenUrls},</if>
+            <if test="categoryType != null  and categoryType != ''">category_type = #{categoryType},</if>
+            <if test="dpaCategories != null  and dpaCategories != ''">dpa_categories = #{dpaCategories},</if>
+            <if test="dpaProducts != null  and dpaProducts != ''">dpa_products = #{dpaProducts},</if>
+            <if test="externalUrlParams != null  and externalUrlParams != ''">external_url_params = #{externalUrlParams},</if>
+            <if test="openUrlParams != null  and openUrlParams != ''">open_url_params = #{openUrlParams},</if>
+            <if test="dpaLocalAudience != null  and dpaLocalAudience != ''">dpa_local_audience = #{dpaLocalAudience},</if>
+            <if test="includeCustomActions != null  and includeCustomActions != ''">include_custom_actions = #{includeCustomActions},</if>
+            <if test="excludeCustomActions != null  and excludeCustomActions != ''">exclude_custom_actions = #{excludeCustomActions},</if>
+            <if test="unionVideoType != null  and unionVideoType != ''">union_video_type = #{unionVideoType},</if>
+            <if test="superiorPopularityType != null  and superiorPopularityType != ''">superior_popularity_type = #{superiorPopularityType},</if>
+            <if test="flowPackage != null  and flowPackage != ''">flow_package = #{flowPackage},</if>
+            <if test="excludeFlowPackage != null  and excludeFlowPackage != ''">exclude_flow_package = #{excludeFlowPackage},</if>
+            <if test="deviceType != null  and deviceType != ''">device_type = #{deviceType},</if>
+            <if test="autoExtendTargets != null  and autoExtendTargets != ''">auto_extend_targets = #{autoExtendTargets},</if>
+            <if test="inventoryType != null  and inventoryType != ''">inventory_type = #{inventoryType},</if>
+            <if test="autoExtendEnabled != null  and autoExtendEnabled != ''">auto_extend_enabled = #{autoExtendEnabled},</if>
+            <if test="deepBidType != null  and deepBidType != ''">deep_bid_type = #{deepBidType},</if>
+            <if test="deepCpabid != null  and deepCpabid != ''">deep_cpabid = #{deepCpabid},</if>
+            <if test="roiGoal != null  and roiGoal != ''">roi_goal = #{roiGoal},</if>
+            <if test="externalActions != null  and externalActions != ''">external_actions = #{externalActions},</if>
         </trim>
         where id = #{id} and del_flag = '0'
     </update>

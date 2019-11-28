@@ -6,6 +6,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 广告组对象 th_campaign
  * 
@@ -48,7 +50,30 @@ public class ThCampaign extends BaseEntity
     @Excel(name = "状态")
     private String status;
 
-    public void setCampaignId(Long campaignId) 
+    /** 广告组状态
+     允许值: "enable","disable"
+     默认值：enable开启状态 */
+    private String operation;
+
+    private List<String> advertiesIds;
+
+    public List<String> getAdvertiesIds() {
+        return advertiesIds;
+    }
+
+    public void setAdvertiesIds(List<String> advertiesIds) {
+        this.advertiesIds = advertiesIds;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    public void setCampaignId(Long campaignId)
     {
         this.campaignId = campaignId;
     }

@@ -58,7 +58,63 @@ public class TodayTask {
 		
 		
 	}
-	
+	public static JSONObject getAccessToken() {
+		String access_token = "da921f925fff4f4af846c9c7ef0edd74e05702cb";
+
+		// 请求地址https://ad.toutiao.com/open_api/oauth2/access_token/
+		String open_api_url_prefix = "https://ad.toutiao.com/open_api/";
+		String uri = "oauth2/access_token/";
+
+		Long app_id = 1641099262856206L;
+
+		// 请求参数
+		Map data = new HashMap() {
+			{
+				put("app_id", app_id);
+				put("secret", "d8d831d26a6f5b71eca765db44e9a39120f92a0f");
+				put("grant_type", "auth_code");
+				put("auth_code", "f28072e8bb4290df3865d4bafb021ff089eaf2fc");
+			}
+		};
+
+		// 构造请求
+		HttpPost httpEntity = new HttpPost(open_api_url_prefix + uri);
+
+		CloseableHttpResponse response = null;
+		CloseableHttpClient client = null;
+
+		try {
+			client = HttpClientBuilder.create().build();
+			httpEntity.setEntity(new StringEntity(JSONObject.toJSONString(data), ContentType.APPLICATION_JSON));
+
+			response = client.execute(httpEntity);
+			if (response != null && response.getStatusLine().getStatusCode() == 200) {
+				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+				StringBuffer result = new StringBuffer();
+				String line = "";
+				while ((line = bufferedReader.readLine()) != null) {
+					result.append(line);
+				}
+				bufferedReader.close();
+				return JSONObject.parseObject(result.toString());
+			}
+
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (response != null) {
+					response.close();
+				}
+				client.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 	
 	/**
 	 * 刷新token

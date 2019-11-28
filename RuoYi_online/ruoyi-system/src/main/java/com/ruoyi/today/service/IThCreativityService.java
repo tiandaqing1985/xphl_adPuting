@@ -1,6 +1,7 @@
 package com.ruoyi.today.service;
 
 import com.ruoyi.today.domain.ThCreativity;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -64,6 +65,9 @@ public interface IThCreativityService
     public void createCreativity(String id) throws Exception;
 
     ThCreativity selectThCreativityByThAdId(String id);
+
+    @Transactional
+    void createCreativity(ThCreativity creativity) throws Exception;
 
     //创建广告创意 id是广告创意公共字段表的主键
     public int startCreativityById(String id) throws Exception;

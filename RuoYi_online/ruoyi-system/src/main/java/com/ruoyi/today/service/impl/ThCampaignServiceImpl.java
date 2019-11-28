@@ -4,13 +4,20 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.today.domain.ThAd;
 import com.ruoyi.today.domain.ThAdvertiser;
+import com.ruoyi.today.domain.ThCreativity;
+import com.ruoyi.today.domain.request.AdCreativitySelectRequest;
 import com.ruoyi.today.domain.request.AdGroupCreateRequest;
 import com.ruoyi.today.domain.request.AdGroupSelectRequest;
 import com.ruoyi.today.domain.response.AdGroupCreateResponse;
 import com.ruoyi.today.domain.response.AdGroupSelectResponse;
+import com.ruoyi.today.domain.response.ResponseVO;
 import com.ruoyi.today.service.AdCenterService;
+import com.ruoyi.today.service.IThAdService;
+import com.ruoyi.today.service.IThCreativityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +45,12 @@ public class ThCampaignServiceImpl implements IThCampaignService {
 
     @Autowired
     private AdCenterService touTiaoAdCenterService;
+
+    @Autowired
+    private IThAdService thAdService;
+
+    @Autowired
+    private IThCreativityService creativityService;
 
     /**
      * 查询广告组
@@ -124,13 +137,13 @@ public class ThCampaignServiceImpl implements IThCampaignService {
         request.setPage("1");
         request.setPage_size("1000");
         AdGroupSelectResponse response = (AdGroupSelectResponse) touTiaoAdCenterService.selectGroup(request);
-        if(response.getCode().equals("0")){
+        if (response.getCode().equals("0")) {
             JSONObject data = response.getData();
             JSONArray listObject = (JSONArray) data.get("list");
             List<ThCampaign> thCampaigns = listObject.toJavaList(ThCampaign.class);
             return thCampaigns;
-        }else {
-            throw new Exception("查询广告计划出现错误："+response.getCode()+","+response.getMessage());
+        } else {
+            throw new Exception("查询广告计划出现错误：" + response.getCode() + "," + response.getMessage());
         }
 
     }
@@ -154,6 +167,7 @@ public class ThCampaignServiceImpl implements IThCampaignService {
             request.setBudget(thCampaign.getBudget().toString());
         }
         request.setBudget_mode(thCampaign.getBudgetMode());
+        request.setOperation(thCampaign.getOperation());
         AdGroupCreateResponse response = (AdGroupCreateResponse) touTiaoAdCenterService.createGroup(request);
         if (response.getCode().equals("0")) {
             //插入数据库
@@ -178,18 +192,64 @@ public class ThCampaignServiceImpl implements IThCampaignService {
         thCampaign.setAdvertiserId(advertiser.getId());
         List<ThCampaign> thCampaigns = selectThCampaignFromTouTiao(thCampaign);
         ThCampaign selectCampaign = null;
+        thCampaignMapper.deleteThCampaignByAdvertiserId(advertiser.getId());
         for (ThCampaign campaign : thCampaigns) {
             try {
-                selectCampaign = thCampaignMapper.selectThCampaignById(campaign.getCampaignId());
-                if (selectCampaign == null) {
+//                selectCampaign = thCampaignMapper.selectThCampaignById(campaign.getCampaignId());
+//                if (selectCampaign == null) {
                     thCampaignMapper.insertThCampaign(campaign);
-                } else {
-                    thCampaignMapper.updateThCampaign(selectCampaign);
-                }
+//                } else {
+//                    thCampaignMapper.updateThCampaign(selectCampaign);
+//                }
             } catch (Exception e) {
                 logger.error("同步广告主" + advertiser.getName() + "的广告组" + campaign.getCampaignName() + "失败", e);
             }
         }
     }
+
+    /**
+     * 复制广告组和计划和创意
+     *
+     * @param copyCampaign
+     * @param copyThAds
+     */
+    @Override
+    public void copy(ThCampaign copyCampaign, List<ThAd> copyThAds) throws Exception {
+
+        AdCreativitySelectRequest request = null;
+        if (copyCampaign != null) {
+            //复制广告计划
+            createThCampaign(copyCampaign);
+        }
+        if (copyThAds != null && copyThAds.size() != 0) {
+            for (ThAd thAd : copyThAds) {
+                request = new AdCreativitySelectRequest();
+                request.setAd_id(thAd.getAdId().toString());
+                request.setAdvertiser_id(thAd.getAdvertiserId().toString());
+                thAd.setId(null);
+                if(copyCampaign!=null){
+                    thAd.setCampaignId(copyCampaign.getCampaignId());
+                }
+                thAd.setOperation("disable");
+                thAdService.createPlan(thAd);
+                //查询创意详情
+                ResponseVO responseVO = (ResponseVO) touTiaoAdCenterService.selectCreativity(request);
+                if(responseVO.getCode().equals("0")){
+                    ThCreativity thCreativity = JSONObject.parseObject(responseVO.getData().toJSONString(), ThCreativity.class);
+                    if(thCreativity.getCreativeMaterialMode()!=null&&thCreativity.getCreativeMaterialMode().equals("STATIC_ASSEMBLE")){
+                        thCreativity.setCreatives(null);
+                    }else {
+                        thCreativity.setImage_list(null);
+                        thCreativity.setTitle_list(null);
+                    }
+                    //复制创意
+                    thCreativity.setThAdId(thAd.getId().toString());
+                    creativityService.createCreativity(thCreativity);
+                }
+            }
+        }
+
+    }
+
 
 }

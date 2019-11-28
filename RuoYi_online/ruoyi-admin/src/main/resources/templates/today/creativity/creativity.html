@@ -56,13 +56,6 @@
     <th:block th:include="include :: footer" />
 </body>
 </html>
-
-
-
-
-
-
-
 <script th:inline="javascript">
     var editFlag = [[${@permission.hasPermi('system:creativity:edit')}]];
     var removeFlag = [[${@permission.hasPermi('system:creativity:remove')}]];

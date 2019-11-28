@@ -53,4 +53,7 @@ public interface AdCenterService {
 
     //创建创意
     public Object createCreativity(Object creativity);
+
+    //查询创意
+    public Object selectCreativity(Object creativity);
 }

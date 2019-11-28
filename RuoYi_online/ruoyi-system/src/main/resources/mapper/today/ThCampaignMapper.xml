@@ -32,7 +32,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="budget != null "> and budget = #{budget}</if>
             <if test="landingType != null  and landingType != ''"> and landing_type = #{landingType}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="advertiesIds != null">
+                and advertiser_id in
+                <foreach collection="advertiesIds" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
         </where>
+        order by create_time desc
     </select>
 
     <select id="selectThCampaignById" parameterType="Long" resultMap="ThCampaignResult">
@@ -92,6 +99,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <delete id="deleteThCampaignById" parameterType="Long">
         delete from th_campaign where campaign_id = #{campaignId}
+    </delete>
+
+    <delete id="deleteThCampaignByAdvertiserId" parameterType="Long">
+        delete from th_campaign where advertiser_id = #{param1}
     </delete>
 
     <delete id="deleteThCampaignByIds" parameterType="String">

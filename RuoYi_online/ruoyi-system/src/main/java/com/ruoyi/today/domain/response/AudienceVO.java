@@ -1,5 +1,7 @@
 package com.ruoyi.today.domain.response;
 
+import com.alibaba.fastjson.JSONArray;
+
 //同步广告计划时 今日头条返回的
 public class AudienceVO {
 
@@ -7,7 +9,7 @@ public class AudienceVO {
     private String[] user_type;
     private String[] exclude_custom_actions;
     private String[] app_ids;
-    private String device_type;
+    private String[] device_type;
     private String[] interest_tags;
     private String android_osv;
     private String[] city;
@@ -36,6 +38,187 @@ public class AudienceVO {
     private String dpa_local_audience;
     private String[] retargeting_tags_include;
     private String[] flow_package;
+
+    private String[] geolocation;
+    private String[] advertiser_store_ids;
+    private String product_platform_id;
+    private String[] dpa_adtype;
+    private String[] dpa_external_urls;
+    private String[] dpa_open_urls;
+    private String[] category_type;
+    private String[] dpa_categories;
+    private String[] dpa_products;
+    private String external_url_params;
+    private String open_url_params;
+    private String union_video_type;
+    private String deep_bid_type;
+    private String deep_cpabid;
+    private String roi_goal;
+    private String smart_bid_type;
+    private String adjust_cpa;
+    private String[] inventory_type;
+    private String[] external_actions;
+    private String[] launch_price;
+
+    public String[] getLaunch_price() {
+        return launch_price;
+    }
+
+    public void setLaunch_price(String[] launch_price) {
+        this.launch_price = launch_price;
+    }
+
+    public String[] getExternal_actions() {
+        return external_actions;
+    }
+
+    public void setExternal_actions(String[] external_actions) {
+        this.external_actions = external_actions;
+    }
+
+    public String[] getGeolocation() {
+        return geolocation;
+    }
+
+    public void setGeolocation(String[] geolocation) {
+        this.geolocation = geolocation;
+    }
+
+    public String[] getAdvertiser_store_ids() {
+        return advertiser_store_ids;
+    }
+
+    public void setAdvertiser_store_ids(String[] advertiser_store_ids) {
+        this.advertiser_store_ids = advertiser_store_ids;
+    }
+
+    public String getProduct_platform_id() {
+        return product_platform_id;
+    }
+
+    public void setProduct_platform_id(String product_platform_id) {
+        this.product_platform_id = product_platform_id;
+    }
+
+    public String[] getDpa_adtype() {
+        return dpa_adtype;
+    }
+
+    public void setDpa_adtype(String[] dpa_adtype) {
+        this.dpa_adtype = dpa_adtype;
+    }
+
+    public String[] getDpa_external_urls() {
+        return dpa_external_urls;
+    }
+
+    public void setDpa_external_urls(String[] dpa_external_urls) {
+        this.dpa_external_urls = dpa_external_urls;
+    }
+
+    public String[] getDpa_open_urls() {
+        return dpa_open_urls;
+    }
+
+    public void setDpa_open_urls(String[] dpa_open_urls) {
+        this.dpa_open_urls = dpa_open_urls;
+    }
+
+    public String[] getCategory_type() {
+        return category_type;
+    }
+
+    public void setCategory_type(String[] category_type) {
+        this.category_type = category_type;
+    }
+
+    public String[] getDpa_categories() {
+        return dpa_categories;
+    }
+
+    public void setDpa_categories(String[] dpa_categories) {
+        this.dpa_categories = dpa_categories;
+    }
+
+    public String[] getDpa_products() {
+        return dpa_products;
+    }
+
+    public void setDpa_products(String[] dpa_products) {
+        this.dpa_products = dpa_products;
+    }
+
+    public String getExternal_url_params() {
+        return external_url_params;
+    }
+
+    public void setExternal_url_params(String external_url_params) {
+        this.external_url_params = external_url_params;
+    }
+
+    public String getOpen_url_params() {
+        return open_url_params;
+    }
+
+    public void setOpen_url_params(String open_url_params) {
+        this.open_url_params = open_url_params;
+    }
+
+    public String getUnion_video_type() {
+        return union_video_type;
+    }
+
+    public void setUnion_video_type(String union_video_type) {
+        this.union_video_type = union_video_type;
+    }
+
+    public String getDeep_bid_type() {
+        return deep_bid_type;
+    }
+
+    public void setDeep_bid_type(String deep_bid_type) {
+        this.deep_bid_type = deep_bid_type;
+    }
+
+    public String getDeep_cpabid() {
+        return deep_cpabid;
+    }
+
+    public void setDeep_cpabid(String deep_cpabid) {
+        this.deep_cpabid = deep_cpabid;
+    }
+
+    public String getRoi_goal() {
+        return roi_goal;
+    }
+
+    public void setRoi_goal(String roi_goal) {
+        this.roi_goal = roi_goal;
+    }
+
+    public String getSmart_bid_type() {
+        return smart_bid_type;
+    }
+
+    public void setSmart_bid_type(String smart_bid_type) {
+        this.smart_bid_type = smart_bid_type;
+    }
+
+    public String getAdjust_cpa() {
+        return adjust_cpa;
+    }
+
+    public void setAdjust_cpa(String adjust_cpa) {
+        this.adjust_cpa = adjust_cpa;
+    }
+
+    public String[] getInventory_type() {
+        return inventory_type;
+    }
+
+    public void setInventory_type(String[] inventory_type) {
+        this.inventory_type = inventory_type;
+    }
 
     public String[] getAc() {
         return ac;
@@ -69,11 +252,11 @@ public class AudienceVO {
         this.app_ids = app_ids;
     }
 
-    public String getDevice_type() {
+    public String[] getDevice_type() {
         return device_type;
     }
 
-    public void setDevice_type(String device_type) {
+    public void setDevice_type(String[] device_type) {
         this.device_type = device_type;
     }
 

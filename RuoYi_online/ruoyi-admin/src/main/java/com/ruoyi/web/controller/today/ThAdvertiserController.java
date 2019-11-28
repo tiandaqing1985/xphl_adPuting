@@ -1,6 +1,10 @@
 package com.ruoyi.web.controller.today;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.today.domain.ThUserAdvertiser;
+import com.ruoyi.today.service.IThUserAdvertiserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,25 +26,25 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 广告主Controller
- * 
+ *
  * @author ruoyi
  * @date 2019-08-12
  */
 @Controller
 @RequestMapping("/today/advertiser")
-public class ThAdvertiserController extends BaseController
-{
+public class ThAdvertiserController extends BaseController {
     private String prefix = "today/advertiser";
 
     @Autowired
     private IThAdvertiserService thAdvertiserService;
+    @Autowired
+    private IThUserAdvertiserService thUserAdvertiserService;
 
     @RequiresPermissions("today:advertiser:view")
     @GetMapping()
-    public String advertiser()
-    {
+    public String advertiser() {
 //        return prefix + "/advertiser";
-    	  return prefix + "/tabs_panels";
+        return prefix + "/tabs_panels";
     }
 
     /**
@@ -48,8 +52,15 @@ public class ThAdvertiserController extends BaseController
      */
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(ThAdvertiser thAdvertiser)
-    {
+    public TableDataInfo list(ThAdvertiser thAdvertiser) {
+        ThUserAdvertiser thUserAdvertiser = new ThUserAdvertiser();
+        thUserAdvertiser.setUserName(ShiroUtils.getLoginName());
+        List<ThUserAdvertiser> thUserAdvertisers = thUserAdvertiserService.selectThUserAdvertiserList(thUserAdvertiser);
+        List<String> advertiesIds = new ArrayList<>();
+        for (ThUserAdvertiser userAdvertiser : thUserAdvertisers) {
+            advertiesIds.add(userAdvertiser.getAdvertiserId());
+        }
+        thAdvertiser.setAdvertiesIds(advertiesIds);
         startPage();
         List<ThAdvertiser> list = thAdvertiserService.selectThAdvertiserList(thAdvertiser);
         return getDataTable(list);
@@ -60,8 +71,7 @@ public class ThAdvertiserController extends BaseController
      */
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ThAdvertiser thAdvertiser)
-    {
+    public AjaxResult export(ThAdvertiser thAdvertiser) {
         List<ThAdvertiser> list = thAdvertiserService.selectThAdvertiserList(thAdvertiser);
         ExcelUtil<ThAdvertiser> util = new ExcelUtil<ThAdvertiser>(ThAdvertiser.class);
         return util.exportExcel(list, "advertiser");
@@ -71,8 +81,7 @@ public class ThAdvertiserController extends BaseController
      * 新增广告主
      */
     @GetMapping("/add")
-    public String add()
-    {
+    public String add() {
         return prefix + "/add";
     }
 
@@ -82,8 +91,7 @@ public class ThAdvertiserController extends BaseController
     @Log(title = "广告主", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(ThAdvertiser thAdvertiser)
-    {
+    public AjaxResult addSave(ThAdvertiser thAdvertiser) {
         return toAjax(thAdvertiserService.insertThAdvertiser(thAdvertiser));
     }
 
@@ -91,8 +99,7 @@ public class ThAdvertiserController extends BaseController
      * 修改广告主
      */
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Long id, ModelMap mmap)
-    {
+    public String edit(@PathVariable("id") Long id, ModelMap mmap) {
         ThAdvertiser thAdvertiser = thAdvertiserService.selectThAdvertiserById(id);
         mmap.put("thAdvertiser", thAdvertiser);
         return prefix + "/edit";
@@ -104,8 +111,7 @@ public class ThAdvertiserController extends BaseController
     @Log(title = "广告主", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(ThAdvertiser thAdvertiser)
-    {
+    public AjaxResult editSave(ThAdvertiser thAdvertiser) {
         return toAjax(thAdvertiserService.updateThAdvertiser(thAdvertiser));
     }
 
@@ -113,22 +119,20 @@ public class ThAdvertiserController extends BaseController
      * 删除广告主
      */
     @Log(title = "广告主", businessType = BusinessType.DELETE)
-    @PostMapping( "/remove")
+    @PostMapping("/remove")
     @ResponseBody
-    public AjaxResult remove(String ids)
-    {
+    public AjaxResult remove(String ids) {
         return toAjax(thAdvertiserService.deleteThAdvertiserByIds(ids));
     }
-    
-    
+
+
     /**
      * 同步广告主
      */
     @Log(title = "广告主", businessType = BusinessType.OTHER)
-    @PostMapping( "/adMutual")
+    @PostMapping("/adMutual")
     @ResponseBody
-    public AjaxResult adMutual()
-    {
+    public AjaxResult adMutual() {
         return toAjax(thAdvertiserService.adMutual(ShiroUtils.getSysUser().getUserName()));
     }
 }

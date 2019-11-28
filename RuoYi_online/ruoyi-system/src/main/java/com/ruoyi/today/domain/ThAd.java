@@ -1,14 +1,14 @@
 package com.ruoyi.today.domain;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.annotation.JSONField;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 广告计划对象 th_ad
@@ -23,6 +23,11 @@ public class ThAd extends BaseEntity {
      * ID
      */
     private Long id;
+
+    /**
+     * 状态
+     */
+    private String operation;
 
     /**
      * 广告主ID
@@ -181,6 +186,10 @@ public class ThAd extends BaseEntity {
     @JSONField(name = "hide_if_converted")
     private String hideIfConverted;
 
+    //过滤已安装
+    @JSONField(name = "hide_if_exists")
+    private String hideIfExists;
+
     /**
      * ocpm广告转化出价
      */
@@ -194,6 +203,91 @@ public class ThAd extends BaseEntity {
     @Excel(name = "转化ID")
     @JSONField(name = "convert_id")
     private Long convertId;
+
+    //定向包id
+    @JSONField(name = "audience_package_id")
+    private String audiencePackageId;
+
+    //手机价格定向
+    @JSONField(serialize = false)
+    private String launchPrice;
+
+    //api 手机价格定向
+    private String[] launch_price;
+
+    //兴趣行为选择
+    @JSONField(name = "interest_action_mode")
+    private String interestActionMode;
+
+    //行为场景
+    @JSONField(serialize = false)
+    private String actionScene;
+
+    //api
+    @JSONField(name = "action_scene")
+    private String[] action_scene;
+
+    //行为天数
+    @JSONField(name = "action_days")
+    private String actionDays;
+    //行为类目
+    @JSONField(serialize = false)
+    private String actionCategories;
+
+    //行为类目 api
+    @JSONField(name = "action_categories")
+    private String[] action_categories;
+
+    //行为关键词
+    @JSONField(serialize = false)
+    private String actionWords;
+
+    //行为关键词 api
+    @JSONField(name = "action_words")
+    private String[] action_words;
+
+    //兴趣分类
+    @JSONField(serialize = false)
+    private String interestCategories;
+
+    //兴趣分类 api
+    @JSONField(name = "interest_categories")
+    private String[] interest_categories;
+
+    //兴趣关键词
+    @JSONField(serialize = false)
+    private String interestWords;
+
+    //兴趣关键词 api
+    @JSONField(name = "interest_words")
+    private String[] interest_words;
+
+    //地图位置
+    @JSONField(serialize = false)
+    private String geolocations;
+
+    //地图位置 api
+    @JSONField(name = "geolocation")
+    private JSONArray geolocation;
+
+    //账号粉丝相似人群
+    @JSONField(serialize = false)
+    private String awemeFansNumbers;
+
+    //账号粉丝相似人群 api
+    @JSONField(name = "aweme_fans_numbers")
+    private String[] aweme_fans_numbers;
+
+    //过滤高活跃用户，抖音特有
+    @JSONField(name = "filter_aweme_abnormal_active")
+    private String filterAwemeAbnormalActive;
+
+    //过滤高关注数用户
+    @JSONField(name = "filter_aweme_fans_count")
+    private String filterAwemeFansCount;
+
+    @JSONField(name = "filter_own_aweme_number")
+    private String filterOwnAwemeNumber;
 
     /**
      * 定向人群包列表
@@ -251,6 +345,7 @@ public class ThAd extends BaseEntity {
     private String ac;
 
     //发送头条创建广告计划时使用
+    @JSONField(name = "ac")
     private String[] acs;
 
     /**
@@ -338,6 +433,10 @@ public class ThAd extends BaseEntity {
     //api用
     private String[] app_ids;
 
+    //产品目录ID
+    @JSONField(name = "product_platform_id")
+    private String productPlatformId;
+
     /**
      * 状态（0正常 1停用）
      */
@@ -357,6 +456,12 @@ public class ThAd extends BaseEntity {
     private String landingType;
 
     /**
+     * 受众位置类型
+     */
+    @JSONField(name = "location_type")
+    private String locationType;
+
+    /**
      * 删除标志（0代表存在 2代表删除）
      */
     @JSONField(serialize = false)
@@ -372,6 +477,771 @@ public class ThAd extends BaseEntity {
 
     //更新标志
     private String updateFlag;
+
+    //商圈
+    @JSONField(serialize = false)
+    private String businessIds;
+    //商圈
+    private String[] business_ids;
+
+    //定向人群包类型
+    @JSONField(name = "retargeting_type")
+    private String retargetingType;
+
+    //门店ids
+    @JSONField(serialize = false)
+    private String advertiserStoreIds;
+
+    //门店ids api
+    @JSONField(name = "advertiser_store_ids")
+    private String[] advertiser_store_ids;
+
+    //受众最低android版本
+    @JSONField(name = "android_osv")
+    private String androidOsv;
+
+    //受众最低ios版本
+    @JSONField(name = "ios_osv")
+    private String iosOsv;
+
+    //受众手机品牌
+    @JSONField(serialize = false)
+    private String deviceBrand;
+
+    //受众手机品牌 api
+    @JSONField(name = "device_brand")
+    private String[] device_brand;
+
+    //用户首次激活时间
+    @JSONField(serialize = false)
+    private String activateType;
+
+    //用户首次激活时间 API
+    @JSONField(name = "activate_type")
+    private String[] activate_type;
+
+    //dpa广告类型
+    @JSONField(serialize = false)
+    private String dpaAdtype;
+
+    //dpa广告类型 api
+    @JSONField(name = "dpa_adtype")
+    private String[] dpa_adtype;
+
+    //DPA落地页类型广告落地页链接
+    @JSONField(serialize = false)
+    private String dpaExternalUrls;
+
+    //DPA落地页类型广告落地页链接 api
+    @JSONField(name = "dpa_external_urls")
+    private String[] dpa_external_urls;
+
+    //DPA直达链接
+    @JSONField(serialize = false)
+    private String dpaOpenUrls;
+
+    //DPA直达链接 api
+    @JSONField(name = "dpa_open_urls")
+    private String[] dpa_open_urls;
+
+    //DPA投放范围
+    @JSONField(name = "category_type")
+//    @JSONField(serialize = false)
+    private String categoryType;
+
+    //DPA投放范围api
+//    @JSONField(name = "category_type")
+    @JSONField(serialize = false)
+    private String[] category_type;
+
+    //类别
+    @JSONField(serialize = false)
+    private String dpaCategories;
+
+    //类别 api
+    @JSONField(name = "dpa_categories")
+    private String[] dpa_categories;
+
+    //商品列表
+    @JSONField(serialize = false)
+    private String dpaProducts;
+
+    //商品列表 api
+    @JSONField(name = "dpa_products")
+    private String[] dpa_products;
+
+    //H5地址参数
+    @JSONField(name = "external_url_params")
+    private String externalUrlParams;
+
+    //DPA直达链接参数
+    @JSONField(name = "open_url_params")
+    private String openUrlParams;
+
+    //DPA人群定向
+    @JSONField(name = "dpa_local_audience")
+    private String dpaLocalAudience;
+
+    //包含人群包
+    @JSONField(serialize = false)
+    private String includeCustomActions;
+
+    //包含人群包 api
+    @JSONField(name = "include_custom_actions")
+    private String[] include_custom_actions;
+
+    //排除人群包
+    @JSONField(serialize = false)
+    private String excludeCustomActions;
+
+    //排除人群包 api
+    @JSONField(name = "exclude_custom_actions")
+    private String[] exclude_custom_actions;
+
+    //穿山甲视频创意类型
+    @JSONField(name = "union_video_type")
+    private String unionVideoType;
+
+    //精选流量包
+    @JSONField(name = "superior_popularity_type")
+    private String superiorPopularityType;
+
+    //定向流量包ID数组
+    @JSONField(serialize = false)
+    private String flowPackage;
+
+    //定向流量包ID数组 api
+    @JSONField(name = "flow_package")
+    private String[] flow_package;
+
+    //排除流量包ID数组
+    @JSONField(serialize = false)
+    private String excludeFlowPackage;
+
+    //排除流量包ID数组 api
+    @JSONField(name = "exclude_flow_package")
+    private String[] exclude_flow_package;
+
+    //设备类型
+    @JSONField(serialize = false)
+    private String deviceType;
+
+    //设备类型 api
+    @JSONField(name = "device_type")
+    private String[] device_type;
+
+    //可放开定向
+    @JSONField(serialize = false)
+    private String autoExtendTargets;
+
+    //可放开定向 api
+    @JSONField(name = "auto_extend_targets")
+    private String[] auto_extend_targets;
+
+    //创意投放位置
+    @JSONField(serialize = false)
+    private String inventoryType;
+
+    //创意投放位置 api
+    @JSONField(name = "inventory_type")
+    private String[] inventory_type;
+
+    //转化类型
+    @JSONField(serialize = false)
+    private String externalActions;
+
+    //转化类型 api
+    @JSONField(name = "external_actions")
+    private String[] external_actions;
+
+    //是否启用智能放量。
+    @JSONField(name = "auto_extend_enabled")
+    private String autoExtendEnabled;
+
+    //深度优化方式
+    @JSONField(name = "deep_bid_type")
+    private String deepBidType;
+
+    //深度优化出价
+    @JSONField(name = "deep_cpabid")
+    private String deepCpabid;
+
+    //深度转化ROI系数
+    @JSONField(name = "roi_goal")
+    private String roiGoal;
+
+    @JSONField(serialize = false)
+    private List<String> advertiesIds;
+
+    public List<String> getAdvertiesIds() {
+        return advertiesIds;
+    }
+
+    public void setAdvertiesIds(List<String> advertiesIds) {
+        this.advertiesIds = advertiesIds;
+    }
+
+    public String getExternalActions() {
+        return externalActions;
+    }
+
+    public void setExternalActions(String externalActions) {
+        this.externalActions = externalActions;
+    }
+
+    public String[] getExternal_actions() {
+        return external_actions;
+    }
+
+    public void setExternal_actions(String[] external_actions) {
+        this.external_actions = external_actions;
+    }
+
+    public String getHideIfExists() {
+        return hideIfExists;
+    }
+
+    public void setHideIfExists(String hideIfExists) {
+        this.hideIfExists = hideIfExists;
+    }
+
+    public String getActionScene() {
+        return actionScene;
+    }
+
+    public void setActionScene(String actionScene) {
+        this.actionScene = actionScene;
+    }
+
+    public String[] getAction_scene() {
+        return action_scene;
+    }
+
+    public void setAction_scene(String[] action_scene) {
+        this.action_scene = action_scene;
+    }
+
+    public String getActionDays() {
+        return actionDays;
+    }
+
+    public void setActionDays(String actionDays) {
+        this.actionDays = actionDays;
+    }
+
+    public String getActionCategories() {
+        return actionCategories;
+    }
+
+    public void setActionCategories(String actionCategories) {
+        this.actionCategories = actionCategories;
+    }
+
+    public String[] getAction_categories() {
+        return action_categories;
+    }
+
+    public void setAction_categories(String[] action_categories) {
+        this.action_categories = action_categories;
+    }
+
+    public String getActionWords() {
+        return actionWords;
+    }
+
+    public void setActionWords(String actionWords) {
+        this.actionWords = actionWords;
+    }
+
+    public String[] getAction_words() {
+        return action_words;
+    }
+
+    public void setAction_words(String[] action_words) {
+        this.action_words = action_words;
+    }
+
+    public String getInterestCategories() {
+        return interestCategories;
+    }
+
+    public void setInterestCategories(String interestCategories) {
+        this.interestCategories = interestCategories;
+    }
+
+    public String[] getInterest_categories() {
+        return interest_categories;
+    }
+
+    public void setInterest_categories(String[] interest_categories) {
+        this.interest_categories = interest_categories;
+    }
+
+    public String getInterestWords() {
+        return interestWords;
+    }
+
+    public void setInterestWords(String interestWords) {
+        this.interestWords = interestWords;
+    }
+
+    public String[] getInterest_words() {
+        return interest_words;
+    }
+
+    public void setInterest_words(String[] interest_words) {
+        this.interest_words = interest_words;
+    }
+
+    public String getGeolocations() {
+        return geolocations;
+    }
+
+    public void setGeolocations(String geolocations) {
+        this.geolocations = geolocations;
+    }
+
+    public JSONArray getGeolocation() {
+        return geolocation;
+    }
+
+    public void setGeolocation(JSONArray geolocation) {
+        this.geolocation = geolocation;
+    }
+
+    public String getAwemeFansNumbers() {
+        return awemeFansNumbers;
+    }
+
+    public void setAwemeFansNumbers(String awemeFansNumbers) {
+        this.awemeFansNumbers = awemeFansNumbers;
+    }
+
+    public String[] getAweme_fans_numbers() {
+        return aweme_fans_numbers;
+    }
+
+    public void setAweme_fans_numbers(String[] aweme_fans_numbers) {
+        this.aweme_fans_numbers = aweme_fans_numbers;
+    }
+
+    public String getFilterAwemeAbnormalActive() {
+        return filterAwemeAbnormalActive;
+    }
+
+    public void setFilterAwemeAbnormalActive(String filterAwemeAbnormalActive) {
+        this.filterAwemeAbnormalActive = filterAwemeAbnormalActive;
+    }
+
+    public String getFilterAwemeFansCount() {
+        return filterAwemeFansCount;
+    }
+
+    public void setFilterAwemeFansCount(String filterAwemeFansCount) {
+        this.filterAwemeFansCount = filterAwemeFansCount;
+    }
+
+    public String getFilterOwnAwemeNumber() {
+        return filterOwnAwemeNumber;
+    }
+
+    public void setFilterOwnAwemeNumber(String filterOwnAwemeNumber) {
+        this.filterOwnAwemeNumber = filterOwnAwemeNumber;
+    }
+
+    public String getProductPlatformId() {
+        return productPlatformId;
+    }
+
+    public void setProductPlatformId(String productPlatformId) {
+        this.productPlatformId = productPlatformId;
+    }
+
+    public String getRetargetingType() {
+        return retargetingType;
+    }
+
+    public void setRetargetingType(String retargetingType) {
+        this.retargetingType = retargetingType;
+    }
+
+    public String getAdvertiserStoreIds() {
+        return advertiserStoreIds;
+    }
+
+    public void setAdvertiserStoreIds(String advertiserStoreIds) {
+        this.advertiserStoreIds = advertiserStoreIds;
+    }
+
+    public String[] getAdvertiser_store_ids() {
+        return advertiser_store_ids;
+    }
+
+    public void setAdvertiser_store_ids(String[] advertiser_store_ids) {
+        this.advertiser_store_ids = advertiser_store_ids;
+    }
+
+    public String getAndroidOsv() {
+        return androidOsv;
+    }
+
+    public void setAndroidOsv(String androidOsv) {
+        this.androidOsv = androidOsv;
+    }
+
+    public String getIosOsv() {
+        return iosOsv;
+    }
+
+    public void setIosOsv(String iosOsv) {
+        this.iosOsv = iosOsv;
+    }
+
+    public String getDeviceBrand() {
+        return deviceBrand;
+    }
+
+    public void setDeviceBrand(String deviceBrand) {
+        this.deviceBrand = deviceBrand;
+    }
+
+    public String[] getDevice_brand() {
+        return device_brand;
+    }
+
+    public void setDevice_brand(String[] device_brand) {
+        this.device_brand = device_brand;
+    }
+
+    public String getActivateType() {
+        return activateType;
+    }
+
+    public void setActivateType(String activateType) {
+        this.activateType = activateType;
+    }
+
+    public String[] getActivate_type() {
+        return activate_type;
+    }
+
+    public void setActivate_type(String[] activate_type) {
+        this.activate_type = activate_type;
+    }
+
+    public String getDpaAdtype() {
+        return dpaAdtype;
+    }
+
+    public void setDpaAdtype(String dpaAdtype) {
+        this.dpaAdtype = dpaAdtype;
+    }
+
+    public String[] getDpa_adtype() {
+        return dpa_adtype;
+    }
+
+    public void setDpa_adtype(String[] dpa_adtype) {
+        this.dpa_adtype = dpa_adtype;
+    }
+
+    public String getDpaExternalUrls() {
+        return dpaExternalUrls;
+    }
+
+    public void setDpaExternalUrls(String dpaExternalUrls) {
+        this.dpaExternalUrls = dpaExternalUrls;
+    }
+
+    public String[] getDpa_external_urls() {
+        return dpa_external_urls;
+    }
+
+    public void setDpa_external_urls(String[] dpa_external_urls) {
+        this.dpa_external_urls = dpa_external_urls;
+    }
+
+    public String getDpaOpenUrls() {
+        return dpaOpenUrls;
+    }
+
+    public void setDpaOpenUrls(String dpaOpenUrls) {
+        this.dpaOpenUrls = dpaOpenUrls;
+    }
+
+    public String[] getDpa_open_urls() {
+        return dpa_open_urls;
+    }
+
+    public void setDpa_open_urls(String[] dpa_open_urls) {
+        this.dpa_open_urls = dpa_open_urls;
+    }
+
+    public String getCategoryType() {
+        return categoryType;
+    }
+
+    public void setCategoryType(String categoryType) {
+        this.categoryType = categoryType;
+    }
+
+    public String[] getCategory_type() {
+        return category_type;
+    }
+
+    public void setCategory_type(String[] category_type) {
+        this.category_type = category_type;
+    }
+
+    public String getDpaCategories() {
+        return dpaCategories;
+    }
+
+    public void setDpaCategories(String dpaCategories) {
+        this.dpaCategories = dpaCategories;
+    }
+
+    public String[] getDpa_categories() {
+        return dpa_categories;
+    }
+
+    public void setDpa_categories(String[] dpa_categories) {
+        this.dpa_categories = dpa_categories;
+    }
+
+    public String getDpaProducts() {
+        return dpaProducts;
+    }
+
+    public void setDpaProducts(String dpaProducts) {
+        this.dpaProducts = dpaProducts;
+    }
+
+    public String[] getDpa_products() {
+        return dpa_products;
+    }
+
+    public void setDpa_products(String[] dpa_products) {
+        this.dpa_products = dpa_products;
+    }
+
+    public String getExternalUrlParams() {
+        return externalUrlParams;
+    }
+
+    public void setExternalUrlParams(String externalUrlParams) {
+        this.externalUrlParams = externalUrlParams;
+    }
+
+    public String getOpenUrlParams() {
+        return openUrlParams;
+    }
+
+    public void setOpenUrlParams(String openUrlParams) {
+        this.openUrlParams = openUrlParams;
+    }
+
+    public String getDpaLocalAudience() {
+        return dpaLocalAudience;
+    }
+
+    public void setDpaLocalAudience(String dpaLocalAudience) {
+        this.dpaLocalAudience = dpaLocalAudience;
+    }
+
+    public String getIncludeCustomActions() {
+        return includeCustomActions;
+    }
+
+    public void setIncludeCustomActions(String includeCustomActions) {
+        this.includeCustomActions = includeCustomActions;
+    }
+
+    public String[] getInclude_custom_actions() {
+        return include_custom_actions;
+    }
+
+    public void setInclude_custom_actions(String[] include_custom_actions) {
+        this.include_custom_actions = include_custom_actions;
+    }
+
+    public String getExcludeCustomActions() {
+        return excludeCustomActions;
+    }
+
+    public void setExcludeCustomActions(String excludeCustomActions) {
+        this.excludeCustomActions = excludeCustomActions;
+    }
+
+    public String[] getExclude_custom_actions() {
+        return exclude_custom_actions;
+    }
+
+    public void setExclude_custom_actions(String[] exclude_custom_actions) {
+        this.exclude_custom_actions = exclude_custom_actions;
+    }
+
+    public String getUnionVideoType() {
+        return unionVideoType;
+    }
+
+    public void setUnionVideoType(String unionVideoType) {
+        this.unionVideoType = unionVideoType;
+    }
+
+    public String getSuperiorPopularityType() {
+        return superiorPopularityType;
+    }
+
+    public void setSuperiorPopularityType(String superiorPopularityType) {
+        this.superiorPopularityType = superiorPopularityType;
+    }
+
+    public String getFlowPackage() {
+        return flowPackage;
+    }
+
+    public void setFlowPackage(String flowPackage) {
+        this.flowPackage = flowPackage;
+    }
+
+    public String[] getFlow_package() {
+        return flow_package;
+    }
+
+    public void setFlow_package(String[] flow_package) {
+        this.flow_package = flow_package;
+    }
+
+    public String getExcludeFlowPackage() {
+        return excludeFlowPackage;
+    }
+
+    public void setExcludeFlowPackage(String excludeFlowPackage) {
+        this.excludeFlowPackage = excludeFlowPackage;
+    }
+
+    public String[] getExclude_flow_package() {
+        return exclude_flow_package;
+    }
+
+    public void setExclude_flow_package(String[] exclude_flow_package) {
+        this.exclude_flow_package = exclude_flow_package;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
+    }
+
+    public String[] getDevice_type() {
+        return device_type;
+    }
+
+    public void setDevice_type(String[] device_type) {
+        this.device_type = device_type;
+    }
+
+    public String getAutoExtendTargets() {
+        return autoExtendTargets;
+    }
+
+    public void setAutoExtendTargets(String autoExtendTargets) {
+        this.autoExtendTargets = autoExtendTargets;
+    }
+
+    public String[] getAuto_extend_targets() {
+        return auto_extend_targets;
+    }
+
+    public void setAuto_extend_targets(String[] auto_extend_targets) {
+        this.auto_extend_targets = auto_extend_targets;
+    }
+
+    public String getInventoryType() {
+        return inventoryType;
+    }
+
+    public void setInventoryType(String inventoryType) {
+        this.inventoryType = inventoryType;
+    }
+
+    public String[] getInventory_type() {
+        return inventory_type;
+    }
+
+    public void setInventory_type(String[] inventory_type) {
+        this.inventory_type = inventory_type;
+    }
+
+    public String getAutoExtendEnabled() {
+        return autoExtendEnabled;
+    }
+
+    public void setAutoExtendEnabled(String autoExtendEnabled) {
+        this.autoExtendEnabled = autoExtendEnabled;
+    }
+
+    public String getDeepBidType() {
+        return deepBidType;
+    }
+
+    public void setDeepBidType(String deepBidType) {
+        this.deepBidType = deepBidType;
+    }
+
+    public String getDeepCpabid() {
+        return deepCpabid;
+    }
+
+    public void setDeepCpabid(String deepCpabid) {
+        this.deepCpabid = deepCpabid;
+    }
+
+    public String getRoiGoal() {
+        return roiGoal;
+    }
+
+    public void setRoiGoal(String roiGoal) {
+        this.roiGoal = roiGoal;
+    }
+
+    public String getLocationType() {
+        return locationType;
+    }
+
+    public void setLocationType(String locationType) {
+        this.locationType = locationType;
+    }
+
+    public String[] getBusiness_ids() {
+        return business_ids;
+    }
+
+    public void setBusiness_ids(String[] business_ids) {
+        this.business_ids = business_ids;
+    }
+
+    public String getBusinessIds() {
+        return businessIds;
+    }
+
+    public void setBusinessIds(String businessIds) {
+        this.businessIds = businessIds;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
 
     public String getIds() {
         return ids;
@@ -867,6 +1737,38 @@ public class ThAd extends BaseEntity {
 
     public void setRetargeting_tags_exclude(String[] retargeting_tags_exclude) {
         this.retargeting_tags_exclude = retargeting_tags_exclude;
+    }
+
+    public String getAudiencePackageId() {
+        return audiencePackageId;
+    }
+
+    public void setAudiencePackageId(String audiencePackageId) {
+        this.audiencePackageId = audiencePackageId;
+    }
+
+    public String getLaunchPrice() {
+        return launchPrice;
+    }
+
+    public void setLaunchPrice(String launchPrice) {
+        this.launchPrice = launchPrice;
+    }
+
+    public String[] getLaunch_price() {
+        return launch_price;
+    }
+
+    public void setLaunch_price(String[] launch_price) {
+        this.launch_price = launch_price;
+    }
+
+    public String getInterestActionMode() {
+        return interestActionMode;
+    }
+
+    public void setInterestActionMode(String interestActionMode) {
+        this.interestActionMode = interestActionMode;
     }
 
     @Override

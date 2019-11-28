@@ -26,10 +26,10 @@
                             <form id="formId1">
                                 <div class="select-list">
                                     <ul>
-                                        <li>
-                                            <p>广告主ID：</p>
-                                            <input type="text" name="id"/>
-                                        </li>
+<!--                                        <li>-->
+<!--                                            <p>广告主ID：</p>-->
+<!--                                            <input type="text" name="id"/>-->
+<!--                                        </li>-->
                                         <li>
                                             <p>广告主名称：</p>
                                             <input type="text" name="name"/>
@@ -40,8 +40,8 @@
                                             <a class="btn btn-warning btn-rounded btn-sm"
                                                onclick="$.form.reset('formId1')"><i
                                                     class="fa fa-refresh"></i>&nbsp;重置</a>
-                                            <a class="btn btn-success" onclick="adMutual();"><i class="fa fa-plus"></i>
-                                                同步广告主</a>
+<!--                                            <a class="btn btn-success" onclick="adMutual();"><i class="fa fa-plus"></i>-->
+<!--                                                同步广告主</a>-->
                                         </li>
                                     </ul>
                                 </div>
@@ -49,24 +49,26 @@
                         </div>
                         <div class="col-sm-12 select-table table-striped">
                             <div class="btn-group-sm" role="group" id="toolbar1">
-                                <a class="btn btn-success" onclick="$.operate.add()">
-                                    <i class="fa fa-plus"></i> 添加
-                                </a>
-                                <a class="btn btn-primary single disabled" onclick="$.operate.edit()">
-                                    <i class="fa fa-edit"></i> 修改
-                                </a>
-                                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()">
-                                    <i class="fa fa-remove"></i> 删除
-                                </a>
-                                <a class="btn btn-warning" onclick="$.table.exportExcel()">
-                                    <i class="fa fa-download"></i> 导出
-                                </a>
+<!--                                <a class="btn btn-success" onclick="$.operate.add()">-->
+<!--                                    <i class="fa fa-plus"></i> 添加-->
+<!--                                </a>-->
+<!--                                <a class="btn btn-primary single disabled" onclick="$.operate.edit()">-->
+<!--                                    <i class="fa fa-edit"></i> 修改-->
+<!--                                </a>-->
+<!--                                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()">-->
+<!--                                    <i class="fa fa-remove"></i> 删除-->
+<!--                                </a>-->
+<!--                                <a class="btn btn-warning" onclick="$.table.exportExcel()">-->
+<!--                                    <i class="fa fa-download"></i> 导出-->
+<!--                                </a>-->
                             </div>
                             <table class="freeTable" id="bootstrap-table-1" data-mobile-responsive="true"></table>
                         </div>
                     </div>
                 </div>
             </div>
+
+
             <div id="tab-2" class="tab-pane">
                 <div class="panel-body">
                     <div class="row">
@@ -74,18 +76,18 @@
                             <form id="formId2">
                                 <div class="select-list">
                                     <ul>
-                                        <li>
-                                            <p>广告组ID：</p>
-                                            <input type="text" name="campaignId"/>
-                                        </li>
+<!--                                        <li>-->
+<!--                                            <p>广告组ID：</p>-->
+<!--                                            <input type="text" name="campaignId"/>-->
+<!--                                        </li>-->
                                         <li>
                                             <p>广告组名称：</p>
                                             <input type="text" name="campaignName"/>
                                         </li>
-                                        <li>
-                                            <p>广告主名称：</p>
-                                            <input type="text" name="advertiserId"/>
-                                        </li>
+<!--                                        <li>-->
+<!--                                            <p>广告主名称：</p>-->
+<!--                                            <input type="text" name="advertiserId"/>-->
+<!--                                        </li>-->
 
                                         <li>
                                             <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(2)"><i
@@ -103,18 +105,18 @@
                         </div>
                         <div class="col-sm-12 select-table table-striped">
                             <div class="btn-group-sm" role="group" id="toolbar2">
-                                <a class="btn btn-success" onclick="$.operate.add()">
-                                    <i class="fa fa-plus"></i> 添加
-                                </a>
-                                <a class="btn btn-primary single disabled" onclick="$.operate.edit()">
-                                    <i class="fa fa-edit"></i> 修改
-                                </a>
-                                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()">
-                                    <i class="fa fa-remove"></i> 删除
-                                </a>
-                                <a class="btn btn-warning" onclick="$.table.exportExcel()">
-                                    <i class="fa fa-download"></i> 导出
-                                </a>
+<!--                                <a class="btn btn-success" onclick="$.operate.add()">-->
+<!--                                    <i class="fa fa-plus"></i> 添加-->
+<!--                                </a>-->
+<!--                                <a class="btn btn-primary single disabled" onclick="$.operate.edit()">-->
+<!--                                    <i class="fa fa-edit"></i> 修改-->
+<!--                                </a>-->
+<!--                                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()">-->
+<!--                                    <i class="fa fa-remove"></i> 删除-->
+<!--                                </a>-->
+<!--                                <a class="btn btn-warning" onclick="$.table.exportExcel()">-->
+<!--                                    <i class="fa fa-download"></i> 导出-->
+<!--                                </a>-->
                                 <a class="btn btn-success" onclick="syncCampaigns()">
                                     <i class="fa fa-plus"></i> 同步广告计划
                                 </a>
@@ -124,6 +126,8 @@
                     </div>
                 </div>
             </div>
+
+
             <div id="tab-3" class="tab-pane">
                 <div class="panel-body">
                     <div class="row">
@@ -133,15 +137,18 @@
                                 <input name="updateFlag" value="0" type="hidden">
                                 <div class="select-list">
                                     <ul>
+<!--                                        <li class="select-time">-->
+<!--                                            <label>导入时间： </label>-->
+<!--                                            <input type="text" id="dueDateStart1" placeholder="开始时间（包含）"-->
+<!--                                                   name="start"/>-->
+<!--                                            <span>-</span>-->
+<!--                                            <input type="text" id="dueDateEnd1" placeholder="结束时间（包含）"-->
+<!--                                                   name="end"/>-->
+<!--                                        </li>-->
                                         <li class="select-time">
-                                            <label>导入时间： </label>
-                                            <input type="text" id="dueDateStart1" placeholder="开始时间（包含）"
-                                                   name="start"/>
-                                            <span>-</span>
-                                            <input type="text" id="dueDateEnd1" placeholder="结束时间（包含）"
-                                                   name="end"/>
+                                            <label>计划名称： </label>
+                                            <input type="text" id="name" name="name"/>
                                         </li>
-
                                         <li>
                                             <a class="btn btn-primary btn-rounded btn-sm" onclick="mySearch(3)"><i
                                                     class="fa fa-search"></i>&nbsp;搜索</a>
@@ -158,33 +165,33 @@
 
                         <div class="col-sm-12 select-table table-striped">
                             <div class="btn-group-sm" role="group" id="toolbar3">
-                                <a class="btn btn-danger multiple"
-                                   onclick="removeAll()" style="display: none">
-                                    <i class="fa fa-remove"></i> 删除
-                                </a>
-                                <a class="btn btn-warning" onclick="importExcel(3)">
-                                    <i class="fa fa-upload"></i> 导入
-                                </a>
-                                <a class="btn btn-primary" onclick="startPlan()">
-                                    <i class="fa fa-upload"></i> 启用
-                                </a>
-                                <a class="btn btn-primary" onclick="stopPlan()">
-                                    <i class="fa fa-upload"></i> 停止
-                                </a>
+<!--                                <a class="btn btn-danger multiple"-->
+<!--                                   onclick="removeAll()" style="display: none">-->
+<!--                                    <i class="fa fa-remove"></i> 删除-->
+<!--                                </a>-->
+<!--                                <a class="btn btn-warning" onclick="importExcel(3)">-->
+<!--                                    <i class="fa fa-upload"></i> 导入-->
+<!--                                </a>-->
+<!--                                <a class="btn btn-primary" onclick="startPlan()">-->
+<!--                                    <i class="fa fa-upload"></i> 启用-->
+<!--                                </a>-->
+<!--                                <a class="btn btn-primary" onclick="stopPlan()">-->
+<!--                                    <i class="fa fa-upload"></i> 停止-->
+<!--                                </a>-->
                                 <a class="btn btn-info" onclick="$.table.refresh('bootstrap-table-3')" style="float: right">
                                     <i class="fa fa-refresh"></i> 刷新
                                 </a>
                                 <a class="btn btn-success" onclick="syncPlan()">
                                     <i class="fa fa-refresh"></i> 同步广告计划
                                 </a>
-                                <a class="btn btn-danger multiple"
-                                   onclick="openFull('更新管理', prefix3);">
-                                    <i class="fa fa-remove"></i> 更新管理
-                                </a>
-                                <a class="btn btn-danger multiple"
-                                   onclick="$.modal.openTab('新增管理', prefix3+'/newAddManager')">
-                                    <i class="fa fa-remove"></i> 新增管理
-                                </a>
+<!--                                <a class="btn btn-danger multiple"-->
+<!--                                   onclick="openFull('更新管理', prefix3);">-->
+<!--                                    <i class="fa fa-remove"></i> 更新管理-->
+<!--                                </a>-->
+<!--                                <a class="btn btn-danger multiple"-->
+<!--                                   onclick="$.modal.openTab('新增管理', prefix3+'/newAddManager')">-->
+<!--                                    <i class="fa fa-remove"></i> 新增管理-->
+<!--                                </a>-->
                                 <a class="btn btn-success" onclick="showField()" style="float: right">
                                     <i class="fa fa-plus"></i> 显示方案
                                 </a>
@@ -593,14 +600,17 @@
     }
 
     function mySearch(id) {
+        var data = {};
         if (id == '1') {
             $.table._option.id = 'bootstrap-table-1';
         } else if (id == '2') {
             $.table._option.id = 'bootstrap-table-2';
+            data["advertiserId"] = advertiserId;
         } else if (id == '3') {
             $.table._option.id = 'bootstrap-table-3';
+            data["campaignId"] = campaignId;
         }
-        $.table.search('formId' + id);
+        $.table.search('formId' + id,data);
     }
 
     function myExportExcel(id) {
@@ -749,12 +759,39 @@
                 align: 'center',
                 formatter: function (value, row, index) {
                     var actions = [];
-                    actions.push('<a class="btn btn-success btn-xs  href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                    actions.push('<a class="btn btn-danger btn-xs   href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                    // actions.push('<a class="btn btn-success btn-xs  href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                    // actions.push('<a class="btn btn-danger btn-xs   href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
                     return actions.join('');
                 }
             }]
     };
+
+    function copy(id,level) {
+
+        var data = {};
+        var context;
+        layer.prompt({title: '请输入复制后名称', formType: 2}, function(text, index){
+
+            if(text==undefined){
+                layer.msg("名称不能为空");
+            }else{
+                layer.close(index);
+                layer.prompt({title: '请输入复制个数', formType: 2}, function(num, index1){
+                    if(text==undefined){
+                        layer.msg("名称不能为空");
+                    }else{
+                        if (!(/(^[1-9]\d*$)/.test(num))) {
+                            layer.msg("输入的不是正整数");
+                        }else {
+                            layer.close(index1);
+                            $.operate.post(prefix2 + "/copy", {"id": id, "level": level, "num": num, "name": text});
+                        }
+                    }
+                });
+            }
+        });
+
+    }
 
     var options2 = {
         id: "bootstrap-table-2",
@@ -835,12 +872,14 @@
                 align: 'center',
                 formatter: function (value, row, index) {
                     var actions = [];
-                    actions.push('<a class="btn btn-success btn-xs  href="javascript:void(0)" onclick="$.operate.edit(\'' + row.campaignId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                    actions.push('<a class="btn btn-danger btn-xs   href="javascript:void(0)" onclick="$.operate.remove(\'' + row.campaignId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                    // actions.push('<a class="btn btn-success btn-xs  href="javascript:void(0)" onclick="$.operate.edit(\'' + row.campaignId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                    // actions.push('<a class="btn btn-danger btn-xs   href="javascript:void(0)" onclick="$.operate.remove(\'' + row.campaignId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                    actions.push('<a class="btn btn-info btn-xs   href="javascript:void(0)" onclick="copy('+row.campaignId+',\''+"campaign"+'\')"><i class="fa fa-paste"></i>复制</a>');
                     return actions.join('');
                 }
             }]
     };
+
 
     var options3 ;
     function options3Initfun(){
@@ -887,8 +926,9 @@
                     align: 'center',
                     formatter: function (value, row, index) {
                         var actions = [];
-                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a style="display: none" class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        // actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        // actions.push('<a style="display: none" class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-info btn-xs   href="javascript:void(0)" onclick="copy('+row.adId+',\''+"plan"+'\')"><i class="fa fa-paste"></i>复制</a>');
                         return actions.join('');
                     }
                 },
