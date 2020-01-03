@@ -42,6 +42,8 @@ user:
 
 # Spring配置
 spring:
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${ruoyi.profile}
   # 模板引擎
   thymeleaf:
     mode: HTML
@@ -148,6 +150,12 @@ toutiao:
   adGroupAPIUrls:
     getGroup: https://ad.toutiao.com/open_api/2/campaign/get/
     createGroup: https://ad.toutiao.com/open_api/2/campaign/create/
+  adCreativityAPIUrls:
+    createCreativity: https://ad.toutiao.com/open_api/2/creative/create_v2/
+    updateStatus: https://ad.toutiao.com/open_api/2/creative/update/status/
+    updateCreativity: https://ad.toutiao.com/open_api/2/creative/update_v2/
+    readCreativityDetail: https://ad.toutiao.com/open_api/2/creative/read_v2/
   tools:
     getIndustry: https://ad.toutiao.com/open_api/2/tools/industry/get/
     uploadVideo: https://ad.toutiao.com/open_api/2/file/video/ad/
+    uploadImage: https://ad.toutiao.com/open_api/2/file/image/ad/

@@ -125,7 +125,8 @@ public class YiCheController {
             // 下载名称
             response.setCharacterEncoding("utf-8");
             response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition", "attachment;fileName=BaiduShanTou.xml");
+            response.setHeader("Content-Disposition", "attachment;fileName=" +
+                    ".xml");
             outputStream = response.getOutputStream();
             FileUtils.writeBytes(file.getAbsolutePath(), outputStream);
         } catch (Exception e) {

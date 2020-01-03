@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.yiche.mapper.YicheMapper">
+    
+    <resultMap type="Yiche" id="YicheResult">
+        <result property="id"    column="id"    />
+        <result property="loc"    column="loc"    />
+        <result property="pcloc"    column="pcLoc"    />
+        <result property="name"    column="name"    />
+        <result property="outerid"    column="outerID"    />
+        <result property="bizcategory"    column="bizCategory"    />
+        <result property="brand"    column="brand"    />
+        <result property="manufacturer"    column="manufacturer"    />
+        <result property="type"    column="type"    />
+        <result property="grade"    column="grade"    />
+        <result property="sellername"    column="sellerName"    />
+        <result property="nationality"    column="nationality"    />
+        <result property="enbrand"    column="enBrand"    />
+        <result property="modelyear"    column="modelYear"    />
+        <result property="price"    column="price"    />
+        <result property="priceunit"    column="priceUnit"    />
+        <result property="unit"    column="unit"    />
+        <result property="msrp"    column="MSRP"    />
+        <result property="timetomarket"    column="timeToMarket"    />
+        <result property="image"    column="image"    />
+        <result property="moreimages1"    column="moreImages1"    />
+        <result property="moreimages2"    column="moreImages2"    />
+        <result property="moreimages3"    column="moreImages3"    />
+        <result property="volume"    column="volume"    />
+        <result property="volumeunit"    column="volumeUnit"    />
+        <result property="integratedfuelconsumption"    column="integratedFuelConsumption"    />
+        <result property="engine"    column="engine"    />
+        <result property="gearbox"    column="gearbox"    />
+        <result property="speed"    column="speed"    />
+        <result property="structure"    column="structure"    />
+        <result property="accelerationtime"    column="accelerationTime"    />
+        <result property="seatcapacity"    column="seatCapacity"    />
+        <result property="fuel"    column="fuel"    />
+        <result property="environmentalstandard"    column="environmentalStandard"    />
+        <result property="exteriorcolor"    column="exteriorColor"    />
+        <result property="interiorcolor"    column="interiorColor"    />
+        <result property="qualityassurance"    column="qualityAssurance"    />
+        <result property="category"    column="category"    />
+        <result property="categoryurl"    column="categoryUrl"    />
+        <result property="categorypcurl"    column="categoryPcUrl"    />
+        <result property="subcategory"    column="subCategory"    />
+        <result property="subcategoryurl"    column="subCategoryUrl"    />
+        <result property="subcategorypcurl"    column="subCategoryPcUrl"    />
+        <result property="thirdcategory"    column="thirdCategory"    />
+        <result property="thirdcategoryurl"    column="thirdCategoryUrl"    />
+        <result property="thirdcategorypcurl"    column="thirdCategoryPcUrl"    />
+        <result property="key1"    column="key1"    />
+        <result property="key2"    column="key2"    />
+        <result property="key3"    column="key3"    />
+        <result property="value1"    column="value1"    />
+        <result property="value2"    column="value2"    />
+        <result property="value3"    column="value3"    />
+    </resultMap>
+
+    <sql id="selectYicheVo">
+        select id, loc, pcLoc, name, outerID, bizCategory, brand, manufacturer, type, grade, sellerName, nationality, enBrand, modelYear, price, priceUnit, unit, MSRP, timeToMarket, image, moreImages1, moreImages2, moreImages3, volume, volumeUnit, integratedFuelConsumption, engine, gearbox, speed, structure, accelerationTime, seatCapacity, fuel, environmentalStandard, exteriorColor, interiorColor, qualityAssurance, category, categoryUrl, categoryPcUrl, subCategory, subCategoryUrl, subCategoryPcUrl, thirdCategory, thirdCategoryUrl, thirdCategoryPcUrl, key1, key2, key3, value1, value2, value3 from yiche
+    </sql>
+
+    <select id="selectYicheList" parameterType="Yiche" resultMap="YicheResult">
+        <include refid="selectYicheVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="sellername != null  and sellername != ''"> and sellerName like concat('%', #{sellername}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectYicheById" parameterType="Long" resultMap="YicheResult">
+        <include refid="selectYicheVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertYiche" parameterType="Yiche">
+        insert into yiche
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="loc != null  and loc != ''">loc,</if>
+            <if test="pcloc != null  and pcloc != ''">pcLoc,</if>
+            <if test="name != null  and name != ''">name,</if>
+            <if test="outerid != null  and outerid != ''">outerID,</if>
+            <if test="bizcategory != null  and bizcategory != ''">bizCategory,</if>
+            <if test="brand != null  and brand != ''">brand,</if>
+            <if test="manufacturer != null  and manufacturer != ''">manufacturer,</if>
+            <if test="type != null  and type != ''">type,</if>
+            <if test="grade != null  and grade != ''">grade,</if>
+            <if test="sellername != null  and sellername != ''">sellerName,</if>
+            <if test="nationality != null  and nationality != ''">nationality,</if>
+            <if test="enbrand != null  and enbrand != ''">enBrand,</if>
+            <if test="modelyear != null  and modelyear != ''">modelYear,</if>
+            <if test="price != null  and price != ''">price,</if>
+            <if test="priceunit != null  and priceunit != ''">priceUnit,</if>
+            <if test="unit != null  and unit != ''">unit,</if>
+            <if test="msrp != null  and msrp != ''">MSRP,</if>
+            <if test="timetomarket != null  and timetomarket != ''">timeToMarket,</if>
+            <if test="image != null  and image != ''">image,</if>
+            <if test="moreimages1 != null  and moreimages1 != ''">moreImages1,</if>
+            <if test="moreimages2 != null  and moreimages2 != ''">moreImages2,</if>
+            <if test="moreimages3 != null  and moreimages3 != ''">moreImages3,</if>
+            <if test="volume != null  and volume != ''">volume,</if>
+            <if test="volumeunit != null  and volumeunit != ''">volumeUnit,</if>
+            <if test="integratedfuelconsumption != null  and integratedfuelconsumption != ''">integratedFuelConsumption,</if>
+            <if test="engine != null  and engine != ''">engine,</if>
+            <if test="gearbox != null  and gearbox != ''">gearbox,</if>
+            <if test="speed != null  and speed != ''">speed,</if>
+            <if test="structure != null  and structure != ''">structure,</if>
+            <if test="accelerationtime != null  and accelerationtime != ''">accelerationTime,</if>
+            <if test="seatcapacity != null  and seatcapacity != ''">seatCapacity,</if>
+            <if test="fuel != null  and fuel != ''">fuel,</if>
+            <if test="environmentalstandard != null  and environmentalstandard != ''">environmentalStandard,</if>
+            <if test="exteriorcolor != null  and exteriorcolor != ''">exteriorColor,</if>
+            <if test="interiorcolor != null  and interiorcolor != ''">interiorColor,</if>
+            <if test="qualityassurance != null  and qualityassurance != ''">qualityAssurance,</if>
+            <if test="category != null  and category != ''">category,</if>
+            <if test="categoryurl != null  and categoryurl != ''">categoryUrl,</if>
+            <if test="categorypcurl != null  and categorypcurl != ''">categoryPcUrl,</if>
+            <if test="subcategory != null  and subcategory != ''">subCategory,</if>
+            <if test="subcategoryurl != null  and subcategoryurl != ''">subCategoryUrl,</if>
+            <if test="subcategorypcurl != null  and subcategorypcurl != ''">subCategoryPcUrl,</if>
+            <if test="thirdcategory != null  and thirdcategory != ''">thirdCategory,</if>
+            <if test="thirdcategoryurl != null  and thirdcategoryurl != ''">thirdCategoryUrl,</if>
+            <if test="thirdcategorypcurl != null  and thirdcategorypcurl != ''">thirdCategoryPcUrl,</if>
+            <if test="key1 != null  and key1 != ''">key1,</if>
+            <if test="key2 != null  and key2 != ''">key2,</if>
+            <if test="key3 != null  and key3 != ''">key3,</if>
+            <if test="value1 != null  and value1 != ''">value1,</if>
+            <if test="value2 != null  and value2 != ''">value2,</if>
+            <if test="value3 != null  and value3 != ''">value3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="loc != null  and loc != ''">#{loc},</if>
+            <if test="pcloc != null  and pcloc != ''">#{pcloc},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="outerid != null  and outerid != ''">#{outerid},</if>
+            <if test="bizcategory != null  and bizcategory != ''">#{bizcategory},</if>
+            <if test="brand != null  and brand != ''">#{brand},</if>
+            <if test="manufacturer != null  and manufacturer != ''">#{manufacturer},</if>
+            <if test="type != null  and type != ''">#{type},</if>
+            <if test="grade != null  and grade != ''">#{grade},</if>
+            <if test="sellername != null  and sellername != ''">#{sellername},</if>
+            <if test="nationality != null  and nationality != ''">#{nationality},</if>
+            <if test="enbrand != null  and enbrand != ''">#{enbrand},</if>
+            <if test="modelyear != null  and modelyear != ''">#{modelyear},</if>
+            <if test="price != null  and price != ''">#{price},</if>
+            <if test="priceunit != null  and priceunit != ''">#{priceunit},</if>
+            <if test="unit != null  and unit != ''">#{unit},</if>
+            <if test="msrp != null  and msrp != ''">#{msrp},</if>
+            <if test="timetomarket != null  and timetomarket != ''">#{timetomarket},</if>
+            <if test="image != null  and image != ''">#{image},</if>
+            <if test="moreimages1 != null  and moreimages1 != ''">#{moreimages1},</if>
+            <if test="moreimages2 != null  and moreimages2 != ''">#{moreimages2},</if>
+            <if test="moreimages3 != null  and moreimages3 != ''">#{moreimages3},</if>
+            <if test="volume != null  and volume != ''">#{volume},</if>
+            <if test="volumeunit != null  and volumeunit != ''">#{volumeunit},</if>
+            <if test="integratedfuelconsumption != null  and integratedfuelconsumption != ''">#{integratedfuelconsumption},</if>
+            <if test="engine != null  and engine != ''">#{engine},</if>
+            <if test="gearbox != null  and gearbox != ''">#{gearbox},</if>
+            <if test="speed != null  and speed != ''">#{speed},</if>
+            <if test="structure != null  and structure != ''">#{structure},</if>
+            <if test="accelerationtime != null  and accelerationtime != ''">#{accelerationtime},</if>
+            <if test="seatcapacity != null  and seatcapacity != ''">#{seatcapacity},</if>
+            <if test="fuel != null  and fuel != ''">#{fuel},</if>
+            <if test="environmentalstandard != null  and environmentalstandard != ''">#{environmentalstandard},</if>
+            <if test="exteriorcolor != null  and exteriorcolor != ''">#{exteriorcolor},</if>
+            <if test="interiorcolor != null  and interiorcolor != ''">#{interiorcolor},</if>
+            <if test="qualityassurance != null  and qualityassurance != ''">#{qualityassurance},</if>
+            <if test="category != null  and category != ''">#{category},</if>
+            <if test="categoryurl != null  and categoryurl != ''">#{categoryurl},</if>
+            <if test="categorypcurl != null  and categorypcurl != ''">#{categorypcurl},</if>
+            <if test="subcategory != null  and subcategory != ''">#{subcategory},</if>
+            <if test="subcategoryurl != null  and subcategoryurl != ''">#{subcategoryurl},</if>
+            <if test="subcategorypcurl != null  and subcategorypcurl != ''">#{subcategorypcurl},</if>
+            <if test="thirdcategory != null  and thirdcategory != ''">#{thirdcategory},</if>
+            <if test="thirdcategoryurl != null  and thirdcategoryurl != ''">#{thirdcategoryurl},</if>
+            <if test="thirdcategorypcurl != null  and thirdcategorypcurl != ''">#{thirdcategorypcurl},</if>
+            <if test="key1 != null  and key1 != ''">#{key1},</if>
+            <if test="key2 != null  and key2 != ''">#{key2},</if>
+            <if test="key3 != null  and key3 != ''">#{key3},</if>
+            <if test="value1 != null  and value1 != ''">#{value1},</if>
+            <if test="value2 != null  and value2 != ''">#{value2},</if>
+            <if test="value3 != null  and value3 != ''">#{value3},</if>
+         </trim>
+    </insert>
+
+    <update id="updateYiche" parameterType="Yiche">
+        update yiche
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="loc != null  and loc != ''">loc = #{loc},</if>
+            <if test="pcloc != null  and pcloc != ''">pcLoc = #{pcloc},</if>
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="outerid != null  and outerid != ''">outerID = #{outerid},</if>
+            <if test="bizcategory != null  and bizcategory != ''">bizCategory = #{bizcategory},</if>
+            <if test="brand != null  and brand != ''">brand = #{brand},</if>
+            <if test="manufacturer != null  and manufacturer != ''">manufacturer = #{manufacturer},</if>
+            <if test="type != null  and type != ''">type = #{type},</if>
+            <if test="grade != null  and grade != ''">grade = #{grade},</if>
+            <if test="sellername != null  and sellername != ''">sellerName = #{sellername},</if>
+            <if test="nationality != null  and nationality != ''">nationality = #{nationality},</if>
+            <if test="enbrand != null  and enbrand != ''">enBrand = #{enbrand},</if>
+            <if test="modelyear != null  and modelyear != ''">modelYear = #{modelyear},</if>
+            <if test="price != null  and price != ''">price = #{price},</if>
+            <if test="priceunit != null  and priceunit != ''">priceUnit = #{priceunit},</if>
+            <if test="unit != null  and unit != ''">unit = #{unit},</if>
+            <if test="msrp != null  and msrp != ''">MSRP = #{msrp},</if>
+            <if test="timetomarket != null  and timetomarket != ''">timeToMarket = #{timetomarket},</if>
+            <if test="image != null  and image != ''">image = #{image},</if>
+            <if test="moreimages1 != null  and moreimages1 != ''">moreImages1 = #{moreimages1},</if>
+            <if test="moreimages2 != null  and moreimages2 != ''">moreImages2 = #{moreimages2},</if>
+            <if test="moreimages3 != null  and moreimages3 != ''">moreImages3 = #{moreimages3},</if>
+            <if test="volume != null  and volume != ''">volume = #{volume},</if>
+            <if test="volumeunit != null  and volumeunit != ''">volumeUnit = #{volumeunit},</if>
+            <if test="integratedfuelconsumption != null  and integratedfuelconsumption != ''">integratedFuelConsumption = #{integratedfuelconsumption},</if>
+            <if test="engine != null  and engine != ''">engine = #{engine},</if>
+            <if test="gearbox != null  and gearbox != ''">gearbox = #{gearbox},</if>
+            <if test="speed != null  and speed != ''">speed = #{speed},</if>
+            <if test="structure != null  and structure != ''">structure = #{structure},</if>
+            <if test="accelerationtime != null  and accelerationtime != ''">accelerationTime = #{accelerationtime},</if>
+            <if test="seatcapacity != null  and seatcapacity != ''">seatCapacity = #{seatcapacity},</if>
+            <if test="fuel != null  and fuel != ''">fuel = #{fuel},</if>
+            <if test="environmentalstandard != null  and environmentalstandard != ''">environmentalStandard = #{environmentalstandard},</if>
+            <if test="exteriorcolor != null  and exteriorcolor != ''">exteriorColor = #{exteriorcolor},</if>
+            <if test="interiorcolor != null  and interiorcolor != ''">interiorColor = #{interiorcolor},</if>
+            <if test="qualityassurance != null  and qualityassurance != ''">qualityAssurance = #{qualityassurance},</if>
+            <if test="category != null  and category != ''">category = #{category},</if>
+            <if test="categoryurl != null  and categoryurl != ''">categoryUrl = #{categoryurl},</if>
+            <if test="categorypcurl != null  and categorypcurl != ''">categoryPcUrl = #{categorypcurl},</if>
+            <if test="subcategory != null  and subcategory != ''">subCategory = #{subcategory},</if>
+            <if test="subcategoryurl != null  and subcategoryurl != ''">subCategoryUrl = #{subcategoryurl},</if>
+            <if test="subcategorypcurl != null  and subcategorypcurl != ''">subCategoryPcUrl = #{subcategorypcurl},</if>
+            <if test="thirdcategory != null  and thirdcategory != ''">thirdCategory = #{thirdcategory},</if>
+            <if test="thirdcategoryurl != null  and thirdcategoryurl != ''">thirdCategoryUrl = #{thirdcategoryurl},</if>
+            <if test="thirdcategorypcurl != null  and thirdcategorypcurl != ''">thirdCategoryPcUrl = #{thirdcategorypcurl},</if>
+            <if test="key1 != null  and key1 != ''">key1 = #{key1},</if>
+            <if test="key2 != null  and key2 != ''">key2 = #{key2},</if>
+            <if test="key3 != null  and key3 != ''">key3 = #{key3},</if>
+            <if test="value1 != null  and value1 != ''">value1 = #{value1},</if>
+            <if test="value2 != null  and value2 != ''">value2 = #{value2},</if>
+            <if test="value3 != null  and value3 != ''">value3 = #{value3},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteYicheById" parameterType="Long">
+        delete from yiche where id = #{id}
+    </delete>
+
+    <delete id="deleteYicheByIds" parameterType="String">
+        delete from yiche where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

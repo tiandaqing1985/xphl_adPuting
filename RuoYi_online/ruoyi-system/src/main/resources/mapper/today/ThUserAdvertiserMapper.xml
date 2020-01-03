@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.today.mapper.ThUserAdvertiserMapper">
+    
+    <resultMap type="ThUserAdvertiser" id="ThUserAdvertiserResult">
+        <result property="id"    column="id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="advertiserId"    column="advertiser_id"    />
+    </resultMap>
+
+    <sql id="selectThUserAdvertiserVo">
+        select id, user_name, advertiser_id from th_user_advertiser
+    </sql>
+
+    <select id="selectThUserAdvertiserList" parameterType="ThUserAdvertiser" resultMap="ThUserAdvertiserResult">
+        <include refid="selectThUserAdvertiserVo"/>
+        <where>  
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectThUserAdvertiserById" parameterType="Long" resultMap="ThUserAdvertiserResult">
+        <include refid="selectThUserAdvertiserVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertThUserAdvertiser" parameterType="ThUserAdvertiser">
+        insert into th_user_advertiser
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="userName != null  and userName != ''">user_name,</if>
+            <if test="advertiserId != null  and advertiserId != ''">advertiser_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="userName != null  and userName != ''">#{userName},</if>
+            <if test="advertiserId != null  and advertiserId != ''">#{advertiserId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateThUserAdvertiser" parameterType="ThUserAdvertiser">
+        update th_user_advertiser
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null  and userName != ''">user_name = #{userName},</if>
+            <if test="advertiserId != null  and advertiserId != ''">advertiser_id = #{advertiserId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteThUserAdvertiserById" parameterType="Long">
+        delete from th_user_advertiser where id = #{id}
+    </delete>
+
+    <delete id="deleteThUserAdvertiserByIds" parameterType="String">
+        delete from th_user_advertiser where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
