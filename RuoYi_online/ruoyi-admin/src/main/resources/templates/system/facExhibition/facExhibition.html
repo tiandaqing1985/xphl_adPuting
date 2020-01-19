@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('财务查看列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <p>演员姓名：</p>
+                            <input type="text" name="actorName"/>
+                        </li>
+                        <li>
+                            <p>提交人：</p>
+                            <input type="text" name="addName"/>
+                        </li>
+                        <li>
+                            <p>支付时间：</p>
+                            <input type="text" name="actualPaymentTime"  class="time-input"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+
+                            <a class="btn btn-danger btn-rounded btn-sm"
+                               onclick="toSubmitAll()">
+                                <i class="fa fa-check"></i>批量付款
+                            </a>
+
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-warning" onclick="$.table.exportExcel()"
+               shiro:hasPermission="system:facExhibition:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+
+    var prefix = ctx + "system/facExhibition";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "财务查看",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'id',
+                    visible: false
+                },
+                {
+                    field: 'actorName',
+                    title: '演员姓名'
+                },
+                {
+                    field: 'number',
+                    title: '银行卡号'
+                },
+                {
+                    field: 'idnumber',
+                    title: '身份证号'
+                },
+                {
+                    field: 'telephone',
+                    title: '手机号'
+                },
+                {
+                    field: 'amount',
+                    title: '金额'
+                },
+                {
+                    field: 'documenttype',
+                    title: '所属银行'
+                },
+                {
+                    field: 'opi',
+                    title: '备注'
+                },
+                {
+                    field: 'shotTime',
+                    title: '拍摄时间',
+                    formatter: function (value, row, index) {
+                        var newDate = /\d{4}-\d{1,2}-\d{1,2}/g.exec(value);
+                        return newDate;
+                    }
+                },
+                {
+                    field: 'addTime',
+                    title: '提交时间',
+                    formatter: function (value, row, index) {
+                        var newDate = /\d{4}-\d{1,2}-\d{1,2}/g.exec(value);
+                        return newDate;
+                    }
+                },
+                {
+                    field: 'addName',
+                    title: '提交人'
+                }
+                ,
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="fukuan(\'' + row.id + '\')"><i class="fa fa-edit"></i>付款</a> ');
+                        return actions.join('');
+                    }
+                }
+
+
+            ]
+        };
+        $.table.init(options);
+    });
+
+
+    function fukuan(id) {
+        $.modal.open("付款确认", "/system/facExhibition/edit?id=" + id , '500', '320');
+    }
+
+    function toSubmitAll(){
+
+        debugger;
+        var ids = $.table.selectColumns("id");
+        alert(ids)
+            if (ids.length == 0) {
+                $.modal.alertWarning("请至少选择一条记录");
+                return;
+            }
+            $.modal.confirm("确认要提交选中的" + ids.length + "条数据吗?", function () {
+
+                $.modal.open('审批', prefix + "/approvalModer?ids=" + ids, '500', '320');
+            });
+    }
+
+</script>
+</body>
+</html>

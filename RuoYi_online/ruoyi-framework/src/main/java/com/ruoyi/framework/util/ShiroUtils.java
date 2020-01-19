@@ -84,6 +84,15 @@ public class ShiroUtils
         return String.valueOf(getSubject().getSession().getId());
     }
 
+    public static String getUserName()
+    {
+        return getSysUser().getUserName();
+    }
+
+
+
+
+
     /**
      * 生成随机盐
      */

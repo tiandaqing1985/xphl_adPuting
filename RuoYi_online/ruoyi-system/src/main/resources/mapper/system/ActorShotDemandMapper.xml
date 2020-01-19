@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ActorShotDemandMapper">
+    
+    <resultMap type="ActorShotDemand" id="ActorShotDemandResult">
+        <result property="id"    column="id"    />
+        <result property="groupLeader"    column="group_leader"    />
+        <result property="groupType"    column="group_type"    />
+        <result property="member"    column="member"    />
+        <result property="contractParty"    column="contract_party"    />
+        <result property="advertiser"    column="advertiser"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="demandName"    column="demand_name"    />
+        <result property="salesManager"    column="sales_manager"    />
+        <result property="delivery"    column="delivery"    />
+        <result property="salesType"    column="sales_type"    />
+        <result property="sitcom"    column="sitcom"    />
+        <result property="clip"    column="clip"    />
+        <result property="total"    column="total"    />
+        <result property="shotTime"    column="shot_time"    />
+        <result property="costType"    column="cost_type"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="username"    column="userName"    />
+        <result property="updatename"    column="updateName"    />
+    </resultMap>
+
+    <sql id="selectActorShotDemandVo">
+        select id, group_leader, group_type, member, contract_party, advertiser, customer_name, demand_name, sales_manager, delivery, sales_type, sitcom, clip, total, shot_time, cost_type, start_time, update_time, userName, updateName from actor_shot_demand
+    </sql>
+
+    <select id="selectActorShotDemandList" parameterType="ActorShotDemand" resultMap="ActorShotDemandResult">
+        <include refid="selectActorShotDemandVo"/>
+        <where>
+            <if test="groupLeader != null  and groupLeader != ''"> and group_leader like concat('%', #{groupLeader}, '%')</if>
+            <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>
+            <if test="demandName != null  and demandName != ''"> and demand_name like concat('%', #{demandName}, '%')</if>
+            <if test="username != null  and username != ''"> and userName like concat('%', #{username}, '%')</if>
+            <if test="updatename != null  and updatename != ''"> and updateName like concat('%', #{updatename}, '%')</if>
+            <if test="updatename != null  and updatename != ''"> and updateName like concat('%', #{updatename}, '%')</if>
+            <if test="delivery != null  and delivery != ''"> and delivery like concat('%', #{delivery}, '%')</if>
+            <if test="params.beginShotTime != null and params.beginShotTime != ''"><!-- 开始时间检索 -->
+                and date_format(shot_time,'%y%m%d') &gt;= date_format(#{params.beginShotTime},'%y%m%d')
+            </if>
+            <if test="params.endShotTime != null and params.endShotTime != ''"><!-- 结束时间检索 -->
+                and date_format(shot_time,'%y%m%d') &lt;= date_format(#{params.endShotTime},'%y%m%d')
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectActorShotDemandById" parameterType="Long" resultMap="ActorShotDemandResult">
+        <include refid="selectActorShotDemandVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertActorShotDemand" parameterType="ActorShotDemand" useGeneratedKeys="true" keyProperty="id">
+        insert into actor_shot_demand
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="groupLeader != null  and groupLeader != ''">group_leader,</if>
+            <if test="groupType != null  and groupType != ''">group_type,</if>
+            <if test="member != null  and member != ''">member,</if>
+            <if test="contractParty != null  and contractParty != ''">contract_party,</if>
+            <if test="advertiser != null  and advertiser != ''">advertiser,</if>
+            <if test="customerName != null  and customerName != ''">customer_name,</if>
+            <if test="demandName != null  and demandName != ''">demand_name,</if>
+            <if test="salesManager != null  and salesManager != ''">sales_manager,</if>
+            <if test="delivery != null  and delivery != ''">delivery,</if>
+            <if test="salesType != null  and salesType != ''">sales_type,</if>
+            <if test="sitcom != null ">sitcom,</if>
+            <if test="clip != null ">clip,</if>
+            <if test="total != null ">total,</if>
+            <if test="shotTime != null ">shot_time,</if>
+            <if test="costType != null  and costType != ''">cost_type,</if>
+            <if test="startTime != null ">start_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="username != null  and username != ''">userName,</if>
+            <if test="updatename != null  and updatename != ''">updateName,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="groupLeader != null  and groupLeader != ''">#{groupLeader},</if>
+            <if test="groupType != null  and groupType != ''">#{groupType},</if>
+            <if test="member != null  and member != ''">#{member},</if>
+            <if test="contractParty != null  and contractParty != ''">#{contractParty},</if>
+            <if test="advertiser != null  and advertiser != ''">#{advertiser},</if>
+            <if test="customerName != null  and customerName != ''">#{customerName},</if>
+            <if test="demandName != null  and demandName != ''">#{demandName},</if>
+            <if test="salesManager != null  and salesManager != ''">#{salesManager},</if>
+            <if test="delivery != null  and delivery != ''">#{delivery},</if>
+            <if test="salesType != null  and salesType != ''">#{salesType},</if>
+            <if test="sitcom != null ">#{sitcom},</if>
+            <if test="clip != null ">#{clip},</if>
+            <if test="total != null ">#{total},</if>
+            <if test="shotTime != null ">#{shotTime},</if>
+            <if test="costType != null  and costType != ''">#{costType},</if>
+            <if test="startTime != null ">#{startTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="username != null  and username != ''">#{username},</if>
+            <if test="updatename != null  and updatename != ''">#{updatename},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActorShotDemand" parameterType="ActorShotDemand">
+        update actor_shot_demand
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupLeader != null  and groupLeader != ''">group_leader = #{groupLeader},</if>
+            <if test="groupType != null  and groupType != ''">group_type = #{groupType},</if>
+            <if test="member != null  and member != ''">member = #{member},</if>
+            <if test="contractParty != null  and contractParty != ''">contract_party = #{contractParty},</if>
+            <if test="advertiser != null  and advertiser != ''">advertiser = #{advertiser},</if>
+            <if test="customerName != null  and customerName != ''">customer_name = #{customerName},</if>
+            <if test="demandName != null  and demandName != ''">demand_name = #{demandName},</if>
+            <if test="salesManager != null  and salesManager != ''">sales_manager = #{salesManager},</if>
+            <if test="delivery != null  and delivery != ''">delivery = #{delivery},</if>
+            <if test="salesType != null  and salesType != ''">sales_type = #{salesType},</if>
+            <if test="sitcom != null ">sitcom = #{sitcom},</if>
+            <if test="clip != null ">clip = #{clip},</if>
+            <if test="total != null ">total = #{total},</if>
+            <if test="shotTime != null ">shot_time = #{shotTime},</if>
+            <if test="costType != null  and costType != ''">cost_type = #{costType},</if>
+            <if test="startTime != null ">start_time = #{startTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="username != null  and username != ''">userName = #{username},</if>
+            <if test="updatename != null  and updatename != ''">updateName = #{updatename},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActorShotDemandById" parameterType="Long">
+        delete from actor_shot_demand where id = #{id}
+    </delete>
+
+    <delete id="deleteActorShotDemandByIds" parameterType="String">
+        delete from actor_shot_demand where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('新增演员拍摄汇总')"/>
+    <th:block th:include="include :: datetimepicker-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-apply-add">
+
+        <!--        <div class="col-md-6">-->
+        <!--            <div class="form-group">-->
+        <!--                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>组别：</label>-->
+        <!--                <div class="col-sm-9">-->
+        <!--                    <select name="type" class="form-control m-b">-->
+        <!--                        <option value="A组">A组</option>-->
+        <!--                        <option value="B组">B组</option>-->
+        <!--                        <option value="C组">C组</option>-->
+        <!--                    </select>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>拍摄时间：</label>
+                <div class="col-sm-9">
+                    <div class="input-group date">
+                        <input name="shotTime" class="time-input form-control" placeholder="yyyy-MM-dd" type="text"
+                               required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--        <div class="col-md-6">-->
+        <!--            <div class="form-group">-->
+        <!--                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>是否报销/支付：</label>-->
+        <!--                <div class="col-sm-9">-->
+        <!--                    <select name="isReimbur" class="form-control m-b">-->
+        <!--                        <option value="是">是</option>-->
+        <!--                        <option value="否">否</option>-->
+        <!--                    </select>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>演员姓名：</label>
+                <div class="col-sm-9" style="padding:0;">
+                    <div class="col-sm-9">
+                        <input id="actorName" name="actorName" class="form-control" type="text" required>
+                        <div class="input-group-btn" style="float: right">
+                            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>预计支付时间：</label>
+                <div class="col-sm-9">
+                    <div class="input-group date">
+                        <input name="actualPaymentTime" class="time-input form-control" placeholder="yyyy-MM-dd" type="text"
+                               required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>价格：</label>
+                <div class="col-sm-9">
+                    <input id="amount" name="amount" class="form-control" type="text" required>
+                </div>
+            </div>
+        </div>
+        <!--        <div class="col-md-6">-->
+        <!--            <div class="form-group">-->
+        <!--                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>是否有收据：</label>-->
+        <!--                <div class="col-sm-9">-->
+        <!--                    <select name="isReceipt" class="form-control m-b">-->
+        <!--                        <option value="是">是</option>-->
+        <!--                        <option value="否">否</option>-->
+        <!--                    </select>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--        <div class="col-md-6">-->
+        <!--            <div class="form-group">-->
+        <!--                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>拍摄条数核对：</label>-->
+        <!--                <div class="col-sm-8">-->
+        <!--                    <input name="shotTruenumber" class="form-control" type="text" required>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <div class="col-md-6">
+            <div class="form-group">
+                <!--                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>app名称编号：</label>-->
+                <div class="col-sm-9">
+                    <input id="appNameId" name="appNameId" class="form-control" type="hidden" th:value="${appNameId}"
+                           readonly="readonly">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <a id="addzhusu" class="btn btn-success" onclick="zAdd(id)">
+                <i class="fa fa-plus"></i> App详细信息
+            </a>
+            <table id="bootstrap-table-1" data-mobile-responsive="true"></table>
+        </div>
+    </form>
+</div>
+<div th:include="include :: footer"></div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: datetimepicker-js"/>
+<th:block th:include="include :: bootstrap-suggest-js"/>
+<th:block th:include="include :: bootstrap-select-js"/>
+<script type="text/javascript">
+    var prefix = ctx + "system/apply"
+    var prefixs = ctx + "system/appName"
+    $("#form-apply-add").validate({
+        focusCleanup: true
+    });
+    var appNameId = $("#appNameId").val();
+
+    function zAdd() {
+        $.modal.open("App名称", "/system/appName/addName?id=" + appNameId);
+    }
+
+
+    $(function () {
+        var options = {
+            url: prefixs + "/listAppNameId",
+            id: "bootstrap-table-1",
+            createUrl: prefixs + "/add",
+            updateUrl: prefixs + "/edit/{id}",
+            removeUrl: prefixs + "/remove",
+            exportUrl: prefixs + "/export",
+            modalName: "拍摄app数量统计",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'id',
+                    visible: false
+                },
+                {
+                    field: 'type',
+                    title: '组别'
+                },
+                {
+                    field: 'appName',
+                    title: 'app名称'
+                },
+                {
+                    field: 'appNumber',
+                    title: 'app数量'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-apply-add').serialize());
+        }
+    }
+
+    $("input[name='shotTime']").datetimepicker({
+        format: "yyyy-mm-dd",
+        minView: "month",
+        autoclose: true
+    });
+
+
+    function chkPrice(obj) {
+        obj.value = obj.value.replace(/[^\d.]/g, "");
+//必须保证第一位为数字而不是.
+        obj.value = obj.value.replace(/^\./g, "");
+//保证只有出现一个.而没有多个.
+        obj.value = obj.value.replace(/\.{2,}/g, ".");
+//保证.只出现一次，而不能出现两次以上
+        obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+    }
+
+    function chkLast(obj) {
+// 如果出现非法字符就截取掉
+        if (obj.value.substr((obj.value.length - 1), 1) == '.')
+            obj.value = obj.value.substr(0, (obj.value.length - 1));
+    }
+
+    var testBsSuggest = $("#actorName").bsSuggest({
+        url: ctx + "system/information/userModel",
+        showBtn: false,
+        idField: "name",
+        keyField: "name",
+        effectiveFields: ["id", "name"],
+        multiWord: true,
+        hideOnSelect: true
+    }).on('onDataRequestSuccess', function (e, result) {
+        console.log('onDataRequestSuccess: ', result);
+    }).on('onSetSelectValue', function (e, keyword) {
+        console.log('onSetSelectValue: ', keyword);
+    }).on('onUnsetSelectValue', function (e) {
+        console.log("onUnsetSelectValue");
+    });
+
+
+</script>
+</body>
+</html>

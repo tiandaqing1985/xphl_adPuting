@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ActorNumberMapper">
+
+    <resultMap type="ActorNumber" id="ActorNumberResult">
+        <result property="id" column="id"/>
+        <result property="appnameId" column="appName_id"/>
+    </resultMap>
+
+    <sql id="selectActorNumberVo">
+        select id, appName_id from actor_number
+    </sql>
+
+    <select id="selectActorNumberList" parameterType="ActorNumber" resultMap="ActorNumberResult">
+        <include refid="selectActorNumberVo"/>
+        <where>
+        </where>
+    </select>
+
+    <select id="selectActorNumberById" parameterType="Long" resultMap="ActorNumberResult">
+        <include refid="selectActorNumberVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertActorNumber" parameterType="ActorNumber" useGeneratedKeys="true" keyProperty="id">
+        insert into actor_number
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appnameId != null ">appName_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appnameId != null ">#{appnameId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateActorNumber" parameterType="ActorNumber">
+        update actor_number
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appnameId != null ">appName_id = #{appnameId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActorNumberById" parameterType="Long">
+        delete from actor_number where id = #{id}
+    </delete>
+
+    <delete id="deleteActorNumberByIds" parameterType="String">
+        delete from actor_number where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectId" resultMap="ActorNumberResult">
+       select * from  actor_number where appName_id=(select  max(appName_id) from  actor_number)
+    </select>
+
+</mapper>

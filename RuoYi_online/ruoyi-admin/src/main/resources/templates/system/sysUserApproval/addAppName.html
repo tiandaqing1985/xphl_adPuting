@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('修改演员拍摄汇总')"/>
+    <th:block th:include="include :: datetimepicker-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+
+    <form class="form-horizontal m" id="form-sysUserApproval-edit" th:object="${actorSysuserapproval}">
+
+        <input name="appNameId" th:value="${appNameId}" type="hidden">
+        <div class="col-sm-12 select-table table-striped">
+            <i class="fa fa-plus"></i> 演员拍摄汇总
+            <table id="bootstrap-table-1" data-mobile-responsive="true"></table>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <i class="fa fa-plus"></i> App详细信息
+            <table id="bootstrap-table-2" data-mobile-responsive="true"></table>
+        </div>
+        <input name="id" th:field="*{id}" type="hidden">
+        <div class="col-sm-4  col-sm-offset-4" style="border:1px solid #f00">
+            <h4 class="form-header h4">审批填写</h4>
+            <div class="form-group">
+                <div class="col-sm-4 control-label" style="text-align:center;">
+                    <label class="radio-box">
+                        <input type="radio" checked value="3" name="approvalState"
+                               style="position: absolute; opacity: 0;">
+                        同意</label>
+                    <label class="radio-box">
+                        <input type="radio" value="2" name="approvalState" style="position: absolute; opacity: 0;">
+                        驳回</label>
+                </div>
+            </div>
+            <div class="form-group" style="text-align:center;">
+                <label class="col-sm-4 control-label"></span>审批意见：</label>
+                <div class="col-sm-4">
+                    <textarea id="opi" name="opi" class="form-control" type="text"></textarea>
+                    <input id="applyId" name="applyId" class="form-control-static" type="hidden" th:value="${applyId}">
+
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: datetimepicker-js"/>
+<script type="text/javascript">
+    var prefix = ctx + "system/apply";
+    var prefixq = ctx + "system/sysUserApproval";
+    var prefixs = ctx + "system/appName"
+
+    var applyId = $("#applyId").val();
+    var ids=[[${appNameId}]];
+
+    function zAdd() {
+
+    }
+
+    $(function () {
+
+        var options = {
+            url: prefixs + "/listAppNameId?appNameId=" + ids,
+            id: "bootstrap-table-2",
+            modalName: "拍摄app数量统计",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'id',
+                    visible: false
+                },
+                {
+                    field: 'type',
+                    title: '拍摄组别'
+                },
+                {
+                    field: 'appName',
+                    title: 'app名称'
+                },
+                {
+                    field: 'appNumber',
+                    title: 'app数量'
+                }]
+        };
+        $.table.init(options);
+    });
+
+    $(function () {
+
+        var options = {
+            url: prefix + "/listuser?id=" + applyId,
+            id: "bootstrap-table-1",
+            modalName: "演员拍摄汇总",
+            pagination:false,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'id',
+                    visible: false
+                },
+                {
+                    field: 'num',
+                    title: '协议编号'
+                },
+                {
+                    field: 'shotTime',
+                    title: '拍摄时间',
+                    formatter: function (value, row, index) {
+                        var newDate = /\d{4}-\d{1,2}-\d{1,2}/g.exec(value);
+                        return newDate;
+                    }
+                },
+                {
+                    field: 'actualPaymentTime',
+                    title: '预计支付时间',
+                    formatter: function (value, row, index) {
+                        var newDate = /\d{4}-\d{1,2}-\d{1,2}/g.exec(value);
+                        return newDate;
+                    }
+                },
+                {
+                    field: 'actorName',
+                    title: '演员姓名'
+                },
+                {
+                    field: 'amount',
+                    title: '价格'
+                },
+                {
+                    field: 'phoneNumber',
+                    title: '联系方式'
+                },
+                {
+                    field: 'shotsNumber',
+                    title: '总拍摄条数'
+                },
+                {
+                    field: 'singleAmount',
+                    title: '单条金额'
+                }
+            ]
+        };
+        $.table.init(options);
+    });
+
+
+    function mSave(url, data, callback) {
+        debugger
+        var config = {
+            url: url,
+            type: "post",
+            dataType: "json",
+            data: data,
+            beforeSend: function () {
+                $.modal.loading("正在处理中，请稍后...");
+                $.modal.disable();
+            },
+            success: function (result) {
+                if (typeof callback == "function") {
+                    callback(result);
+                }
+                $.modal.closeLoading();
+                $.modal.enable();
+
+                $.modal.closeTab();
+                $.modal.closeTab();
+                $.modal.closeAll();
+                $.modal.close();
+            }
+        };
+        $.ajax(config)
+        $.modal.msgReload("保存成功,正在刷新数据请稍后……", modal_status.SUCCESS);
+        $.operate.successCallback();
+        $.modal.closeTab();
+        $.operate.successCallback();
+        window.location.reload();
+        $.modal.close();
+    }
+
+
+    function submitHandler() {
+        if ($.validate.form()) {
+         mSave($.operate.save(prefixq + "/edit", $('#form-sysUserApproval-edit').serialize()));
+        }
+    }
+
+    $("input[name='shotTime']").datetimepicker({
+        format: "yyyy-mm-dd",
+        minView: "month",
+        autoclose: true
+    });
+</script>
+</body>
+</html>

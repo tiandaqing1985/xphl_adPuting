@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ActorAppnameMapper">
+    
+    <resultMap type="ActorAppname" id="ActorAppnameResult">
+        <result property="id"    column="id"    />
+        <result property="applyId"    column="apply_id"    />
+        <result property="type"    column="type"    />
+        <result property="appName"    column="app_name"    />
+        <result property="appNumber"    column="app_number"    />
+    </resultMap>
+
+    <sql id="selectActorAppnameVo">
+        select id, apply_id, type, app_name, app_number from actor_appName
+    </sql>
+
+    <select id="selectActorAppnameList" parameterType="ActorAppname" resultMap="ActorAppnameResult">
+        <include refid="selectActorAppnameVo"/>
+        <where>  
+            <if test="appName != null  and appName != ''"> and app_name like concat('%', #{appName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectActorAppnameById" parameterType="Long" resultMap="ActorAppnameResult">
+        <include refid="selectActorAppnameVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertActorAppname" parameterType="ActorAppname" useGeneratedKeys="true" keyProperty="id">
+        insert into actor_appName
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="applyId != null ">apply_id,</if>
+            <if test="appName != null  and appName != ''">app_name,</if>
+            <if test="type != null  and type != ''">type,</if>
+            <if test="appNumber != null ">app_number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="applyId != null ">#{applyId},</if>
+            <if test="appName != null  and appName != ''">#{appName},</if>
+            <if test="type != null  and type != ''">#{type},</if>
+            <if test="appNumber != null ">#{appNumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActorAppname" parameterType="ActorAppname">
+        update actor_appName
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="applyId != null ">apply_id = #{applyId},</if>
+            <if test="appName != null  and appName != ''">app_name = #{appName},</if>
+            <if test="type != null  and type != ''">type = #{type},</if>
+            <if test="appNumber != null ">app_number = #{appNumber},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActorAppnameById" parameterType="Long">
+        delete from actor_appName where id = #{id}
+    </delete>
+
+    <delete id="deleteActorAppnameByIds" parameterType="String">
+        delete from actor_appName where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAppname" parameterType="Long" resultMap="ActorAppnameResult">
+        <include refid="selectActorAppnameVo"/>
+        where apply_id = #{id}
+    </select>
+</mapper>

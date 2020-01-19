@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('演员拍摄汇总列表')"/>
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <p>协议编号：</p>
+                            <input type="text" name="num"/>
+                        </li>
+                        <li>
+                            <p>组别：</p>
+                            <select name="type" th:with="type=${@dict.getType('')}">
+                                <option value="">所有</option>
+                                <option value="A组">A组</option>
+                                <option value="B组">B组</option>
+                                <option value="C组">C组</option>
+                                <option value="D组">D组</option>
+                                <option value="E组">E组</option>
+                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                                        th:value="${dict.dictValue}"></option>
+                            </select>
+                        </li>
+                        <li>
+                            <p>演员姓名：</p>
+                            <input type="text" name="actorName"/>
+                        </li>
+                        <li>
+                            <p>价格：</p>
+                            <input type="text" name="amount"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                    class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                    class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="system:apply:add">
+                <i class="fa fa-plus"></i> 添加
+            </a>
+            <a class="btn btn-primary single disabled" onclick="$.operate.editFull()"
+               shiro:hasPermission="system:apply:edit">
+                <i class="fa fa-edit"></i> 修改
+            </a>
+            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
+               shiro:hasPermission="system:apply:remove">
+                <i class="fa fa-remove"></i> 删除
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:apply:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('system:apply:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('system:apply:remove')}]];
+    var prefix = ctx + "system/apply";
+
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "演员拍摄汇总",
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: 'id',
+                    visible: false
+                },
+                {
+                    field: 'num',
+                    title: '协议编号'
+                },
+                {
+                    field: 'shotTime',
+                    title: '拍摄时间',
+                    formatter: function (value, row, index) {
+                        var newDate = /\d{4}-\d{1,2}-\d{1,2}/g.exec(value);
+                        return newDate;
+                    }
+                },
+                {
+                    field: 'actualPaymentTime',
+                    title: '预计支付时间',
+                    formatter: function (value, row, index) {
+                        var newDate = /\d{4}-\d{1,2}-\d{1,2}/g.exec(value);
+                        return newDate;
+                    }
+                },
+                {
+                    field: 'actorName',
+                    title: '演员姓名'
+                },
+                {
+                    field: 'amount',
+                    title: '价格'
+                },
+                {
+                    field: 'phoneNumber',
+                    title: '联系方式'
+                },
+                {
+                    field: 'shotsNumber',
+                    title: '总拍摄条数'
+                },
+                {
+                    field: 'singleAmount',
+                    title: '单条金额'
+                },
+                // {
+                //     field: 'shotTruenumber',
+                //     title: '拍摄条数核对'
+                // },
+                {
+                    field: 'start',
+                    title: '审批状态',
+                    formatter: function (value, row, index) {
+                        if (value == 1) {
+                            return "待审批";
+                        } else if (value == 2) {
+                            return "驳回";
+                        } else if (value == 3) {
+                            return "审批成功";
+                        } else if (value == 4) {
+                            return "待提交";
+                        } else if (value == 6) {
+                            return "已申请付款";
+                        } else {
+                            return "待审批";
+                        }
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+
+                        if (row.start == 4) {
+                            actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="$.operate.editFull(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                            actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                            actions.push('<a class="btn btn-primary btn-xs " href="javascript:void(0)" onclick="tijiao(\'' + row.id + '\')">提交审批</a>');
+                        }
+                        if (row.start == 3) {
+                            actions.push('<a class="btn btn-primary btn-xs " href="javascript:void(0)" onclick="fukuan(\'' + row.id + '\')">申请付款</a>');
+                        }
+                        if (row.start == 1) {
+
+
+                        }
+                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="chakan(\'' + row.id + '\')"> </i>查看</a> ');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+
+    function chakan(id) {
+        $.modal.openFull("详细信息", "/system/apply/chaName?id=" + id);
+    }
+
+    function tijiao(id) {
+        $.modal.open("详细信息", "/system/apply/tijiao?id=" + id , '500', '320');
+    }
+
+    function fukuan(id) {
+
+        $.modal.open("详细信息", "/system/apply/fukuan?id=" + id , '500', '320');
+    }
+
+</script>
+</body>
+</html>

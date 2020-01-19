@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ActorAgreementMapper">
+    
+    <resultMap type="ActorAgreement" id="ActorAgreementResult">
+        <result property="id"    column="id"    />
+        <result property="num"    column="num"    />
+        <result property="name"    column="name"    />
+        <result property="idNumber"    column="id_number"    />
+        <result property="phone"    column="phone"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="addTime"    column="add_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="addUser"    column="add_user"    />
+        <result property="updateUser"    column="update_user"    />
+    </resultMap>
+
+    <sql id="selectActorAgreementVo">
+        select id, num, name, id_number, phone, mobile,add_time ,update_time ,add_user,update_user  from actor_agreement
+    </sql>
+
+    <select id="selectActorAgreementList" parameterType="ActorAgreement" resultMap="ActorAgreementResult">
+        <include refid="selectActorAgreementVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="num != null  and num != ''"> and num like concat('%', #{num}, '%')</if>
+            <if test="idNumber != null  and idNumber != ''"> and id_number like concat('%', #{idNumber}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectActorAgreementById" parameterType="Long" resultMap="ActorAgreementResult">
+        <include refid="selectActorAgreementVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertActorAgreement" parameterType="ActorAgreement" useGeneratedKeys="true" keyProperty="id">
+        insert into actor_agreement
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="num != null  and num != ''">num,</if>
+            <if test="name != null  and name != ''">name,</if>
+            <if test="idNumber != null  and idNumber != ''">id_number,</if>
+            <if test="phone != null ">phone,</if>
+            <if test="mobile != null ">mobile,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="num != null  and num != ''">#{num},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="idNumber != null  and idNumber != ''">#{idNumber},</if>
+            <if test="phone != null ">#{phone},</if>
+            <if test="mobile != null ">#{mobile},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActorAgreement" parameterType="ActorAgreement">
+        update actor_agreement
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="num != null  and num != ''">num = #{num},</if>
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="idNumber != null  and idNumber != ''">id_number = #{idNumber},</if>
+            <if test="phone != null ">phone = #{phone},</if>
+            <if test="mobile != null ">mobile = #{mobile},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActorAgreementById" parameterType="Long">
+        delete from actor_agreement where id = #{id}
+    </delete>
+
+    <delete id="deleteActorAgreementByIds" parameterType="String">
+        delete from actor_agreement where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

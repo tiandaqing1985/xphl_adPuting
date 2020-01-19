@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ActorFacexhibitionMapper">
+    
+    <resultMap type="ActorFacexhibition" id="ActorFacexhibitionResult">
+        <result property="id"    column="id"    />
+        <result property="actorName"    column="actor_name"    />
+        <result property="number"    column="number"    />
+        <result property="idnumber"    column="idNumber"    />
+        <result property="telephone"    column="telephone"    />
+        <result property="amount"    column="amount"    />
+        <result property="documenttype"    column="documentType"    />
+        <result property="opi"    column="opi"    />
+        <result property="shotTime"    column="shot_time"    />
+        <result property="addTime"    column="add_time"    />
+        <result property="addName"    column="add_name"    />
+        <result property="addName"    column="add_name"    />
+        <result property="actualPaymentTime"    column="actual_payment_time"    />
+        <result property="ispayment"    column="ispayment"    />
+
+    </resultMap>
+
+    <sql id="selectActorFacexhibitionVo">
+        select id, actor_name, number, idNumber, telephone, amount, documentType, opi, shot_time, add_time,ispayment ,actual_payment_time, add_name from actor_facExhibition
+    </sql>
+
+    <select id="selectActorFacexhibitionList" parameterType="ActorFacexhibition" resultMap="ActorFacexhibitionResult">
+        <include refid="selectActorFacexhibitionVo"/>
+        <where>  
+            <if test="actorName != null  and actorName != ''"> and actor_name like concat('%', #{actorName}, '%')</if>
+            <if test="addName != null  and addName != ''"> and add_name like concat('%', #{addName}, '%')</if>
+            <if test="ispayment != null  and ispayment != ''"> and ispayment like concat('%', #{ispayment}, '%')</if>
+            <if test="actualPaymentTime != null "> and actual_payment_time = #{actualPaymentTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectActorFacexhibitionById" parameterType="Long" resultMap="ActorFacexhibitionResult">
+        <include refid="selectActorFacexhibitionVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertActorFacexhibition" parameterType="ActorFacexhibition" useGeneratedKeys="true" keyProperty="id">
+        insert into actor_facExhibition
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="actorName != null  and actorName != ''">actor_name,</if>
+            <if test="number != null ">number,</if>
+            <if test="idnumber != null  and idnumber != ''">idNumber,</if>
+            <if test="telephone != null ">telephone,</if>
+            <if test="amount != null ">amount,</if>
+            <if test="documenttype != null  and documenttype != ''">documentType,</if>
+            <if test="opi != null  and opi != ''">opi,</if>
+            <if test="shotTime != null ">shot_time,</if>
+            <if test="addTime != null ">add_time,</if>
+            <if test="addName != null  and addName != ''">add_name,</if>
+            <if test="actualPaymentTime != null ">actual_payment_time,</if>
+            <if test="ispayment != null  and ispayment != ''">ispayment,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="actorName != null  and actorName != ''">#{actorName},</if>
+            <if test="number != null ">#{number},</if>
+            <if test="idnumber != null  and idnumber != ''">#{idnumber},</if>
+            <if test="telephone != null ">#{telephone},</if>
+            <if test="amount != null ">#{amount},</if>
+            <if test="documenttype != null  and documenttype != ''">#{documenttype},</if>
+            <if test="opi != null  and opi != ''">#{opi},</if>
+            <if test="shotTime != null ">#{shotTime},</if>
+            <if test="addTime != null ">#{addTime},</if>
+            <if test="addName != null  and addName != ''">#{addName},</if>
+            <if test="actualPaymentTime != null ">#{actualPaymentTime},</if>
+            <if test="ispayment != null  and ispayment != ''">#{ispayment},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActorFacexhibition" parameterType="ActorFacexhibition">
+        update actor_facExhibition
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="actorName != null  and actorName != ''">actor_name = #{actorName},</if>
+            <if test="number != null ">number = #{number},</if>
+            <if test="idnumber != null  and idnumber != ''">idNumber = #{idnumber},</if>
+            <if test="telephone != null ">telephone = #{telephone},</if>
+            <if test="amount != null ">amount = #{amount},</if>
+            <if test="documenttype != null  and documenttype != ''">documentType = #{documenttype},</if>
+            <if test="opi != null  and opi != ''">opi = #{opi},</if>
+            <if test="shotTime != null ">shot_time = #{shotTime},</if>
+            <if test="addTime != null ">add_time = #{addTime},</if>
+            <if test="addName != null  and addName != ''">add_name = #{addName},</if>
+            <if test="actualPaymentTime != null ">actual_payment_time = #{actualPaymentTime},</if>
+            <if test="ispayment != null  and ispayment != ''">ispayment = #{ispayment},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActorFacexhibitionById" parameterType="Long">
+        delete from actor_facExhibition where id = #{id}
+    </delete>
+
+    <delete id="deleteActorFacexhibitionByIds" parameterType="String">
+        delete from actor_facExhibition where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="selectApprovalByIds" parameterType="String"  resultMap="ActorFacexhibitionResult">
+        select * from actor_facExhibition where id in
+        <foreach item="id" collection="array" open="("
+                 separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
+    
+</mapper>

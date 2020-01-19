@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改演员拍摄汇总')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-apply-edit" th:object="${actorShotApply}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="col-md-6">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">协议编号：</label>
+                <div class="col-sm-8">
+                    <input name="num" th:field="*{num}" class="form-control" type="text">
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">拍摄时间：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input name="shotTime" th:value="${#dates.format(actorShotApply.shotTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="col-md-6">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">演员姓名：</label>
+                <div class="col-sm-8">
+                    <input name="actorName" th:field="*{actorName}" class="form-control" type="text">
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">价格：</label>
+                <div class="col-sm-8">
+                    <input name="amount" th:field="*{amount}" class="form-control" type="text">
+                </div>
+            </div>
+            </div>
+                <div class="col-md-6">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">联系方式：</label>
+                <div class="col-sm-8">
+                    <input name="phoneNumber" th:field="*{phoneNumber}" class="form-control" type="text">
+                </div>
+            </div>
+                </div>
+            <div class="col-md-6">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否有收据：</label>
+                <div class="col-sm-8">
+                    <input name="isReceipt" th:field="*{isReceipt}" class="form-control" type="text">
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">是否报销/支付：</label>
+                <div class="col-sm-8">
+                    <input name="isReimbur" th:field="*{isReimbur}" class="form-control" type="text">
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">总拍摄条数：</label>
+                <div class="col-sm-8">
+                    <input name="shotsNumber" th:field="*{shotsNumber}" class="form-control" type="text">
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">单条金额：</label>
+                <div class="col-sm-8">
+                    <input name="singleAmount" th:field="*{singleAmount}" class="form-control" type="text">
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <!--                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>app名称编号：</label>-->
+                    <div class="col-sm-9">
+                        <input  id="appNameId"  name="appNameId" class="form-control" type="hidden"    th:value="*{appNameId}" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <a id="addzhusu" class="btn btn-success" onclick="zAdd(id)">
+                    <i class="fa fa-plus"></i> App详细信息
+                </a>
+                <table id="bootstrap-table-1" data-mobile-responsive="true"></table>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script type="text/javascript">
+        var prefix = ctx + "system/apply";
+        var prefixs = ctx + "system/appName";
+        var appNameId = $("#appNameId").val();
+        $("#form-apply-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-apply-edit').serialize());
+            }
+        }
+
+        $(function() {
+            var options = {
+                url: prefixs + "/listAppNameId",
+                id: "bootstrap-table-1",
+                createUrl: prefixs + "/add",
+                updateUrl: prefixs + "/edit/{id}",
+                removeUrl: prefixs + "/remove",
+                exportUrl: prefixs + "/export",
+                modalName: "拍摄app数量统计",
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field : 'id',
+                        title : 'id',
+                        visible: false
+                    },
+                    {
+                        field : 'appName',
+                        title : 'app名称'
+                    },
+                    {
+                        field : 'appNumber',
+                        title : 'app数量'
+                    },
+                    {
+                        title: '操作',
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            var actions = [];
+                            actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                            actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                            return actions.join('');
+                        }
+                    }]
+            };
+            $.table.init(options);
+        });
+
+        $("input[name='shotTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

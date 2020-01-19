@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增拍摄需求单')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-demand-add">
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>组长：</label>
+                    <div class="col-sm-9">
+                        <input name="groupLeader" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>组别：</label>
+                    <div class="col-sm-9">
+                        <select name="groupType" class="form-control m-b">
+                            <option value="A组">A组</option>
+                            <option value="B组">B组</option>
+                            <option value="C组">C组</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>成员：</label>
+                    <div class="col-sm-9">
+                        <input name="member" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>客户签约方：</label>
+                    <div class="col-sm-9">
+                        <input name="contractParty" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>客户广告主：</label>
+                    <div class="col-sm-9">
+                        <input name="advertiser" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>客户简称：</label>
+                    <div class="col-sm-9">
+                        <input name="customerName" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>需求对接人：</label>
+                    <div class="col-sm-9">
+                        <input name="demandName" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>销售经理：</label>
+                    <div class="col-sm-9">
+                        <input name="salesManager" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>投放平台：</label>
+                    <div class="col-sm-9">
+                        <input name="delivery" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>销售类型：</label>
+                    <div class="col-sm-9">
+                        <select name="salesType" class="form-control m-b">
+                            <option value="赠送">赠送</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>情景剧：</label>
+                    <div class="col-sm-9">
+                        <input id="sitcom" name="sitcom" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>纯剪辑：</label>
+                    <div class="col-sm-9">
+                        <input id="clip" name="clip" class="form-control" type="text" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">合计：</label>
+                    <div class="col-sm-9">
+                        <input id="total" name="total" class="form-control" type="text" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><span style="color: red; ">*</span>拍摄时间：</label>
+                    <div class="col-sm-9">
+                        <div class="input-group date">
+                            <input name="shotTime" class="time-input form-control" placeholder="yyyy-MM-dd" type="text" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>成本类型：</label>
+                <div class="col-sm-8">
+                    <select name="costType" class="form-control m-b">
+                        <option value="自制">自制</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <th:block th:include="include :: bootstrap-suggest-js" />
+    <th:block th:include="include :: bootstrap-select-js" />
+    <script type="text/javascript">
+        var prefix = ctx + "system/demand"
+        $("#form-demand-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-demand-add').serialize());
+            }
+        }
+
+        $("input[name='shotTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $('#sitcom').bind('input propertychange', function() {
+            $('#total').val(Number($('#sitcom').val())+Number($('#clip').val()))
+        });
+        $('#clip').bind('input propertychange', function() {
+
+            $('#total').val(Number($('#sitcom').val())+Number($('#clip').val()))
+        });
+
+    </script>
+</body>
+</html>
