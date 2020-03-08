@@ -22,7 +22,16 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-    
+
+        <!--fdfs-->
+        <dependency>
+            <groupId>org.csource</groupId>
+            <artifactId>fastdfs-client-java</artifactId>
+            <version>1.27-SNAPSHOT</version>
+        </dependency>
+
+
+
         <!-- 通用工具-->
         <dependency>
             <groupId>com.ruoyi</groupId>

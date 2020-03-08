@@ -25,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	<if test="id != null  and id != ''"> and id like concat('%', #{id}, '%')</if>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="advertiesIds !=null">
+            <if test="advertiesIds !=null and advertiesIds.size()!=0">
                 and id in
                 <foreach collection="advertiesIds" item="item" separator="," open="(" close=")">
                     #{item}

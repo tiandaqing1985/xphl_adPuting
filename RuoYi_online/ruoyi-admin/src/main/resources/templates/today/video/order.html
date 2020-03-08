@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('视频订单列表')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <select name="need.putMedia" th:with="type=${@dict.getType('ta_video_media')}">
+                                    <option value="">全部媒体</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <select name="need.orderType" th:with="type=${@dict.getType('ta_video_order_type')}">
+                                    <option value="">全部类型</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <select name="status" th:with="type=${@dict.getType('ta_video_status')}">
+                                    <option value="">全部状态</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <select name="need.videoDept" id="dept" th:with="type=${@dict.getType('ta_video_dept')}" onchange="videoDeptChange()">
+                                    <option value="">全部视频部门</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <select name="need.group" id="group">
+                                    <option value="">全部视频团队</option>
+                                </select>
+                            </li>
+                            <li>
+                                <select name="need.optimizeGroupLeader" th:with="type=${@dict.getType('ta_video_optimize')}">
+                                    <option value="">全部优化部门</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <select name="need.productName" th:with="type=${@dict.getType('ta_video_product')}">
+                                    <option value="">全部产品</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <div class="col-sm-2" style="padding: 0px">
+                                    <div class="form-group">
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input name="timeRange" type="text" class="form-control" id="putTime" placeholder="下单开始日期 至 下单结束日期">
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" id="addNeed" onclick="$.modal.openFull('添加视频订单',$.operate.addUrl(id))">
+                    <i class="fa fa-plus"></i> 发布需求
+                </a>
+<!--                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()">-->
+<!--                    <i class="fa fa-remove"></i> 删除需求-->
+<!--                </a>-->
+<!--                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:order:export">-->
+<!--                    <i class="fa fa-download"></i> 导出-->
+<!--                 </a>-->
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table" data-mobile-responsive="true"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+     <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        // var editFlag = [[${@permission.hasPermi('system:order:edit')}]];
+        // var removeFlag = [[${@permission.hasPermi('system:order:remove')}]];
+        var prefix = ctx + "today/video";
+
+        var roleList = [[${@sysRoleServiceImpl.selectRolesByUserId(userId)}]];
+        function hasRole(roleKey){
+            var flg = "hidden";
+            $.each(roleList,function(index,role){
+                if(role.roleKey==roleKey){
+                    if(role.flag==true){
+                        flg = "";
+                    }
+                }
+                if(role.roleKey=="admin"){
+                    if(role.flag==true){
+                        flg = "";
+                    }
+                }
+            });
+            return flg;
+        }
+
+        var yunyingFlg = hasRole("yunying");
+        var videogroupFlg = hasRole("videogroup");
+
+
+
+        function videoDeptChange(){
+            var dept = $("#dept").val();
+            $.ajax({
+                url: prefix + "/dictGetType",
+                type: "post",
+                data: {"type":dept},
+                datatype: "json",
+                success:function(data){
+                    optionJson = data;
+                    var selectObj=document.getElementById("group");
+                    selectObj.options.length=0;
+                    selectObj.options.add(new Option("全部视频团队" , ""));
+                    for(var i=0;i<data.length;i++){
+                        selectObj.add(new Option(optionJson[i].dictLabel,optionJson[i].dictValue));
+                    }
+                }
+            })
+
+        }
+        var videoMedia = [[${@dict.getType('ta_video_media')}]];//媒体
+        var videoOrderType = [[${@dict.getType('ta_video_order_type')}]];//类型
+        var videoOptimize = [[${@dict.getType('ta_video_optimize')}]];//优化师
+        var videoStatus = [[${@dict.getType('ta_video_status')}]];//优化师
+        var videoGroup = [[${@sysDictTypeServiceImpl.selectDictTypeListByType('ta_video_group_')}]];//视频部门
+
+        function updateStatus(id,status,statusName){
+
+            $.operate.submit(prefix + "/updateStatus", "post", "json", {"id":id,"status":status,"statusName":statusName});
+
+        }
+
+        $(function() {
+            if(videogroupFlg==""){
+                if(yunyingFlg=="hidden"){
+                    $("#addNeed").css("visibility","hidden");
+                }
+            }
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                detailUrl: prefix + "/detail/{id}",
+                deliveryUrl: prefix + "/delivery/{id}",
+                modalName: "视频订单",
+                columns: [{
+                    checkbox: false
+                },
+                {
+                    field : 'id', 
+                    title : 'id主键',
+                    visible: false
+                },
+                {
+                    field : 'orderName', 
+                    title : '订单名称'
+                },
+                {
+                    field : 'need.putMedia',
+                    title : '媒体',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(videoMedia, value);
+                    }
+                },
+                {
+                    field : 'need.orderType',
+                    title : '类型',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(videoOrderType, value);
+                    }
+                },
+                {
+                    field : 'money',
+                    title : '结算金额'
+                },
+                {
+                    field : 'need.optimizeGroupLeader',
+                    title : '优化师',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(videoOptimize, value);
+                    }
+                },
+                {
+                    field : 'need.endTime',
+                    title : '截稿日期'
+                },
+                {
+                    field : 'need.group',
+                    title : '视频团队',
+                    formatter: function (value, row, index) {
+
+                        var actions = [];
+                        $.each(videoGroup, function(index, dict) {
+                            if (dict.dictType == ('' + value)) {
+                                var listClass = $.common.equals("default", dict.listClass) || $.common.isEmpty(dict.listClass) ? "" : "badge badge-" + dict.listClass;
+                                actions.push($.common.sprintf("<span class='%s'>%s</span>", listClass, dict.dictName));
+                                return false;
+                            }
+                        });
+                        return actions.join('');
+
+                    }
+                },
+                {
+                    field : 'process',
+                    title : '流程日期',
+                    formatter: function(value, row, index) {
+                        return $.table.tooltip(value);
+                    }
+                },
+                {
+                    field : 'xiaohao',
+                    title : '累计消耗'
+                },
+                {
+                    field : 'chuangyishu',
+                    title : '创意数'
+                },
+                {
+                    field : 'status',
+                    title : '状态',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictLabel(videoStatus, value);
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        if(row.status=="order"){//下单
+                            actions.push('<a class="btn btn-success btn-xs '+yunyingFlg+'" href="javascript:void(0)" onclick="$.modal.openFull(\'修改订单'+row.orderName+'\',$.operate.editUrl(\''+row.id+'\'),\'\',\'\')"><i class="fa fa-edit"></i>编辑</a> ');
+                            actions.push('<a class="btn btn-danger btn-xs '+yunyingFlg+'" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                            actions.push('<a class="btn btn-danger btn-xs '+videogroupFlg+'" href="javascript:void(0)" onclick="updateStatus('+row.id+',\'receive\',\'接单\')"><i class="fa fa-adjust"></i>接单</a>');
+                            actions.push('<a class="btn btn-success btn-xs '+videogroupFlg+'" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
+                        }else if(row.status=="receive"){//接单
+                            actions.push('<a class="btn btn-danger btn-xs '+videogroupFlg+'" href="javascript:void(0)" onclick="$.modal.openFull(\'交付订单'+row.orderName+'\',$.table._option.deliveryUrl.replace(\'{id}\', '+row.id+'))""><i class="fa fa-adjust"></i>交付</a>');
+                            actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
+                        }else if(row.status=="signOut"){//拒签
+                            actions.push('<a class="btn btn-danger btn-xs '+videogroupFlg+'" href="javascript:void(0)" onclick="$.modal.openFull(\'交付订单'+row.orderName+'\',$.table._option.deliveryUrl.replace(\'{id}\', '+row.id+'))""><i class="fa fa-adjust"></i>交付</a>');
+                            actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
+                        }else if(row.status=="delivery"){//交付
+                            actions.push('<a class="btn btn-danger btn-xs '+yunyingFlg+'" href="javascript:void(0)" onclick="updateStatus('+row.id+',\'signIn\',\'签收\')"><i class="fa fa-adjust"></i>签收</a>');
+                            actions.push('<a class="btn btn-danger btn-xs '+yunyingFlg+'" href="javascript:void(0)" onclick="updateStatus('+row.id+',\'signOut\',\'拒签\')"><i class="fa fa-adjust"></i>拒签</a>');
+                            actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
+                        }else if(row.status=="signIn"){
+                            actions.push('<a class="btn btn-danger btn-xs '+yunyingFlg+'" href="javascript:void(0)" onclick="updateStatus('+row.id+',\'putIn\',\'投放\')"><i class="fa fa-adjust"></i>投放</a>');
+                            actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
+                        }else if(row.status=="putIn"||row.status=="del"){
+                            actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
+                        }
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+
+            <!-- laydate示例 -->
+            layui.use('laydate', function(){
+                var laydate = layui.laydate;
+
+                laydate.render({
+                    elem: '#putTime',
+                    range: true
+                });
+
+            });
+
+        });
+    </script>
+</body>
+</html>

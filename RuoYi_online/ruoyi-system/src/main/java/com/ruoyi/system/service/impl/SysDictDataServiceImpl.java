@@ -115,4 +115,9 @@ public class SysDictDataServiceImpl implements ISysDictDataService
     {
         return dictDataMapper.updateDictData(dictData);
     }
+
+    @Override
+    public SysDictData selectDictDataByDictValue(String loginName) {
+        return dictDataMapper.selectDictDataByDictValue(loginName);
+    }
 }

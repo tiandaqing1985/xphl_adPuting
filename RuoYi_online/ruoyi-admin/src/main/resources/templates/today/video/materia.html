@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('素材列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+         <div class="row" th:with="lists=${videoMateria}">
+             <div class="col-sm-4" th:each="item:${lists}">
+                 <div class="ibox">
+                     <div class="ibox-title">
+<!--                         <span class="label label-primary pull-right">NEW</span>-->
+                         <h5 th:text="${item.need.needName}"></h5>
+                     </div>
+                     <div class="ibox-content">
+                         <div class="row">
+                             <div class="col-sm-4">
+                                 <span>平均播放（s）：0</span>
+                             </div>
+                             <div class="col-sm-4">
+                                 <span>总播放：0</span>
+                             </div>
+                         </div>
+                         <div class="row">
+                             <div class="col-sm-4">
+                                 <span>素材链接：<a th:href="${item.matter}" th:text="${item.matter}">http://192.168.88.192/group1/M00/00/00/wKhYwF5g6RaAXRhNAAAmcxJ-6GA011.zip</a></span>
+                             </div>
+                         </div>
+                         <div class="row">
+                             <div class="col-sm-4">
+                                 <span>订单号:<span th:text="${item.id}"></span></span>
+                                 <span th:text="${item.orderName}"></span>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+         </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "today/materia";
+
+
+        $(function() {
+
+        });
+    </script>
+</body>
+</html>
