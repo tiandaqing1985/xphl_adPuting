@@ -30,8 +30,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectThCreativityCreativesList" parameterType="ThCreativityCreatives" resultMap="ThCreativityCreativesResult">
-        <include refid="selectThCreativityCreativesVo"/>
-        <where>  
+        select a.id, a.creative_id, a.title, a.title_id, a.creative_word_ids, a.image_mode, a.image_ids, a.image_id, a.video_id, a.third_party_id, a.derive_poster_cid, a.dpa_template, a.creativity_id, a.create_by, a.create_time, a.update_by, a.update_time, a.remark from th_creativity_creatives a
+        left join th_creativity b on a.creativity_id = b.id
+        <where>
+            <if test="advertiserId != null and advertiserId != ''">
+                and b.advertiser_id = #{advertiserId}
+            </if>
+            <if test="adId != null and adId != ''">
+                and b.ad_id = #{adId}
+            </if>
         </where>
     </select>
     

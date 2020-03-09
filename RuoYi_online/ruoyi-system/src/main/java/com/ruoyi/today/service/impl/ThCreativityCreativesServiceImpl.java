@@ -56,16 +56,16 @@ public class ThCreativityCreativesServiceImpl implements IThCreativityCreativesS
     @Override
     public List<ThCreativityCreatives> selectThCreativityCreativesList(ThCreativityCreatives thCreativityCreatives) {
 
-        List<ThCreativityCreatives> thCreativityCreativeList = thCreativityCreativesMapper.selectThCreativityCreativesList(thCreativityCreatives);
-
-        for (ThCreativityCreatives creatives : thCreativityCreativeList) {
-            if (creatives.getCreativeWordIds() != null) {
-                creatives.setCreative_word_ids(Convert.toStrArray(creatives.getCreativeWordIds()));
-            }
-            if (creatives.getImageIds() != null) {
-                creatives.setImage_ids(Convert.toStrArray(creatives.getImageIds()));
-            }
-        }
+//        List<ThCreativityCreatives> thCreativityCreativeList = thCreativityCreativesMapper.selectThCreativityCreativesList(thCreativityCreatives);
+//
+//        for (ThCreativityCreatives creatives : thCreativityCreativeList) {
+//            if (creatives.getCreativeWordIds() != null) {
+//                creatives.setCreative_word_ids(Convert.toStrArray(creatives.getCreativeWordIds()));
+//            }
+//            if (creatives.getImageIds() != null) {
+//                creatives.setImage_ids(Convert.toStrArray(creatives.getImageIds()));
+//            }
+//        }
 
         return thCreativityCreativesMapper.selectThCreativityCreativesList(thCreativityCreatives);
     }
@@ -127,29 +127,16 @@ public class ThCreativityCreativesServiceImpl implements IThCreativityCreativesS
             //查询创意详情
             ResponseVO responseVO = (ResponseVO) touTiaoAdCenterService.selectCreativity(request);
             if (responseVO.getCode().equals("0")) {
+
                 ThCreativity thCreativity = JSONObject.parseObject(responseVO.getData().toJSONString(), ThCreativity.class);
-                if (thCreativity.getCreativeMaterialMode() != null && thCreativity.getCreativeMaterialMode().equals("STATIC_ASSEMBLE")) {
-                    //程序化创意
-                    for (ThCreativityTitle title : thCreativity.getTitle_list()) {
-                        title.setCreativeWordIds(StringUtils.join(title.getCreative_word_ids(), ","));
-                        thCreativityTitleService.insertThCreativityTitle(title);
-                    }
-                    for (ThCreativityImage image : thCreativity.getImage_list()) {
-                        image.setImageIds(StringUtils.join(image.getImage_ids(), ","));
-                        thCreativityImageService.insertThCreativityImage(image);
-                    }
-                }
                 thCreativity.setInventoryType(StringUtils.join(thCreativity.getInventory_type(), ","));
                 thCreativity.setAdKeywords(StringUtils.join(thCreativity.getAd_keywords(), ","));
                 thCreativityService.insertThCreativity(thCreativity);
-                for (ThCreativityCreatives creativityCreatives : thCreativity.getCreatives()) {
-                    creativityCreatives.setCreativeWordIds(StringUtils.join(creativityCreatives.getCreative_word_ids(), ","));
-                    creativityCreatives.setImageIds(StringUtils.join(creativityCreatives.getImage_ids(), ","));
-                    thCreativityCreativesMapper.insertThCreativityCreatives(creativityCreatives);
-                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
     }
 }

@@ -906,7 +906,7 @@
                 initTable(4);
                 if (options4Init) {
                     $.table._option.id = 'bootstrap-table-4';
-                    // $.table.search("formId3", {"advertiserId": advertiserId, "campaignId": campaignId, "updateFlag": "0"});
+                    $.table.search("formId4", {"advertiserId": advertiserId, "adId": planId, "updateFlag": "0"});
                 }
             },
             queryParams: function (params) {
@@ -1265,7 +1265,7 @@
             showExport: false,
             columns:[
                 {
-                    checkbox: false
+                    checkbox: true
                 },
                 {
                     field: 'id',
@@ -1428,7 +1428,17 @@
     }
 
     function submitHandler() {
-        $.modal.close();
+        var rows = $.common.isEmpty($.table._option.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.uniqueId);
+        if (rows.length == 0) {
+            $.modal.alertWarning("请至少选择一条记录");
+            return;
+        }
+        $.modal.confirm("确认要启用选中的" + rows.length + "条计划吗?", function () {
+            var url = prefix3 + "/startPlan"
+            var data = {"ids": rows.join()};
+            alert(JSON.stringify(data))
+            // $.operate.submit(url, "post", "json", data);
+        });
     }
 
 </script>
