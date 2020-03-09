@@ -37,8 +37,8 @@ public class ThFileServiceImpl implements IThFileService {
             throw e;
         }
         try {
-            url = PmsUploadUtil.uploadImage(multipartFile);
             File file = new File(localPath.replace("/profile/",""));
+            url = PmsUploadUtil.uploadImage(file);
             file.delete();
             return url;
         } catch (Exception e) {

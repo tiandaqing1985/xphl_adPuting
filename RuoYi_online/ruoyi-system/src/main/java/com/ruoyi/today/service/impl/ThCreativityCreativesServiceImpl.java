@@ -1,10 +1,17 @@
 package com.ruoyi.today.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.today.domain.ThCreativity;
 import com.ruoyi.today.domain.ThCreativityCreatives;
+import com.ruoyi.today.domain.ThCreativityImage;
+import com.ruoyi.today.domain.ThCreativityTitle;
+import com.ruoyi.today.domain.request.AdCreativitySelectRequest;
+import com.ruoyi.today.domain.response.ResponseVO;
 import com.ruoyi.today.mapper.ThCreativityCreativesMapper;
-import com.ruoyi.today.service.IThCreativityCreativesService;
+import com.ruoyi.today.service.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +27,14 @@ import java.util.List;
 public class ThCreativityCreativesServiceImpl implements IThCreativityCreativesService {
     @Autowired
     private ThCreativityCreativesMapper thCreativityCreativesMapper;
+    @Autowired
+    private IThCreativityService thCreativityService;
+    @Autowired
+    private AdCenterService touTiaoAdCenterService;
+    @Autowired
+    private IThCreativityTitleService thCreativityTitleService;
+    @Autowired
+    private IThCreativityImageService thCreativityImageService;
 
     /**
      * 查询创意
@@ -98,5 +113,43 @@ public class ThCreativityCreativesServiceImpl implements IThCreativityCreativesS
      */
     public int deleteThCreativityCreativesById(Long id) {
         return thCreativityCreativesMapper.deleteThCreativityCreativesById(id);
+    }
+
+    //同步广告创意
+    @Override
+    public void syncCreativities(ThCreativityCreatives creatives) {
+        try {
+
+            //根据广告主id和计划id查询广告创意详情
+            AdCreativitySelectRequest request = new AdCreativitySelectRequest();
+            request.setAdvertiser_id(creatives.getAdvertiserId());
+            request.setAd_id(creatives.getAdId());
+            //查询创意详情
+            ResponseVO responseVO = (ResponseVO) touTiaoAdCenterService.selectCreativity(request);
+            if (responseVO.getCode().equals("0")) {
+                ThCreativity thCreativity = JSONObject.parseObject(responseVO.getData().toJSONString(), ThCreativity.class);
+                if (thCreativity.getCreativeMaterialMode() != null && thCreativity.getCreativeMaterialMode().equals("STATIC_ASSEMBLE")) {
+                    //程序化创意
+                    for (ThCreativityTitle title : thCreativity.getTitle_list()) {
+                        title.setCreativeWordIds(StringUtils.join(title.getCreative_word_ids(), ","));
+                        thCreativityTitleService.insertThCreativityTitle(title);
+                    }
+                    for (ThCreativityImage image : thCreativity.getImage_list()) {
+                        image.setImageIds(StringUtils.join(image.getImage_ids(), ","));
+                        thCreativityImageService.insertThCreativityImage(image);
+                    }
+                }
+                thCreativity.setInventoryType(StringUtils.join(thCreativity.getInventory_type(), ","));
+                thCreativity.setAdKeywords(StringUtils.join(thCreativity.getAd_keywords(), ","));
+                thCreativityService.insertThCreativity(thCreativity);
+                for (ThCreativityCreatives creativityCreatives : thCreativity.getCreatives()) {
+                    creativityCreatives.setCreativeWordIds(StringUtils.join(creativityCreatives.getCreative_word_ids(), ","));
+                    creativityCreatives.setImageIds(StringUtils.join(creativityCreatives.getImage_ids(), ","));
+                    thCreativityCreativesMapper.insertThCreativityCreatives(creativityCreatives);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

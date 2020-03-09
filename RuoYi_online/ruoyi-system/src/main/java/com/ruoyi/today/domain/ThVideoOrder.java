@@ -7,6 +7,8 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * 视频订单对象 th_video_order
  * 
@@ -42,6 +44,9 @@ public class ThVideoOrder extends BaseEntity
     //视频需求
     private ThVideoNeed need;
 
+    //交付的视频素材
+    private List<ThVideoMatter> matters;
+
     private String timeRange;
 
     //素材
@@ -51,6 +56,14 @@ public class ThVideoOrder extends BaseEntity
     private String status;
 
     private String process;
+
+    public List<ThVideoMatter> getMatters() {
+        return matters;
+    }
+
+    public void setMatters(List<ThVideoMatter> matters) {
+        this.matters = matters;
+    }
 
     public String getProcess() {
         return process;

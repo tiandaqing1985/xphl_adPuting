@@ -111,7 +111,7 @@ public class ThAdvertiserServiceImpl implements IThAdvertiserService {
     @Transactional
     public int adMutual(String createBy) {
 
-        String access_token = "1d51450e7ef1ae9dfe2b3bf74e14a5f91c6f4ddb";
+        String access_token = "93ce0d071756686c138e29372301a9625f90014d";
 
         thAdvertiserMapper.deleteThAdvertiserById(null);
 

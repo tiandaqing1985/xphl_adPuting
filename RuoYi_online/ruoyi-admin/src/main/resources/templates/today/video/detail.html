@@ -13,12 +13,14 @@
             <div>
                 <div class="form-group">
                     <label class="col-sm-3 control-label">交付素材：</label>
-                    <div class="col-sm-5">
-                        <a th:href="${thVideoOrder.matter}">下载</a>
-                    </div>
                 </div>
-                <div class="form-group">
-
+                <div class="form-group" th:each="item:${thVideoOrder.matters}">
+                    <div class="col-sm-3">
+                    </div>
+                    <div class="col-sm-5">
+                        <a href="#" th:onclick="yulan([[${item.fileName}]],[[${item.matter}]]);">预览素材</a>
+                        <span th:text="${item.fileName}"></span>
+                    </div>
                 </div>
             </div>
             <hr>
@@ -161,6 +163,10 @@
         $("#form-need-add").validate({
             focusCleanup: true
         });
+
+        function yulan(fileName,url){
+            $.modal.openFull("预览:"+fileName,url);
+        }
 
         function videoDeptChange(){
             var dept = $("#dept").val();

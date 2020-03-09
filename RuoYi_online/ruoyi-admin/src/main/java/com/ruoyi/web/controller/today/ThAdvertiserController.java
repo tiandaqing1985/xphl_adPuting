@@ -55,6 +55,7 @@ public class ThAdvertiserController extends BaseController {
     public TableDataInfo list(ThAdvertiser thAdvertiser) {
         ThUserAdvertiser thUserAdvertiser = new ThUserAdvertiser();
         thUserAdvertiser.setUserName(ShiroUtils.getLoginName());
+        //查询当前登录用户被分配的广告主
         List<ThUserAdvertiser> thUserAdvertisers = thUserAdvertiserService.selectThUserAdvertiserList(thUserAdvertiser);
         List<String> advertiesIds = new ArrayList<>();
         for (ThUserAdvertiser userAdvertiser : thUserAdvertisers) {

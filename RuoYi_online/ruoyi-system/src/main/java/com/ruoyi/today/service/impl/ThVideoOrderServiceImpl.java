@@ -4,14 +4,12 @@ import java.util.List;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.security.PermissionUtils;
+import com.ruoyi.today.domain.ThVideoMatter;
 import com.ruoyi.today.domain.ThVideoOperationHistory;
 import com.ruoyi.today.domain.ThVideoOrder;
 import com.ruoyi.today.domain.enums.VideoOrderStatusEnum;
 import com.ruoyi.today.mapper.ThVideoOrderMapper;
-import com.ruoyi.today.service.IThFileService;
-import com.ruoyi.today.service.IThVideoNeedService;
-import com.ruoyi.today.service.IThVideoOperationHistoryService;
-import com.ruoyi.today.service.IThVideoOrderService;
+import com.ruoyi.today.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +32,8 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
     private ThVideoOrderMapper thVideoOrderMapper;
     @Autowired
     private IThVideoNeedService thVideoNeedService;
+    @Autowired
+    private IThVideoMatterService videoMatterService;
 
     @Autowired
     private IThFileService thFileService;
@@ -179,7 +179,7 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
     @Transactional(rollbackFor = Exception.class)
     public void orderDelivery(ThVideoOrder thVideoOrder) throws Exception {
         try {
-
+            String fileName = thVideoOrder.getScript().getOriginalFilename();
             ThVideoOperationHistory operationHistory = new ThVideoOperationHistory();
             operationHistory.setOperationBy((String)PermissionUtils.getPrincipalProperty("userName"));
             operationHistory.setOperationTime(DateUtils.getNowDate());
@@ -191,9 +191,14 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
             logger.info("订单"+thVideoOrder.getOrderName()+"，开始上传文件");
             String matter = thFileService.receiveFile(thVideoOrder.getScript());
 
-            thVideoOrder.setMatter(matter);
-            thVideoOrder.setStatus(VideoOrderStatusEnum.DELIVERY.getValue());
-            thVideoOrderMapper.updateThVideoOrder(thVideoOrder);
+//            thVideoOrder.setMatter(matter);
+//            thVideoOrder.setStatus(VideoOrderStatusEnum.DELIVERY.getValue());
+//            thVideoOrderMapper.updateThVideoOrder(thVideoOrder);
+            ThVideoMatter videoMatter = new ThVideoMatter();
+            videoMatter.setMatter(matter);
+            videoMatter.setOrderId(thVideoOrder.getId());
+            videoMatter.setFileName(fileName);
+            videoMatterService.insertThVideoMatter(videoMatter);
         } catch (Exception e) {
             logger.error("上传素材出现错误:",e);
             throw e;

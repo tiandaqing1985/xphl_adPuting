@@ -8,7 +8,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="orderName"    column="order_name"    />
         <result property="videoScript"    column="video_script"    />
-        <result property="matter"    column="matter"    />
         <result property="type"    column="type"    />
         <result property="specialNeed"    column="special_need"    />
         <result property="riskWord"    column="risk_word"    />
@@ -38,10 +37,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <result property="productTrade"    column="product_trade"    />
             <result property="videoDept"    column="video_dept"    />
         </association>
+        <collection property="matters" javaType="java.util.ArrayList" ofType="ThVideoMatter"
+                    select="com.ruoyi.today.mapper.ThVideoMatterMapper.selectThVideoMatterList" column="{orderId=id}" />
     </resultMap>
 
     <sql id="selectThVideoOrderVo">
-        select t1.process,a.matter,a.id,a.status, a.order_name, a.video_script, a.type, a.special_need, a.risk_word, a.create_time, a.create_by, a.update_time, a.update_by,
+        select t1.process,a.id,a.status, a.order_name, a.video_script, a.type, a.special_need, a.risk_word, a.create_time, a.create_by, a.update_time, a.update_by,
         b.id video_need_id,b.product_trade, b.video_dept,b.need_name, b.order_id need_order_id, b.product_name, b.put_url, b.logo_url, b.product_detail,  b.optimize_group_leader, b.order_type, b.put_media, b.end_time, b.video_group
         from th_video_order a left join th_video_need b on a.id = b.order_id left join
         (select order_id,group_concat(status,'(',date_format(operation_time,'%m-%d %H'),')') process from th_video_operation_history  group by order_id) t1

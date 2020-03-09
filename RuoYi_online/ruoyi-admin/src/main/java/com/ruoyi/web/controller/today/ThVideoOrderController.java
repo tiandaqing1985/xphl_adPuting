@@ -164,8 +164,8 @@ public class ThVideoOrderController extends BaseController {
     @Log(title = "视频订单", businessType = BusinessType.INSERT)
     @PostMapping("/delivery")
     @ResponseBody
-    public AjaxResult delivery(@RequestParam("file") MultipartFile file, ThVideoOrder thVideoOrder) {
-        thVideoOrder.setScript(file);
+    public AjaxResult delivery(MultipartFile file_data, ThVideoOrder thVideoOrder) {
+        thVideoOrder.setScript(file_data);
         try {
             thVideoOrderService.orderDelivery(thVideoOrder);
         } catch (Exception e) {
@@ -211,6 +211,15 @@ public class ThVideoOrderController extends BaseController {
         ThVideoOrder thVideoOrder = thVideoOrderService.selectThVideoOrderById(id);
         mmap.put("thVideoOrder", thVideoOrder);
         return prefix + "/delivery";
+    }
+    /**
+     * 投放视频
+     */
+    @GetMapping("/putIn/{id}")
+    public String putIn(@PathVariable("id") Long id, ModelMap mmap) {
+        ThVideoOrder thVideoOrder = thVideoOrderService.selectThVideoOrderById(id);
+        mmap.put("thVideoOrder", thVideoOrder);
+        return prefix + "/putIn";
     }
 
     /**

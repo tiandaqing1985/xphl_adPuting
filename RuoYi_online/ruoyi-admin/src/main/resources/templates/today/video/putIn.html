@@ -17,6 +17,9 @@
             <li id="tb3" class="">
                 <a data-toggle="tab" href="#tab-3" aria-expanded="false" onclick="changeTab(3)">广告计划管理</a>
             </li>
+            <li id="tb4" class="">
+                <a data-toggle="tab" href="#tab-4" aria-expanded="false" onclick="changeTab(4)">广告创意管理</a>
+            </li>
         </ul>
         <div class="tab-content">
             <div id="tab-1" class="tab-pane active">
@@ -95,8 +98,8 @@
                                             <a class="btn btn-warning btn-rounded btn-sm"
                                                onclick="$.form.reset('formId2')"><i
                                                     class="fa fa-refresh"></i>&nbsp;重置</a>
-                                            <a class="btn btn-primary btn-rounded btn-sm"
-                                               onclick="myExportExcel('2')"><i class="fa fa-download"></i> 导出</a>
+<!--                                            <a class="btn btn-primary btn-rounded btn-sm"-->
+<!--                                               onclick="myExportExcel('2')"><i class="fa fa-download"></i> 导出</a>-->
                                         </li>
                                     </ul>
                                 </div>
@@ -137,14 +140,6 @@
                                 <input name="updateFlag" value="0" type="hidden">
                                 <div class="select-list">
                                     <ul>
-<!--                                        <li class="select-time">-->
-<!--                                            <label>导入时间： </label>-->
-<!--                                            <input type="text" id="dueDateStart1" placeholder="开始时间（包含）"-->
-<!--                                                   name="start"/>-->
-<!--                                            <span>-</span>-->
-<!--                                            <input type="text" id="dueDateEnd1" placeholder="结束时间（包含）"-->
-<!--                                                   name="end"/>-->
-<!--                                        </li>-->
                                         <li class="select-time">
                                             <label>计划名称： </label>
                                             <input type="text" id="name" name="name"/>
@@ -155,8 +150,6 @@
                                             <a class="btn btn-warning btn-rounded btn-sm"
                                                onclick="$.form.reset('formId3')"><i
                                                     class="fa fa-refresh"></i>&nbsp;重置</a>
-                                            <a class="btn btn-primary btn-rounded btn-sm"
-                                               onclick="myExportExcel('3')"><i class="fa fa-download"></i> 导出</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -165,35 +158,11 @@
 
                         <div class="col-sm-12 select-table table-striped">
                             <div class="btn-group-sm" role="group" id="toolbar3">
-<!--                                <a class="btn btn-danger multiple"-->
-<!--                                   onclick="removeAll()" style="display: none">-->
-<!--                                    <i class="fa fa-remove"></i> 删除-->
-<!--                                </a>-->
-<!--                                <a class="btn btn-warning" onclick="importExcel(3)">-->
-<!--                                    <i class="fa fa-upload"></i> 导入-->
-<!--                                </a>-->
-<!--                                <a class="btn btn-primary" onclick="startPlan()">-->
-<!--                                    <i class="fa fa-upload"></i> 启用-->
-<!--                                </a>-->
-<!--                                <a class="btn btn-primary" onclick="stopPlan()">-->
-<!--                                    <i class="fa fa-upload"></i> 停止-->
-<!--                                </a>-->
                                 <a class="btn btn-info" onclick="$.table.refresh('bootstrap-table-3')" style="float: right">
                                     <i class="fa fa-refresh"></i> 刷新
                                 </a>
                                 <a class="btn btn-success" onclick="syncPlan()">
                                     <i class="fa fa-refresh"></i> 同步广告计划
-                                </a>
-<!--                                <a class="btn btn-danger multiple"-->
-<!--                                   onclick="openFull('更新管理', prefix3);">-->
-<!--                                    <i class="fa fa-remove"></i> 更新管理-->
-<!--                                </a>-->
-<!--                                <a class="btn btn-danger multiple"-->
-<!--                                   onclick="$.modal.openTab('新增管理', prefix3+'/newAddManager')">-->
-<!--                                    <i class="fa fa-remove"></i> 新增管理-->
-<!--                                </a>-->
-                                <a class="btn btn-success" onclick="showField()" style="float: right">
-                                    <i class="fa fa-plus"></i> 显示方案
                                 </a>
                             </div>
 
@@ -373,6 +342,29 @@
                     </div>
                 </div>
             </div>
+
+            <div id="tab-4" class="tab-pane">
+                <div class="panel-body">
+                    <div class="row">
+
+                        <div class="col-sm-12 search-collapse">
+                        </div>
+
+                        <div class="col-sm-12 select-table table-striped">
+                            <div class="btn-group-sm" role="group" id="toolbar4">
+                                <a class="btn btn-info" onclick="$.table.refresh('bootstrap-table-4')" style="float: right">
+                                    <i class="fa fa-refresh"></i> 刷新
+                                </a>
+                                <a class="btn btn-success" onclick="syncCteativities()">
+                                    <i class="fa fa-refresh"></i> 同步广告创意
+                                </a>
+                            </div>
+
+                            <table class="freeTable" id="bootstrap-table-4" data-mobile-responsive="true"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -384,10 +376,12 @@
     var prefix3 = ctx + "today/ad";
     var prefix4 = ctx + "today/show";
     var prefix5 = ctx + "today/creativity";
+    var prefix6 = ctx + "today/creatives";
 
 
     var advertiserId = undefined;
     var campaignId = undefined;
+    var planId = undefined;
 
     var editFlag = [[${@permission.hasPermi('today:ad:edit')}]];
     var removeFlag = [[${@permission.hasPermi('today:ad:remove')}]];
@@ -488,8 +482,12 @@
         if (id == 1) {
             advertiserId = undefined;
             campaignId = undefined;
+            planId = undefined;
         } else if (id == 2) {
             campaignId = undefined;
+            planId = undefined;
+        }else if(id == 3){
+            planId = undefined;
         }
         initTable(id);
     }
@@ -548,6 +546,13 @@
         $.modal.confirm("确认同步广告计划吗?", function () {
             var url = prefix3 + "/syncPlan"
             var data = {"advertiserId": advertiserId, "campaignId": campaignId};
+            $.operate.submit(url, "post", "json", data);
+        });
+    }
+    function syncCteativities() {
+        $.modal.confirm("确认同步广告创意吗?", function () {
+            var url = prefix6 + "/syncCreativities"
+            var data = {"advertiserId": advertiserId, "adId": planId};
             $.operate.submit(url, "post", "json", data);
         });
     }
@@ -710,6 +715,7 @@
     var options1Init = false;
     var options2Init = false;
     var options3Init = false;
+    var options4Init = false;
     var options1 = {
         id: "bootstrap-table-1",
         url: prefix1 + "/list",
@@ -736,7 +742,7 @@
             }
         },
         columns: [{
-            checkbox: true
+            checkbox: false
         },
             {
                 field: 'id',
@@ -831,7 +837,7 @@
         showColumns: false,
         showExport: false,
         columns: [{
-            checkbox: true
+            checkbox: false
         },
             {
                 field: 'campaignId',
@@ -874,7 +880,7 @@
                     var actions = [];
                     // actions.push('<a class="btn btn-success btn-xs  href="javascript:void(0)" onclick="$.operate.edit(\'' + row.campaignId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                     // actions.push('<a class="btn btn-danger btn-xs   href="javascript:void(0)" onclick="$.operate.remove(\'' + row.campaignId + '\')"><i class="fa fa-remove"></i>删除</a>');
-                    actions.push('<a class="btn btn-info btn-xs   href="javascript:void(0)" onclick="copy('+row.campaignId+',\''+"campaign"+'\')"><i class="fa fa-paste"></i>复制</a>');
+                    // actions.push('<a class="btn btn-info btn-xs   href="javascript:void(0)" onclick="copy('+row.campaignId+',\''+"campaign"+'\')"><i class="fa fa-paste"></i>复制</a>');
                     return actions.join('');
                 }
             }]
@@ -891,7 +897,17 @@
             removeUrl: prefix3 + "/remove",
             exportUrl: prefix3 + "/export",
             onDblClickRow: function (row) {
-                $.modal.openTab('广告创意', prefix5+'/'+row.id);
+                // $.modal.openTab('广告创意', prefix5+'/'+row.id);
+                $("#tb3").removeClass("active");
+                $("#tb4").addClass("active");
+                $("#tab-3").removeClass("active");
+                $("#tab-4").addClass("active");
+                planId = row.adId;
+                initTable(4);
+                if (options4Init) {
+                    $.table._option.id = 'bootstrap-table-4';
+                    // $.table.search("formId3", {"advertiserId": advertiserId, "campaignId": campaignId, "updateFlag": "0"});
+                }
             },
             queryParams: function (params) {
                 var curParams = {
@@ -914,7 +930,7 @@
             fixedColumns: true,
             fixedNumber: 5,
             columns: [{
-                checkbox: true
+                checkbox: false
             },
                 {
                     field: 'id',
@@ -928,7 +944,7 @@
                         var actions = [];
                         // actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         // actions.push('<a style="display: none" class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
-                        actions.push('<a class="btn btn-info btn-xs   href="javascript:void(0)" onclick="copy('+row.adId+',\''+"plan"+'\')"><i class="fa fa-paste"></i>复制</a>');
+                        // actions.push('<a class="btn btn-info btn-xs   href="javascript:void(0)" onclick="copy('+row.adId+',\''+"plan"+'\')"><i class="fa fa-paste"></i>复制</a>');
                         return actions.join('');
                     }
                 },
@@ -1224,6 +1240,50 @@
         }
     }
 
+    var options4 ;
+    function options4Initfun() {
+        options4 = {
+            id: "bootstrap-table-4",
+            url: prefix6 + "/listInfo",
+            queryParams: function (params) {
+                var curParams = {
+                    // 传递参数查询参数
+                    pageSize: params.limit,
+                    pageNum: params.offset / params.limit + 1,
+                    searchValue: params.search,
+                    orderByColumn: params.sort,
+                    isAsc: params.order
+                };
+                var currentId = $.common.isEmpty($.table._option.formId) ? $('form').attr('id') : $.table._option.formId;
+                return $.extend(curParams, {"updateFlag": "0","opt":"normal"});
+            },
+            modalName: "广告计划",
+            showSearch: false,
+            showRefresh: false,
+            showToggle: false,
+            showColumns: false,
+            showExport: false,
+            columns:[
+                {
+                    checkbox: false
+                },
+                {
+                    field: 'id',
+                    title: 'ID',
+                    visible: false
+                },
+                {
+                    field: 'creativeId',
+                    title: '创意ID'
+                },
+                {
+                    field: 'title',
+                    title: '标题'
+                }
+            ]
+        }
+    }
+
 
 
     $(function () {
@@ -1276,6 +1336,10 @@
             options3Initfun();
             $.table.init(options3);
             options3Init = true;
+        } else if(id == 4){
+            options4Initfun();
+            $.table.init(options4);
+            options4Init = true;
         }
     }
 
@@ -1361,6 +1425,10 @@
 
     function remove(id){
         $.operate.remove(id);
+    }
+
+    function submitHandler() {
+        $.modal.close();
     }
 
 </script>

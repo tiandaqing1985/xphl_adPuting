@@ -4,23 +4,37 @@
     <meta http-equiv="Content-Type" content="multipart/form-data; charset=utf-8" />
     <th:block th:include="include :: header('编辑edit.html视频需求')" />
     <th:block th:include="include :: datetimepicker-css" />
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-file-upload" enctype="multipart/form-data">
-            <input name="id" th:field="${thVideoOrder.id}" type="hidden">
-            请在此上传素材！！
-            <hr>
-            <div class="form-group">
-                <label class="col-sm-3 control-label"><span style="color: red">*</span>视频素材：</label>
-                <div class="col-sm-1">
-                    <input name="file" id="file" class="form-control" type="file" required>
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="ibox-content">
+                    <div class="form-group">
+                        <label class="font-noraml">素材上传</label>
+                        <div class="file-loading">
+                            <input id="fileUpload" type="file" multiple>
+                        </div>
+                    </div>
+                    <hr>
                 </div>
-                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件名要求:不可超过50字,可由"汉字,英文,数字"组成,不要使用特殊字符"如-丶~!等"</span>
             </div>
-        </form>
+        </div>
+<!--        <form class="form-horizontal m" id="form-file-upload" enctype="multipart/form-data">-->
+<!--            <input name="id" th:field="${thVideoOrder.id}" type="hidden">-->
+<!--            请在此上传素材！！-->
+<!--            <hr>-->
+<!--            <div class="form-group">-->
+<!--                <label class="col-sm-3 control-label"><span style="color: red">*</span>视频素材：</label>-->
+<!--                <div class="col-sm-1">-->
+<!--                    <input name="file" id="file" class="form-control" type="file" required>-->
+<!--                </div>-->
+<!--                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件名要求:不可超过50字,可由"汉字,英文,数字"组成,不要使用特殊字符"如-丶~!等"</span>-->
+<!--            </div>-->
+<!--        </form>-->
         <form class="form-horizontal m" id="form-need-add" enctype="multipart/form-data">
-            <input name="id" th:field="${thVideoOrder.id}" type="hidden">
+            <input name="id" id="orderId" th:field="${thVideoOrder.id}" type="hidden">
             需求信息
             <hr>
             <div class="form-group">
@@ -44,13 +58,13 @@
                     <input readonly th:value="${thVideoOrder.need.productTrade}" name="need.productTrade" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color:red;">*</span>投放链接：</label>
                 <div class="col-sm-5">
                     <input readonly th:value="${thVideoOrder.need.putUrl}" name="need.putUrl" class="form-control" type="text" required>
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red">*</span>产品logo：</label>
                 <div class="col-sm-1">
 <!--                    <input name="logoFile" id="logoUrl" class="form-control" type="file" required>-->
@@ -58,13 +72,13 @@
                 </div>
 <!--                <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件名要求:不可超过50字,可由"汉字,英文,数字"组成,不要使用特殊字符"如-丶~!等"</span>-->
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 control-label">产品说明：</label>
                 <div class="col-sm-5">
                     <textarea readonly th:text="${thVideoOrder.need.productDetail}" name="need.productDetail" class="form-control" type="text"></textarea>
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red">*</span> 优化组长：</label>
                 <div class="col-sm-5">
                     <select readonly disabled name="need.optimizeGroupLeader" class="form-control" required="required" th:with="type=${@dict.getType('ta_video_optimize')}">
@@ -81,7 +95,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red">*</span> 投放媒体：</label>
                 <div class="col-sm-5">
                     <div th:with="type=${@dict.getType('ta_video_media')}">
@@ -89,7 +103,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red">*</span>截止日期：</label>
                 <div class="col-sm-5">
                     <div class="input-group date">
@@ -98,7 +112,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">    
+            <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red">*</span>接单部门：</label>
                 <div class="col-sm-5">
                     <select disabled readonly="" name="need.dept" class="form-control" id="dept" required="required" th:with="type=${@dict.getType('ta_video_dept')}">
@@ -155,32 +169,43 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
+    <th:block th:include="include :: bootstrap-fileinput-js"/>
     <script type="text/javascript">
         var prefix = ctx + "today/video"
         $("#form-need-add").validate({
             focusCleanup: true
         });
 
+        $("#fileUpload").on("fileuploaded", function(event, data, previewId, index) {
+            var result = {};
+            result.code=web_status.SUCCESS;
+            result.msg = "上传成功";
+            $.operate.submit(prefix + "/updateStatus", "post", "json", {"id":$("#orderId").val(),"status":"delivery","statusName":"交付"},function (res) {
+                if(res.code==web_status.SUCCESS){
+                    $.operate.successCallback(result);
+                }else {
+
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $("#fileUpload").fileinput({
+                'theme': 'explorer-fas',
+                'uploadUrl': prefix+"/delivery",
+                overwriteInitial: false,
+                initialPreviewAsData: true,
+                initialPreview: [
+
+                ],
+                uploadExtraData:{
+                    "id":$("#orderId").val()
+                }
+            });
+        });
         function submitHandler() {
-            if ($.validate.form()) {
-                var formData = new FormData(document.getElementById("form-file-upload"));
-                var config = {
-                    url: prefix + "/delivery",
-                    type: "post",
-                    dataType: "json",
-                    processData: false,
-                    contentType: false,
-                    data: formData,
-                    beforeSend: function () {
-                        $.modal.loading("正在处理中，请稍后...");
-                        $.modal.disable();
-                    },
-                    success: function(result) {
-                        $.operate.successCallback(result);
-                    }
-                };
-                $.ajax(config)
-            }
+            $.modal.close();
+            window.parent.$.table.refresh();
         }
 
     </script>
