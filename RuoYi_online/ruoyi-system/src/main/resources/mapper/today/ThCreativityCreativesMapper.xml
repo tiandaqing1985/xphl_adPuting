@@ -39,6 +39,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="adId != null and adId != ''">
                 and b.ad_id = #{adId}
             </if>
+            <if test="creativityId != null and creativityId != ''">
+                and a.creativity_id = #{creativityId}
+            </if>
         </where>
     </select>
     

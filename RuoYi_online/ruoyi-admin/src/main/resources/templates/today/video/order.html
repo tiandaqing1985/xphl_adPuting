@@ -265,7 +265,7 @@
                             actions.push('<a class="btn btn-danger btn-xs '+yunyingFlg+'" href="javascript:void(0)" onclick="updateStatus('+row.id+',\'signOut\',\'拒签\')"><i class="fa fa-adjust"></i>拒签</a>');
                             actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
                         }else if(row.status=="signIn"){
-                            actions.push('<a class="btn btn-danger btn-xs '+yunyingFlg+'" href="javascript:void(0)" onclick="$.modal.openFull(\'投放订单'+row.orderName+'\',$.table._option.putInUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-adjust"></i>投放</a>');
+                            actions.push('<a class="btn btn-danger btn-xs '+yunyingFlg+'" href="javascript:void(0)" onclick="updateStatus('+row.id+',\'putIn\',\'投放\')"><i class="fa fa-adjust"></i>投放</a>');
                             actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
                         }else if(row.status=="putIn"||row.status=="del"){
                             actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');

@@ -56,4 +56,6 @@ public interface AdCenterService {
 
     //查询创意
     public Object selectCreativity(Object creativity);
+
+    Object updateCreativity(Object thCreativity);
 }

@@ -59,4 +59,6 @@ public interface IThVideoMatterService
      * @return 结果
      */
     public int deleteThVideoMatterById(Long id);
+
+    int updateNoSignInThVideoMatterByOrderId(ThVideoMatter thVideoMatter);
 }

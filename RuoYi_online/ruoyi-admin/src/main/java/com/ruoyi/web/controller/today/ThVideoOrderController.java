@@ -1,19 +1,23 @@
 package com.ruoyi.web.controller.today;
 
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.system.domain.SysDictData;
 import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.service.ISysDictDataService;
-import com.ruoyi.system.service.ISysDictTypeService;
-import com.ruoyi.system.service.ISysRoleService;
-import com.ruoyi.today.domain.ThVideoNeed;
-import com.ruoyi.today.domain.ThVideoOrder;
+import com.ruoyi.today.domain.*;
 import com.ruoyi.today.domain.enums.VideoOrderStatusEnum;
-import com.ruoyi.today.service.IThVideoOrderService;
+import com.ruoyi.today.domain.request.CreativitiesVideoRequest;
+import com.ruoyi.today.service.*;
+import com.ruoyi.today.tools.PmsUploadUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.csource.common.MyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,6 +30,9 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.plaf.TableHeaderUI;
 
 /**
@@ -43,6 +50,12 @@ public class ThVideoOrderController extends BaseController {
     private IThVideoOrderService thVideoOrderService;
     @Autowired
     private ISysDictDataService dictDataService;
+    @Autowired
+    private IThVideoMatterService thVideoMatterService;
+    @Autowired
+    private IThCreativityService thCreativityService;
+    @Autowired
+    private IThVideoMatterTodayService thVideoMatterTodayService;
 
     @RequiresPermissions("today:materia:view")
     @GetMapping("/materia")
@@ -70,7 +83,7 @@ public class ThVideoOrderController extends BaseController {
                 list = thVideoOrderService.selectThVideoOrderList(thVideoOrder);
             }
         }
-        modelMap.put("videoMateria",list);
+        modelMap.put("videoMateria", list);
         return prefix + "/materia";
     }
 
@@ -81,6 +94,70 @@ public class ThVideoOrderController extends BaseController {
         modelMap.put("userId", ShiroUtils.getUserId());
 
         return prefix + "/order";
+    }
+
+    @GetMapping("/matterList/{id}")
+    public String matterList(@PathVariable("id") Long id, ModelMap modelMap) {
+
+        modelMap.put("id", id);
+
+        return prefix + "/matterList";
+    }
+
+    @PostMapping("/updateCreativitiesVideo")
+    @ResponseBody
+    public AjaxResult updateCreativitiesVideo(CreativitiesVideoRequest request) {
+
+        //查出该计划创意部分的所有内容
+        ThCreativity thCreativity = new ThCreativity();
+        thCreativity.setAdvertiserId(request.getAdvertiserId().toString());
+        thCreativity.setAdId(request.getAdId().toString());
+        List<ThCreativity> thCreativities = thCreativityService.selectThCreativityList(thCreativity);
+        thCreativity = thCreativities.get(0);
+        //查询要投放的素材对应的头条的id
+        ThVideoMatterToday todayVO = new ThVideoMatterToday();
+        todayVO.setMatterId(Long.valueOf(request.getMatterIds()));
+        todayVO.setAdvertiserId(request.getAdvertiserId().toString());
+        List<ThVideoMatterToday> thVideoMatterTodays = thVideoMatterTodayService.selectThVideoMatterTodayList(todayVO);
+        if (thVideoMatterTodays.size() == 0) {
+            try {
+                thVideoMatterTodayService.insertThVideoMatterToday(todayVO);
+                return AjaxResult.success("更新成功");
+            } catch (Exception e) {
+                logger.error("出现错误：", e);
+                return AjaxResult.error(e.getMessage());
+            }
+        }
+        //替换选中的创意的素材
+        for (ThCreativityCreatives thCreativityCreatives : thCreativity.getCreatives()) {
+            if (thCreativityCreatives.getId().intValue() == request.getId().intValue()) {
+                thCreativityCreatives.setVideoId(todayVO.getTodayMatterIdId());
+                //将一些字符串转为数组，以便发送头条
+                thCreativityCreatives.setCreative_word_ids(thCreativityCreatives.getCreativeWordIds().split(","));
+                break;
+            }
+        }
+        //将一些字符串转为数组，以便发送头条
+        thCreativity.setInventory_type(thCreativity.getInventoryType().split(","));
+        thCreativity.setAd_keywords(thCreativity.getAdKeywords().split(","));
+        //发送头条，更改定单状态
+        try {
+            thVideoOrderService.putInMatter(thCreativity);
+            return AjaxResult.success("更新成功");
+        } catch (Exception e) {
+            logger.error("出现错误：", e);
+            return AjaxResult.error(e.getMessage());
+        }
+
+    }
+
+    @PostMapping("/matterList")
+    @ResponseBody
+    public TableDataInfo matterList(ThVideoMatter matter) {
+
+        List<ThVideoMatter> thVideoMatters = thVideoMatterService.selectThVideoMatterList(matter);
+
+        return getDataTable(thVideoMatters);
     }
 
     /**
@@ -165,6 +242,9 @@ public class ThVideoOrderController extends BaseController {
     @PostMapping("/delivery")
     @ResponseBody
     public AjaxResult delivery(MultipartFile file_data, ThVideoOrder thVideoOrder) {
+        if (file_data == null) {
+            return toAjax(0);
+        }
         thVideoOrder.setScript(file_data);
         try {
             thVideoOrderService.orderDelivery(thVideoOrder);
@@ -212,6 +292,7 @@ public class ThVideoOrderController extends BaseController {
         mmap.put("thVideoOrder", thVideoOrder);
         return prefix + "/delivery";
     }
+
     /**
      * 投放视频
      */
@@ -258,6 +339,45 @@ public class ThVideoOrderController extends BaseController {
     @ResponseBody
     public AjaxResult remove(Long ids) {
         return toAjax(thVideoOrderService.deleteThVideoOrderById(ids));
+    }
+
+
+    @GetMapping("/downloadFile/{id}")
+    public void downloadFile(@PathVariable("id") Long id, HttpServletResponse response) {
+
+        ThVideoMatter thVideoMatter = thVideoMatterService.selectThVideoMatterById(id);
+        ThVideoOrder thVideoOrder = thVideoOrderService.selectThVideoOrderById(thVideoMatter.getOrderId());
+        File file = null;
+        try {
+            String s = PmsUploadUtil.downLoadFile(thVideoMatter.getMatter(), thVideoMatter.getFileName());
+            file = new File(s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (MyException e) {
+            e.printStackTrace();
+        }
+        ServletOutputStream outputStream = null;
+        try {
+            // 下载名称
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("xphlsc" + DateUtils.parseDateToStr("yyyyMMdd", thVideoOrder.getNeed().getEndTime()) + thVideoMatter.getId()+ "-" + thVideoMatter.getFileName(), "utf-8"));
+            outputStream = response.getOutputStream();
+            FileUtils.writeBytes(file.getAbsolutePath(), outputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            file.delete();
+        }
+
+
     }
 
 //    /**

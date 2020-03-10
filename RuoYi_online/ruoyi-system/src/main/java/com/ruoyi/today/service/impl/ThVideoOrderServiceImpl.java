@@ -4,10 +4,9 @@ import java.util.List;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.security.PermissionUtils;
-import com.ruoyi.today.domain.ThVideoMatter;
-import com.ruoyi.today.domain.ThVideoOperationHistory;
-import com.ruoyi.today.domain.ThVideoOrder;
+import com.ruoyi.today.domain.*;
 import com.ruoyi.today.domain.enums.VideoOrderStatusEnum;
+import com.ruoyi.today.domain.response.ResponseVO;
 import com.ruoyi.today.mapper.ThVideoOrderMapper;
 import com.ruoyi.today.service.*;
 import org.slf4j.Logger;
@@ -39,6 +38,10 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
     private IThFileService thFileService;
     @Autowired
     private IThVideoOperationHistoryService thVideoOperationHistoryService;
+    @Autowired
+    private AdCenterService touTiaoAdCenterService;
+    @Autowired
+    private IThCreativityCreativesService thCreativityCreativesService;
 
     /**
      * 查询视频订单
@@ -83,7 +86,7 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
             operationHistory.setStatus("下单");
 
 
-            logger.info("订单"+thVideoOrder.getOrderName()+"创建成功，开始上传文件");
+            logger.info("订单" + thVideoOrder.getOrderName() + "创建成功，开始上传文件");
             String logoUrl = thFileService.receiveFile(thVideoOrder.getLogo());
             String scriptUrl = thFileService.receiveFile(thVideoOrder.getScript());
 
@@ -93,7 +96,7 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
             thVideoOrderMapper.updateThVideoOrder(thVideoOrder);
             thVideoNeedService.updateThVideoNeed(thVideoOrder.getNeed());
         } catch (Exception e) {
-            logger.error("创建订单出现错误:",e);
+            logger.error("创建订单出现错误:", e);
             throw e;
         }
 
@@ -111,7 +114,7 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
     public int updateThVideoOrder(ThVideoOrder thVideoOrder) throws Exception {
 
         ThVideoOrder updateVO = thVideoOrderMapper.selectThVideoOrderById(thVideoOrder.getId());
-        if(updateVO.getStatus()== VideoOrderStatusEnum.ORDER.getValue()){
+        if (updateVO.getStatus() == VideoOrderStatusEnum.ORDER.getValue()) {
             logger.error("非下单状态无法修改订单信息");
             throw new Exception("非下单状态无法修改订单信息");
         }
@@ -120,15 +123,15 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
         updateVO.setType(thVideoOrder.getType());
         updateVO.setSpecialNeed(thVideoOrder.getSpecialNeed());
         updateVO.setRiskWord(thVideoOrder.getRiskWord());
-        try{
+        try {
             thVideoOrderMapper.updateThVideoOrder(updateVO);
-            if(!thVideoOrder.getScript().isEmpty()){
+            if (!thVideoOrder.getScript().isEmpty()) {
                 String scriptUrl = thFileService.receiveFile(thVideoOrder.getScript());
                 updateVO.setVideoScript(scriptUrl);
                 thVideoOrderMapper.updateThVideoOrder(updateVO);
             }
-        }catch (Exception e){
-            logger.error("更新订单信息出现错误",e);
+        } catch (Exception e) {
+            logger.error("更新订单信息出现错误", e);
             throw e;
         }
 
@@ -171,6 +174,10 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
 
         thVideoOrderMapper.updateThVideoOrder(thVideoOrder);
 
+        ThVideoMatter thVideoMatter = new ThVideoMatter();
+        thVideoMatter.setStatus(statusName);
+        thVideoMatter.setOrderId(thVideoOrder.getId());
+        videoMatterService.updateNoSignInThVideoMatterByOrderId(thVideoMatter);
 
         return 1;
     }
@@ -181,14 +188,14 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
         try {
             String fileName = thVideoOrder.getScript().getOriginalFilename();
             ThVideoOperationHistory operationHistory = new ThVideoOperationHistory();
-            operationHistory.setOperationBy((String)PermissionUtils.getPrincipalProperty("userName"));
+            operationHistory.setOperationBy((String) PermissionUtils.getPrincipalProperty("userName"));
             operationHistory.setOperationTime(DateUtils.getNowDate());
             operationHistory.setOrderId(thVideoOrder.getId());
             operationHistory.setStatus("交付");
             thVideoOperationHistoryService.insertThVideoOperationHistory(operationHistory);
 
 
-            logger.info("订单"+thVideoOrder.getOrderName()+"，开始上传文件");
+            logger.info("订单" + thVideoOrder.getOrderName() + "，开始上传文件");
             String matter = thFileService.receiveFile(thVideoOrder.getScript());
 
 //            thVideoOrder.setMatter(matter);
@@ -200,8 +207,24 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
             videoMatter.setFileName(fileName);
             videoMatterService.insertThVideoMatter(videoMatter);
         } catch (Exception e) {
-            logger.error("上传素材出现错误:",e);
+            logger.error("上传素材出现错误:", e);
             throw e;
+        }
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void putInMatter(ThCreativity thCreativity) throws Exception {
+
+        ResponseVO responseVO = (ResponseVO) touTiaoAdCenterService.updateCreativity(thCreativity);
+        if (!responseVO.getCode().equals("0")) {
+            throw new Exception("错误:" + responseVO.getCode() + responseVO.getMessage());
+        } else {
+            ThCreativityCreatives creatives = new ThCreativityCreatives();
+            creatives.setAdvertiserId(thCreativity.getAdvertiserId());
+            creatives.setAdId(thCreativity.getAdId());
+            thCreativityCreativesService.syncCreativities(creatives);
         }
 
     }

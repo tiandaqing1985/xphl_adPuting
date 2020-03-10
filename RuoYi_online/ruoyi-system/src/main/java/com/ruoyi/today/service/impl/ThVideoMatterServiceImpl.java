@@ -91,4 +91,9 @@ public class ThVideoMatterServiceImpl implements IThVideoMatterService
     {
         return thVideoMatterMapper.deleteThVideoMatterById(id);
     }
+
+    @Override
+    public int updateNoSignInThVideoMatterByOrderId(ThVideoMatter thVideoMatter) {
+        return thVideoMatterMapper.updateNoSignInThVideoMatterByOrderId(thVideoMatter);
+    }
 }

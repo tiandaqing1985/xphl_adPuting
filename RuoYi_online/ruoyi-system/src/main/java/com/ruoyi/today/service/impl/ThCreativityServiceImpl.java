@@ -74,6 +74,18 @@ public class ThCreativityServiceImpl implements IThCreativityService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insertThCreativity(ThCreativity thCreativity) {
+
+        ThCreativity creativity = new ThCreativity();
+        creativity.setAdId(thCreativity.getAdId());
+        creativity.setAdvertiserId(thCreativity.getAdvertiserId());
+        List<ThCreativity> thCreativities = thCreativityMapper.selectThCreativityList(creativity);
+        if (thCreativities.size() != 0) {
+            thCreativityMapper.deleteThCreativityById(thCreativities.get(0).getId());
+            thCreativityCreativesMapper.deleteThCreativityCreativesByCreativityId(thCreativities.get(0).getId().toString());
+            thCreativityTitleMapper.deleteThCreativityTitleByCreativityId(thCreativities.get(0).getId().toString());
+            thCreativityImageMapper.deleteThCreativityImageByCreativityId(thCreativities.get(0).getId().toString());
+        }
+
         thCreativity.setCreateTime(DateUtils.getNowDate());
         int i = thCreativityMapper.insertThCreativity(thCreativity);
         if (thCreativity.getImage_list() != null) {

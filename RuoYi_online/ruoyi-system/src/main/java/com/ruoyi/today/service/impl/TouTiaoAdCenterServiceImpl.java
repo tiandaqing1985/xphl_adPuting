@@ -271,4 +271,13 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
 
     }
 
+    @Override
+    public Object updateCreativity(Object thCreativity) {
+        HttpHeaders headers = httpBuilder.buildTouTiaoHeader();
+        HttpEntity<String> request = new HttpEntity<>(JSON.toJSONString(thCreativity), headers);
+        logger.info("更新创意信息请求报文：" + JSON.toJSONString(request));
+        ResponseVO response = httpBuilder.buildRestTemplate().postForObject(touTiaoApiConfig.getAdGroupAPIUrls().get("updateCreativity"), request, ResponseVO.class);
+        logger.info("更新创意信息响应报文：" + JSON.toJSONString(response));
+        return response;
+    }
 }

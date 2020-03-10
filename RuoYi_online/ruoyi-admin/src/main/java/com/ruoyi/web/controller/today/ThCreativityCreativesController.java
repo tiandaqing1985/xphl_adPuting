@@ -54,7 +54,7 @@ public class ThCreativityCreativesController extends BaseController {
     @PostMapping("/listInfo")
     @ResponseBody
     public TableDataInfo listInfo(ThCreativityCreatives thCreativityCreatives) {
-        startPage();
+//        startPage();
         List<ThCreativityCreatives> list = thCreativityCreativesService.selectThCreativityCreativesList(thCreativityCreatives);
         return getDataTable(list);
     }

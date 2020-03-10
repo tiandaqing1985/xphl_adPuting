@@ -26,6 +26,16 @@ public class ThVideoMatter extends BaseEntity
     @Excel(name = "素材url")
     private String matter;
 
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getFileName() {
         return fileName;
     }

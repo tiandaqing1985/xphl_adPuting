@@ -59,4 +59,6 @@ public interface ThVideoMatterMapper
      * @return 结果
      */
     public int deleteThVideoMatterByIds(String[] ids);
+
+    int updateNoSignInThVideoMatterByOrderId(ThVideoMatter thVideoMatter);
 }

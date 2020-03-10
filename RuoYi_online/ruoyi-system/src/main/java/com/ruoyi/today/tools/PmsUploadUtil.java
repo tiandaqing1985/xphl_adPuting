@@ -15,6 +15,43 @@ import java.io.IOException;
 
 public class PmsUploadUtil {
 
+    public static String downLoadFile(String remoteFilename,String fileName) throws IOException, MyException {
+
+        String imgUrl =  "http://192.168.88.192";
+
+        // 上传图片到服务器
+        // 配置fdfs的全局链接地址
+//        String tracker = PmsUploadUtil.class.getResource("/tracker.conf").getPath();// 获得配置文件的路径
+        String tracker = new File("config/tracker.conf").getAbsolutePath();// 获得配置文件的路径
+
+        try {
+            ClientGlobal.init(tracker);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        TrackerClient trackerClient = new TrackerClient();
+
+        // 获得一个trackerServer的实例
+        TrackerServer trackerServer = null;
+        try {
+            trackerServer = trackerClient.getConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 通过tracker获得一个Storage链接客户端
+        StorageClient storageClient = new StorageClient(trackerServer,null);
+        try {
+            File file = new File(fileName);
+            storageClient.download_file("group1",remoteFilename.split("/group1/")[1],file.getAbsolutePath());
+            imgUrl = file.getAbsolutePath();
+        } catch (Exception e) {
+            throw e;
+        }
+        return imgUrl;
+    }
+
     public static String uploadImage(File multipartFile) throws IOException, MyException {
 
         String imgUrl =  "http://192.168.88.192";
@@ -120,4 +157,5 @@ public class PmsUploadUtil {
         }
         return imgUrl;
     }
+
 }

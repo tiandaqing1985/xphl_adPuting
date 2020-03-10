@@ -17,7 +17,7 @@
             <li id="tb3" class="">
                 <a data-toggle="tab" href="#tab-3" aria-expanded="false" onclick="changeTab(3)">广告计划管理</a>
             </li>
-            <li id="tb4" class="">
+            <li disabled="true" id="tb4" class="">
                 <a data-toggle="tab" href="#tab-4" aria-expanded="false" onclick="changeTab(4)">广告创意管理</a>
             </li>
         </ul>
@@ -377,6 +377,7 @@
     var prefix4 = ctx + "today/show";
     var prefix5 = ctx + "today/creativity";
     var prefix6 = ctx + "today/creatives";
+    var prefix7 = ctx + "today/video"
 
 
     var advertiserId = undefined;
@@ -402,6 +403,7 @@
     var appBehaviorTargetDatas = [[${@dict.getType('th_ad_behavior_target')}]];
     var districtDatas = [[${@dict.getType('th_ad_district')}]];
     var cityDatas = [[${@dict.getType('th_ad_city')}]];
+    var videoOrder = [[${thVideoOrder}]];
 
     var showFieldCase = {};
 
@@ -1263,9 +1265,10 @@
             showToggle: false,
             showColumns: false,
             showExport: false,
+            pagination: false,
             columns:[
                 {
-                    checkbox: true
+                    radio: true
                 },
                 {
                     field: 'id',
@@ -1433,11 +1436,19 @@
             $.modal.alertWarning("请至少选择一条记录");
             return;
         }
-        $.modal.confirm("确认要启用选中的" + rows.length + "条计划吗?", function () {
-            var url = prefix3 + "/startPlan"
-            var data = {"ids": rows.join()};
-            alert(JSON.stringify(data))
-            // $.operate.submit(url, "post", "json", data);
+        $.modal.confirm("确认投放到选中的创意中吗?", function () {
+            var url = prefix7 + "/matterList/"+videoOrder.id;
+            var data = {"id": rows.join()};
+            $.modal.open("选择投放视频",url,undefined,undefined,function (index, layero) {
+                var iframeWin = layero.find('iframe')[0];
+                var matterIds = iframeWin.contentWindow.submitHandler(index, layero);
+                data["advertiserId"] = advertiserId;
+                data["adId"] = planId;
+                data["matterIds"] = matterIds;
+                $.operate.post(prefix7+"/updateCreativitiesVideo",data);
+                // $.table.refresh();
+                // $.modal.close();
+            })
         });
     }
 

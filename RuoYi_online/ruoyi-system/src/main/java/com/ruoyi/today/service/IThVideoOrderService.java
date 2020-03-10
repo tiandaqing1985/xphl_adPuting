@@ -1,5 +1,6 @@
 package com.ruoyi.today.service;
 
+import com.ruoyi.today.domain.ThCreativity;
 import com.ruoyi.today.domain.ThVideoOrder;
 
 import java.util.List;
@@ -63,4 +64,6 @@ public interface IThVideoOrderService
     int updateOrderStatus(ThVideoOrder thVideoOrder, String statusName) throws Exception;
 
     void orderDelivery(ThVideoOrder thVideoOrder) throws Exception;
+
+    void putInMatter(ThCreativity thCreativity) throws Exception;
 }

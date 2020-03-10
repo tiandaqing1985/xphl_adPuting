@@ -173,7 +173,7 @@
     <script type="text/javascript">
         var prefix = ctx + "today/video"
         $("#form-need-add").validate({
-            focusCleanup: true
+            focusCleanup: true,
         });
 
         $("#fileUpload").on("fileuploaded", function(event, data, previewId, index) {
@@ -200,7 +200,8 @@
                 ],
                 uploadExtraData:{
                     "id":$("#orderId").val()
-                }
+                },
+                allowedFileExtensions: ['mp4','MP4']
             });
         });
         function submitHandler() {
