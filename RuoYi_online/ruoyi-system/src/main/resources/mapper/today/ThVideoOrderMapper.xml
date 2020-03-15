@@ -1,44 +1,46 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.today.mapper.ThVideoOrderMapper">
-    
+
     <resultMap type="ThVideoOrder" id="ThVideoOrderResult">
-        <result property="id"    column="id"    />
-        <result property="orderName"    column="order_name"    />
-        <result property="videoScript"    column="video_script"    />
-        <result property="type"    column="type"    />
-        <result property="specialNeed"    column="special_need"    />
-        <result property="riskWord"    column="risk_word"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="status"    column="status"    />
-        <result property="process"    column="process"    />
+        <result property="id" column="id"/>
+        <result property="orderName" column="order_name"/>
+        <result property="videoScript" column="video_script"/>
+        <result property="type" column="type"/>
+        <result property="specialNeed" column="special_need"/>
+        <result property="riskWord" column="risk_word"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="status" column="status"/>
+        <result property="process" column="process"/>
         <association property="need" javaType="ThVideoNeed">
             <id column="video_need_id" property="id"></id>
-            <result property="needName"    column="need_name"    />
-            <result property="orderId"    column="need_order_id"    />
-            <result property="productName"    column="product_name"    />
-            <result property="putUrl"    column="put_url"    />
-            <result property="logoUrl"    column="logo_url"    />
-            <result property="productDetail"    column="product_detail"    />
-            <result property="optimizeGroupLeader"    column="optimize_group_leader"    />
-            <result property="orderType"    column="order_type"    />
-            <result property="putMedia"    column="put_media"    />
-            <result property="endTime"    column="end_time"    />
-            <result property="group"    column="video_group"    />
-            <result property="createTime"    column="create_time"    />
-            <result property="createBy"    column="create_by"    />
-            <result property="updateTime"    column="update_time"    />
-            <result property="updateBy"    column="update_by"    />
-            <result property="productTrade"    column="product_trade"    />
-            <result property="videoDept"    column="video_dept"    />
+            <result property="needName" column="need_name"/>
+            <result property="orderId" column="need_order_id"/>
+            <result property="productName" column="product_name"/>
+            <result property="putUrl" column="put_url"/>
+            <result property="logoUrl" column="logo_url"/>
+            <result property="productDetail" column="product_detail"/>
+            <result property="optimizeGroupLeader" column="optimize_group_leader"/>
+            <result property="orderType" column="order_type"/>
+            <result property="putMedia" column="put_media"/>
+            <result property="endTime" column="end_time"/>
+            <result property="group" column="video_group"/>
+            <result property="createTime" column="create_time"/>
+            <result property="createBy" column="create_by"/>
+            <result property="updateTime" column="update_time"/>
+            <result property="updateBy" column="update_by"/>
+            <result property="productTrade" column="product_trade"/>
+            <result property="videoDept" column="video_dept"/>
         </association>
+        <association property="report" select="com.ruoyi.today.mapper.ThVideoMatterReportMapper.selectGroupByOrderList"
+                     javaType="ThVideoMatterReport" column="orderId=id}"/>
         <collection property="matters" javaType="java.util.ArrayList" ofType="ThVideoMatter"
-                    select="com.ruoyi.today.mapper.ThVideoMatterMapper.selectThVideoMatterList" column="{orderId=id}" />
+                    select="com.ruoyi.today.mapper.ThVideoMatterMapper.selectThVideoMatterList" column="{orderId=id}"/>
     </resultMap>
 
     <sql id="selectThVideoOrderVo">
@@ -52,24 +54,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectThVideoOrderList" parameterType="ThVideoOrder" resultMap="ThVideoOrderResult">
         <include refid="selectThVideoOrderVo"/>
         <where>
-<!--            <if test="need.putMedia != null  and need.putMedia != ''"> and putMedia like concat('%', #{orderName}, '%')</if>-->
-            <if test="need.putMedia != null  and need.putMedia != ''"> and b.put_media = #{need.putMedia}</if>
-            <if test="need.orderType != null  and need.orderType != ''"> and b.order_type = #{need.orderType}</if>
-            <if test="need.videoDept != null  and need.videoDept != ''"> and b.video_dept = #{need.videoDept}</if>
-            <if test="need.group != null  and need.group != ''"> and b.video_group = #{need.group}</if>
-            <if test="need.optimizeGroupLeader != null  and need.optimizeGroupLeader != ''"> and b.optimize_group_leader = #{need.optimizeGroupLeader}</if>
-            <if test="need.productName != null  and need.productName != ''"> and b.product_name = #{need.productName}</if>
-            <if test="status != null  and status != ''"> and a.status = #{status}</if>
-            <if test="timeRange != null  and timeRange != ''"> and a.create_time >= left (#{timeRange},10) and a.create_time &lt;= right(#{timeRange},10)</if>
+            <!--            <if test="need.putMedia != null  and need.putMedia != ''"> and putMedia like concat('%', #{orderName}, '%')</if>-->
+            <if test="need.putMedia != null  and need.putMedia != ''">and b.put_media = #{need.putMedia}</if>
+            <if test="need.orderType != null  and need.orderType != ''">and b.order_type = #{need.orderType}</if>
+            <if test="need.videoDept != null  and need.videoDept != ''">and b.video_dept = #{need.videoDept}</if>
+            <if test="need.group != null  and need.group != ''">and b.video_group = #{need.group}</if>
+            <if test="need.optimizeGroupLeader != null  and need.optimizeGroupLeader != ''">and b.optimize_group_leader
+                = #{need.optimizeGroupLeader}
+            </if>
+            <if test="need.productName != null  and need.productName != ''">and b.product_name = #{need.productName}
+            </if>
+            <if test="status != null  and status != ''">and a.status = #{status}</if>
+            <if test="timeRange != null  and timeRange != ''">and a.create_time >= left (#{timeRange},10) and
+                a.create_time &lt;= right(#{timeRange},10)
+            </if>
             <if test="createBy != null and createBy != ''">and a.create_by = #{createBy}</if>
+            <if test="createDept != null and createDept != ''">and a.create_dept = #{createDept}</if>
         </where>
     </select>
-    
+
     <select id="selectThVideoOrderById" parameterType="Long" resultMap="ThVideoOrderResult">
         <include refid="selectThVideoOrderVo"/>
         where a.id = #{id}
     </select>
-        
+
     <insert id="insertThVideoOrder" parameterType="ThVideoOrder" useGeneratedKeys="true" keyProperty="id">
         insert into th_video_order
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -84,7 +92,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''">update_by,</if>
             <if test="status != null  and status != ''">status,</if>
             <if test="matter != null  and matter != ''">matter,</if>
-         </trim>
+            <if test="createDept != null  and createDept != ''">create_dept,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderName != null  and orderName != ''">#{orderName},</if>
             <if test="videoScript != null  and videoScript != ''">#{videoScript},</if>
@@ -97,7 +106,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
             <if test="status != null  and status != ''">#{status},</if>
             <if test="matter != null  and matter != ''">#{matter},</if>
-         </trim>
+            <if test="createDept != null  and createDept != ''">#{createDept},</if>
+        </trim>
     </insert>
 
     <update id="updateThVideoOrder" parameterType="ThVideoOrder">
@@ -123,10 +133,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteThVideoOrderByIds" parameterType="String">
-        delete from th_video_order where id in 
+        delete from th_video_order where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-    
+
 </mapper>

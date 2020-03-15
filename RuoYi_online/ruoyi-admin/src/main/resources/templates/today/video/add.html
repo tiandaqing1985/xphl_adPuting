@@ -87,7 +87,7 @@
             <div class="form-group">    
                 <label class="col-sm-3 control-label"><span style="color: red">*</span>接单部门：</label>
                 <div class="col-sm-5">
-                    <select name="need.dept" class="form-control" id="dept" onchange="videoDeptChange()" required="required" th:with="type=${@dict.getType('ta_video_dept')}">
+                    <select name="need.videoDept" class="form-control" id="dept" onchange="videoDeptChange()" required="required" th:with="type=${@dict.getType('ta_video_dept')}">
                         <option value="">请选择接单部门</option>
                         <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                     </select>

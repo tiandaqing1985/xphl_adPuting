@@ -61,4 +61,8 @@ public interface IThVideoMatterService
     public int deleteThVideoMatterById(Long id);
 
     int updateNoSignInThVideoMatterByOrderId(ThVideoMatter thVideoMatter);
+
+    void deleteThVideoMatterByOrderId(Long id);
+
+    void deleteThVideoMatter(ThVideoMatter thVideoMatter);
 }

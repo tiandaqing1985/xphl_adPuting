@@ -41,10 +41,10 @@ public class PlanSyncRequest {
             filtering.put("ids", getIds());
         }
         if (getAd_name() != null) {
-            filtering.put("campaign_name", getAd_name());
+            filtering.put("ad_name", getAd_name());
         }
         if (getPricing_list() != null) {
-            filtering.put("landing_type", getPricing_list());
+            filtering.put("pricing_list", getPricing_list());
         }
         if (getStatus() != null) {
             filtering.put("status", getStatus());

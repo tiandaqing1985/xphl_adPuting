@@ -346,6 +346,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deepCpabid != null and deepCpabid != ''">deep_cpabid,</if>
             <if test="roiGoal != null and roiGoal != ''">roi_goal,</if>
             <if test="externalActions != null and externalActions != ''">external_actions,</if>
+            <if test="matterId != null and matterId != ''">matter_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null ">#{id},</if>
@@ -447,6 +448,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deepCpabid != null and deepCpabid != ''">#{deepCpabid},</if>
             <if test="roiGoal != null and roiGoal != ''">#{roiGoal},</if>
             <if test="externalActions != null and externalActions != ''">#{externalActions},</if>
+            <if test="matterId != null and matterId != ''">#{matterId},</if>
          </trim>
     </insert>
 
@@ -555,6 +557,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where id = #{id} and del_flag = '0'
     </update>
+
+    <delete id="deleteThAdByAdvertiserId" parameterType="Long">
+        delete from th_ad where advertiser_id = #{param1}
+    </delete>
 
     <update id="deleteThAdById" parameterType="Long">
         update th_ad set del_flag = '2' where id = #{id}

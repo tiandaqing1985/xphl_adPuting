@@ -113,8 +113,17 @@
         }
 
         var yunyingFlg = hasRole("yunying");
-        var videogroupFlg = hasRole("videogroup");
+        var videogroupFlg = isVideoUser();
 
+        function isVideoUser(){
+            var f1 = hasRole("videogroup");
+            var f2 = hasRole("videomanage");
+            if(f1==""){
+                return ""
+            }else {
+                return f2;
+            }
+        }
 
 
         function videoDeptChange(){
@@ -148,6 +157,10 @@
 
         }
 
+        function reportView(id){
+            $.modal.open("",prefix+"/reportOrderView/"+id,undefined,undefined);
+        }
+
         $(function() {
             if(videogroupFlg==""){
                 if(yunyingFlg=="hidden"){
@@ -162,6 +175,7 @@
                 exportUrl: prefix + "/export",
                 detailUrl: prefix + "/detail/{id}",
                 deliveryUrl: prefix + "/delivery/{id}",
+                deliveryAgainUrl: prefix + "/deliveryAgain/{id}",
                 putInUrl: prefix + "/putIn/{id}",
                 modalName: "视频订单",
                 columns: [{
@@ -230,8 +244,14 @@
                     }
                 },
                 {
-                    field : 'xiaohao',
-                    title : '累计消耗'
+                    field : 'report.cost',
+                    title : '累计消耗',
+                    formatter: function(value, row, index) {
+                        if(value==null){
+                            value = 0.0;
+                        }
+                        return value+'   <a href="#" onclick="reportView(\''+row.id+'\')"><i class="fa fa-bar-chart-o"></i></a>';
+                    }
                 },
                 {
                     field : 'chuangyishu',
@@ -258,7 +278,7 @@
                             actions.push('<a class="btn btn-danger btn-xs '+videogroupFlg+'" href="javascript:void(0)" onclick="$.modal.openFull(\'交付订单'+row.orderName+'\',$.table._option.deliveryUrl.replace(\'{id}\', '+row.id+'))""><i class="fa fa-adjust"></i>交付</a>');
                             actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
                         }else if(row.status=="signOut"){//拒签
-                            actions.push('<a class="btn btn-danger btn-xs '+videogroupFlg+'" href="javascript:void(0)" onclick="$.modal.openFull(\'交付订单'+row.orderName+'\',$.table._option.deliveryUrl.replace(\'{id}\', '+row.id+'))""><i class="fa fa-adjust"></i>交付</a>');
+                            actions.push('<a class="btn btn-danger btn-xs '+videogroupFlg+'" href="javascript:void(0)" onclick="$.modal.openFull(\'交付订单'+row.orderName+'\',$.table._option.deliveryUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-adjust"></i>交付</a>');
                             actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
                         }else if(row.status=="delivery"){//交付
                             actions.push('<a class="btn btn-danger btn-xs '+yunyingFlg+'" href="javascript:void(0)" onclick="updateStatus('+row.id+',\'signIn\',\'签收\')"><i class="fa fa-adjust"></i>签收</a>');
@@ -266,8 +286,16 @@
                             actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
                         }else if(row.status=="signIn"){
                             actions.push('<a class="btn btn-danger btn-xs '+yunyingFlg+'" href="javascript:void(0)" onclick="updateStatus('+row.id+',\'putIn\',\'投放\')"><i class="fa fa-adjust"></i>投放</a>');
+                            actions.push('<a class="btn btn-danger btn-xs '+videogroupFlg+'" href="javascript:void(0)" onclick="deliveryAgainUrl(\''+row.orderName+'\',\''+row.id+'\')"><i class="fa fa-adjust"></i>补交付</a>');
+                            actions.push('<a class="btn btn-danger btn-xs '+videogroupFlg+'" href="javascript:void(0)" onclick="$.modal.openFull(\'交付订单'+row.orderName+'\',$.table._option.deliveryUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-adjust"></i>交付</a>');
                             actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
                         }else if(row.status=="putIn"||row.status=="del"){
+                            actions.push('<a class="btn btn-danger btn-xs '+videogroupFlg+'" href="javascript:void(0)" onclick="deliveryAgainUrl(\''+row.orderName+'\',\''+row.id+'\')"><i class="fa fa-adjust"></i>补交付</a>');
+                            actions.push('<a class="btn btn-danger btn-xs '+videogroupFlg+'" href="javascript:void(0)" onclick="$.modal.openFull(\'交付订单'+row.orderName+'\',$.table._option.deliveryUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-adjust"></i>交付</a>');
+                            actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
+                        }else if(row.status=="deliveryAgain"){
+                            actions.push('<a class="btn btn-danger btn-xs '+yunyingFlg+'" href="javascript:void(0)" onclick="updateStatus('+row.id+',\'putIn\',\'投放\')"><i class="fa fa-adjust"></i>投放</a>');
+                            actions.push('<a class="btn btn-danger btn-xs '+videogroupFlg+'" href="javascript:void(0)" onclick="deliveryAgainUrl(\''+row.orderName+'\',\''+row.id+'\')"><i class="fa fa-adjust"></i>补交付</a>');
                             actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.modal.openFull(\'查看订单'+row.orderName+'\',$.table._option.detailUrl.replace(\'{id}\', '+row.id+'))"><i class="fa fa-edit"></i>查看</a> ');
                         }
                         return actions.join('');
@@ -288,6 +316,13 @@
             });
 
         });
+
+        function deliveryAgainUrl(orderName,id){
+            $.modal.confirm("继续补交付将删除之前的素材,是否继续?", function () {
+                $.modal.openFull("补交付订单"+orderName,$.table._option.deliveryAgainUrl.replace("{id}", id));
+            });
+        }
+
     </script>
 </body>
 </html>

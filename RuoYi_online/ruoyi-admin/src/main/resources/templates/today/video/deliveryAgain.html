@@ -183,7 +183,7 @@
         $(document).ready(function () {
             $("#fileUpload").fileinput({
                 'theme': 'explorer-fas',
-                'uploadUrl': prefix+"/delivery",
+                'uploadUrl': prefix+"/deliveryAgain",
                 overwriteInitial: false,
                 initialPreviewAsData: true,
                 initialPreview: [
@@ -197,7 +197,7 @@
         });
         function submitHandler() {
             $.modal.confirm("确认交付视频吗?", function () {
-                $.operate.submit(prefix + "/updateStatus", "post", "json", {"id":$("#orderId").val(),"status":"delivery","statusName":"交付"},function (res) {
+                $.operate.submit(prefix + "/updateStatus", "post", "json", {"id":$("#orderId").val(),"status":"delivery","statusName":"补交付"},function (res) {
                     $.modal.close();
                     window.parent.$.table.refresh();
                 });

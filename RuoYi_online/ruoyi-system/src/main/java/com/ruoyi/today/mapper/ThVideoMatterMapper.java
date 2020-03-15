@@ -61,4 +61,8 @@ public interface ThVideoMatterMapper
     public int deleteThVideoMatterByIds(String[] ids);
 
     int updateNoSignInThVideoMatterByOrderId(ThVideoMatter thVideoMatter);
+
+    void deleteThVideoMatterByOrderId(Long id);
+
+    void deleteThVideoMatter(ThVideoMatter thVideoMatter);
 }

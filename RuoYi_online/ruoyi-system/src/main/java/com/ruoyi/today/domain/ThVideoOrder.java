@@ -49,13 +49,33 @@ public class ThVideoOrder extends BaseEntity
 
     private String timeRange;
 
+    private Long createDept;
+
     //素材
     private String matter;
+
+    private ThVideoMatterReport report;
 
     //订单状态
     private String status;
 
     private String process;
+
+    public ThVideoMatterReport getReport() {
+        return report;
+    }
+
+    public void setReport(ThVideoMatterReport report) {
+        this.report = report;
+    }
+
+    public Long getCreateDept() {
+        return createDept;
+    }
+
+    public void setCreateDept(Long createDept) {
+        this.createDept = createDept;
+    }
 
     public List<ThVideoMatter> getMatters() {
         return matters;

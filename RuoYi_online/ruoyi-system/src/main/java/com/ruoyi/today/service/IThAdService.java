@@ -113,4 +113,6 @@ public interface IThAdService
     void createPlan(ThAd thAd) throws Exception;
 
     public List<ThAd> selectThAdListByAdvertiesIds(List<String> advertiserIds);
+
+    void deleteThAdByAdvertiserId(Long id);
 }

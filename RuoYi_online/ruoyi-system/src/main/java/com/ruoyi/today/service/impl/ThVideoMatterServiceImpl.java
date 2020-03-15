@@ -96,4 +96,14 @@ public class ThVideoMatterServiceImpl implements IThVideoMatterService
     public int updateNoSignInThVideoMatterByOrderId(ThVideoMatter thVideoMatter) {
         return thVideoMatterMapper.updateNoSignInThVideoMatterByOrderId(thVideoMatter);
     }
+
+    @Override
+    public void deleteThVideoMatterByOrderId(Long id) {
+        thVideoMatterMapper.deleteThVideoMatterByOrderId(id);
+    }
+
+    @Override
+    public void deleteThVideoMatter(ThVideoMatter thVideoMatter) {
+        thVideoMatterMapper.deleteThVideoMatter(thVideoMatter);
+    }
 }

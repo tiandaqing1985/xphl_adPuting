@@ -21,7 +21,30 @@ public class ThFileServiceImpl implements IThFileService {
 
     //接受上传的文件，并将其传到文件服务器中
     @Override
-    public String receiveFile(MultipartFile multipartFile) throws Exception {
+    public String receiveAndUploadFile(MultipartFile multipartFile) throws Exception {
+        File file = receiveFile(multipartFile);
+        String url = uploadFile(file);
+        return url;
+    }
+
+    //接受上传的文件，并将其传到文件服务器中
+    @Override
+    public String uploadFile(File file) throws Exception {
+        String url = null;
+        try {
+            url = PmsUploadUtil.uploadImage(file);
+            file.delete();
+            return url;
+        } catch (Exception e) {
+            logger.error(file.getAbsolutePath() + "上传文件服务器出现异常：", e);
+            throw e;
+        }
+
+    }
+
+    //接受上传的文件
+    @Override
+    public File receiveFile(MultipartFile multipartFile) throws Exception {
         String localPath = null;
         String url = null;
         try {
@@ -36,16 +59,10 @@ public class ThFileServiceImpl implements IThFileService {
             logger.error("不合法的文件类型：" + multipartFile.getOriginalFilename(), e);
             throw e;
         }
-        try {
-            File file = new File(localPath.replace("/profile/",""));
-            url = PmsUploadUtil.uploadImage(file);
-            file.delete();
-            return url;
-        } catch (Exception e) {
-            logger.error(multipartFile.getOriginalFilename() + "上传文件服务器出现异常：", e);
-            throw e;
-        }
+        File file = new File(localPath.replace("/profile/", ""));
+        return file;
 
     }
+
 
 }

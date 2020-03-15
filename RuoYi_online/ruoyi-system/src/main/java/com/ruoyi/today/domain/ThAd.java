@@ -19,6 +19,8 @@ import java.util.List;
 public class ThAd extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
+    private String matterId;
+
     /**
      * ID
      */
@@ -1769,6 +1771,14 @@ public class ThAd extends BaseEntity {
 
     public void setInterestActionMode(String interestActionMode) {
         this.interestActionMode = interestActionMode;
+    }
+
+    public String getMatterId() {
+        return matterId;
+    }
+
+    public void setMatterId(String matterId) {
+        this.matterId = matterId;
     }
 
     @Override

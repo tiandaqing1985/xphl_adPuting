@@ -1,5 +1,6 @@
 package com.ruoyi.today.service.impl;
 
+import java.io.File;
 import java.util.List;
 
 import com.ruoyi.common.utils.DateUtils;
@@ -9,6 +10,7 @@ import com.ruoyi.today.domain.enums.VideoOrderStatusEnum;
 import com.ruoyi.today.domain.response.ResponseVO;
 import com.ruoyi.today.mapper.ThVideoOrderMapper;
 import com.ruoyi.today.service.*;
+import com.ruoyi.today.tools.VideoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,8 +89,8 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
 
 
             logger.info("订单" + thVideoOrder.getOrderName() + "创建成功，开始上传文件");
-            String logoUrl = thFileService.receiveFile(thVideoOrder.getLogo());
-            String scriptUrl = thFileService.receiveFile(thVideoOrder.getScript());
+            String logoUrl = thFileService.receiveAndUploadFile(thVideoOrder.getLogo());
+            String scriptUrl = thFileService.receiveAndUploadFile(thVideoOrder.getScript());
 
             thVideoOrder.setVideoScript(scriptUrl);
             thVideoOrder.getNeed().setLogoUrl(logoUrl);
@@ -126,7 +128,7 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
         try {
             thVideoOrderMapper.updateThVideoOrder(updateVO);
             if (!thVideoOrder.getScript().isEmpty()) {
-                String scriptUrl = thFileService.receiveFile(thVideoOrder.getScript());
+                String scriptUrl = thFileService.receiveAndUploadFile(thVideoOrder.getScript());
                 updateVO.setVideoScript(scriptUrl);
                 thVideoOrderMapper.updateThVideoOrder(updateVO);
             }
@@ -179,6 +181,10 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
         thVideoMatter.setOrderId(thVideoOrder.getId());
         videoMatterService.updateNoSignInThVideoMatterByOrderId(thVideoMatter);
 
+        if(statusName.equals("拒签")){
+            videoMatterService.deleteThVideoMatterByOrderId(thVideoOrder.getId());
+        }
+
         return 1;
     }
 
@@ -195,17 +201,77 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
             thVideoOperationHistoryService.insertThVideoOperationHistory(operationHistory);
 
 
-            logger.info("订单" + thVideoOrder.getOrderName() + "，开始上传文件");
-            String matter = thFileService.receiveFile(thVideoOrder.getScript());
+            logger.info("订单" + thVideoOrder.getId() + "，开始接收文件");
+            File file = thFileService.receiveFile(thVideoOrder.getScript());
+            //获取视频截图作为封面
+            File coverFile = new File(file.getParent() + "封面-" + file.getName());
+            VideoUtils.fetchFrame(file.getAbsolutePath(), coverFile.getAbsolutePath());
 
-//            thVideoOrder.setMatter(matter);
-//            thVideoOrder.setStatus(VideoOrderStatusEnum.DELIVERY.getValue());
-//            thVideoOrderMapper.updateThVideoOrder(thVideoOrder);
+            logger.info("订单" + thVideoOrder.getId() + "，开始上传视频文件");
+            String matter = thFileService.uploadFile(file);
+            logger.info("订单" + thVideoOrder.getId() + "，开始上传视频封面文件");
+            String matterCover = thFileService.uploadFile(coverFile);
+
+
             ThVideoMatter videoMatter = new ThVideoMatter();
             videoMatter.setMatter(matter);
             videoMatter.setOrderId(thVideoOrder.getId());
             videoMatter.setFileName(fileName);
+            videoMatter.setVideoCover(matterCover);
+            videoMatter.setCreateBy((String) PermissionUtils.getPrincipalProperty("userName"));
+            videoMatter.setCreateTime(DateUtils.getNowDate());
+            videoMatter.setStatus("交付");
             videoMatterService.insertThVideoMatter(videoMatter);
+        } catch (Exception e) {
+            logger.error("上传素材出现错误:", e);
+            throw e;
+        }
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void orderDeliveryAgain(ThVideoOrder thVideoOrder) throws Exception {
+        try {
+
+            ThVideoMatter video = new ThVideoMatter();
+            video.setOrderId(thVideoOrder.getId());
+            video.setStatus("签收");
+            videoMatterService.deleteThVideoMatter(video);
+            video.setStatus("交付");
+            videoMatterService.deleteThVideoMatter(video);
+
+            String fileName = thVideoOrder.getScript().getOriginalFilename();
+            ThVideoOperationHistory operationHistory = new ThVideoOperationHistory();
+            operationHistory.setOperationBy((String) PermissionUtils.getPrincipalProperty("userName"));
+            operationHistory.setOperationTime(DateUtils.getNowDate());
+            operationHistory.setOrderId(thVideoOrder.getId());
+            operationHistory.setStatus("补交付");
+            thVideoOperationHistoryService.insertThVideoOperationHistory(operationHistory);
+
+
+            logger.info("订单" + thVideoOrder.getId() + "，开始接收文件");
+            File file = thFileService.receiveFile(thVideoOrder.getScript());
+            //获取视频截图作为封面
+            File coverFile = new File(file.getParent() + "封面-" + file.getName());
+            VideoUtils.fetchFrame(file.getAbsolutePath(), coverFile.getAbsolutePath());
+
+            logger.info("订单" + thVideoOrder.getId() + "，开始上传视频文件");
+            String matter = thFileService.uploadFile(file);
+            logger.info("订单" + thVideoOrder.getId() + "，开始上传视频封面文件");
+            String matterCover = thFileService.uploadFile(coverFile);
+
+
+            ThVideoMatter videoMatter = new ThVideoMatter();
+            videoMatter.setMatter(matter);
+            videoMatter.setOrderId(thVideoOrder.getId());
+            videoMatter.setFileName(fileName);
+            videoMatter.setVideoCover(matterCover);
+            videoMatter.setCreateBy((String) PermissionUtils.getPrincipalProperty("userName"));
+            videoMatter.setCreateTime(DateUtils.getNowDate());
+            videoMatter.setStatus("补交付");
+            videoMatterService.insertThVideoMatter(videoMatter);
+
         } catch (Exception e) {
             logger.error("上传素材出现错误:", e);
             throw e;

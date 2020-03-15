@@ -5,45 +5,177 @@
 </head>
 <body class="gray-bg">
      <div class="container-div">
-         <div class="row" th:with="lists=${videoMateria}">
-             <div class="col-sm-4" th:each="item:${lists}">
-                 <div class="ibox">
-                     <div class="ibox-title">
-<!--                         <span class="label label-primary pull-right">NEW</span>-->
-                         <h5 th:text="${item.need.needName}"></h5>
-                     </div>
-                     <div class="ibox-content">
-                         <div class="row">
-                             <div class="col-sm-4">
-                                 <span>平均播放（s）：0</span>
+
+         <div class="col-sm-12 search-collapse">
+             <form id="formId">
+                 <div class="select-list">
+                     <ul>
+                         <li>
+                             <select name="videoDept" id="dept" th:with="type=${@dict.getType('ta_video_dept')}" onchange="videoDeptChange()">
+                                 <option value="">全部视频部门</option>
+                                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                             </select>
+                         </li>
+                         <li>
+                             <select name="videoGroup" id="group">
+                                 <option value="">全部视频团队</option>
+                             </select>
+                         </li>
+                         <li>
+                             <select name="productName" th:with="type=${@dict.getType('ta_video_product')}">
+                                 <option value="">全部产品</option>
+                                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                             </select>
+                         </li>
+                         <li>
+                             <input name="fileName" placeholder="视频名称">
+                         </li>
+                         <li>
+                             <div class="col-sm-2" style="padding: 0px">
+                                 <div class="form-group">
+                                     <div class="input-group date">
+                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                         <input name="timeRange" type="text" class="form-control" id="putTime" placeholder="开始日期 至 结束日期">
+                                     </div>
+                                 </div>
                              </div>
-                             <div class="col-sm-4">
-                                 <span>总播放：0</span>
-                             </div>
-                         </div>
-                         <div class="row">
-                             <div class="col-sm-4">
-                                 <span>素材链接：<a th:href="${item.matter}" th:text="${item.matter}">http://192.168.88.192/group1/M00/00/00/wKhYwF5g6RaAXRhNAAAmcxJ-6GA011.zip</a></span>
-                             </div>
-                         </div>
-                         <div class="row">
-                             <div class="col-sm-4">
-                                 <span>订单号:<span th:text="${item.id}"></span></span>
-                                 <span th:text="${item.orderName}"></span>
-                             </div>
-                         </div>
-                     </div>
+                         </li>
+                         <li>
+                             <a class="btn btn-primary btn-rounded btn-sm" onclick="searchVal()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                             <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                         </li>
+                     </ul>
                  </div>
-             </div>
+             </form>
+         </div>
+         <div class="row" id="context">
+
 
          </div>
+
+         <div id="page"></div>
     </div>
     <th:block th:include="include :: footer" />
+     <th:block th:include="include :: datetimepicker-js" />
     <script th:inline="javascript">
-        var prefix = ctx + "today/materia";
+        var prefix = ctx + "today/video";
+        function yulan(fileName,url){
+            $.modal.openFull("预览:"+fileName,url);
+        }
 
+        function searchVal(){
+            var data = $("#formId").serialize();
+            initBox(data);
+
+        }
+
+        function nullToZero(val){
+            if(val==undefined||val==null){
+                return "0.0";
+            }else{
+                return val;
+            }
+        }
+        function nullToBlank(val){
+            if(val==undefined||val==null){
+                return "";
+            }else{
+                return val;
+            }
+        }
+        function videoDeptChange(){
+            var dept = $("#dept").val();
+            $.ajax({
+                url: prefix + "/dictGetType",
+                type: "post",
+                data: {"type":dept},
+                datatype: "json",
+                success:function(data){
+                    optionJson = data;
+                    var selectObj=document.getElementById("group");
+                    selectObj.options.length=0;
+                    selectObj.options.add(new Option("全部视频团队" , ""));
+                    for(var i=0;i<data.length;i++){
+                        selectObj.add(new Option(optionJson[i].dictLabel,optionJson[i].dictValue));
+                    }
+                }
+            })
+
+        }
+        <!-- laydate示例 -->
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+
+            laydate.render({
+                elem: '#putTime',
+                range: true
+            });
+
+        });
+        function initBox(data){
+
+            var config = {
+                url: prefix+"/materia",
+                type: "post",
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                    var html = [];
+                    $.each(result,function (index,item) {
+
+                        html.push('<div class="col-sm-4">\n' +
+                            '                     <div class="ibox">\n' +
+                            '                         <div class="ibox-title">\n' +
+                            '                             <span class="label label-primary pull-right">'+nullToBlank(item.status)+'</span>\n' +
+                            '                             <h5>'+nullToBlank(item.orderName)+'</h5>\n' +
+                            '                         </div>\n' +
+                            '                         <div class="ibox-content">\n' +
+                            '                             <div class="row">\n' +
+                            '                                 <div class="col-sm-10">\n' +
+                            '                                     <span>'+$.table.tooltip('视频名称：'+nullToBlank(item.fileName))+'</span>\n' +
+                            '                                 </div>\n' +
+                            '                             </div>\n' +
+                            '                             <div class="row">\n' +
+                            '                                 <div class="col-sm-4">\n' +
+                            '                                     <span>平均播放（s）：'+nullToZero(item.averagePlayTimePerPlay)+'</span>\n' +
+                            '                                 </div>\n' +
+                            '                                 <div class="col-sm-3">\n' +
+                            '                                     <span>总播放：'+nullToZero(item.totalPlay)+'</span>\n' +
+                            '                                 </div>\n' +
+                            '                                 <div class="col-sm-3">\n' +
+                            '                                     <span>总消耗：'+nullToZero(item.reportCost)+'</span>\n' +
+                            '                                 </div>\n' +
+                            '                             </div>\n' +
+                            '                             <div class="row" style="text-align: center">\n' +
+                            '                                 <a href="#" onclick="yulan(\''+item.fileName+'\',\''+item.matter+'\');" >\n' +
+                            '                                     <img width="200" height="150" src="'+nullToBlank(item.videoCover)+'">\n' +
+                            '                                 </a>\n' +
+                            '                             </div>\n' +
+                            '                             <div class="row">\n' +
+                            '                                 <div class="col-sm-4">\n' +
+                            '                                     <span>素材链接：<a href="/today/video/downloadFile/'+item.id+'">下载</a></span>\n' +
+                            '                                 </div>\n' +
+                            '                             </div>\n' +
+                            '                             <div class="row">\n' +
+                            '                                 <div class="col-sm-4">\n' +
+                            '                                     <span>订单号:<span>'+nullToBlank(item.orderId)+'</span></span>\n' +
+                            '                                 </div>\n' +
+                            '                             </div>\n' +
+                            '                         </div>\n' +
+                            '                     </div>\n' +
+                            '                 </div>')
+
+                    });
+                    $("#context").html(html.join(""))
+
+                }
+            };
+            $.ajax(config)
+
+        }
 
         $(function() {
+            initBox();
 
         });
     </script>
