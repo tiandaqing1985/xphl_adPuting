@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('素材列表')" />
+</head>
+<body class="gray-bg">
+    <div class="container-div">
+
+            <form id="formId">
+                <input name="orderId" th:value="${id}" hidden>
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <div class="col-sm-2" style="padding: 0px">
+                                <div class="form-group">
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input name="rangeTime" type="text" class="form-control" id="putTime" placeholder="开始日期 至 结束日期">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="searchVal()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        <div class="row" id="context">
+            <div class="echarts" id="view"></div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: echarts-js" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "today/video";
+
+        function searchVal(){
+
+            initView()
+
+        }
+
+        function initView(){
+            var xAxisData = [];
+            var data = [];
+            var lineChart = echarts.init(document.getElementById("view"));
+            var config = {
+                url: prefix + "/reportOrderView",
+                type: "post",
+                dataType: "json",
+                data: $("#formId").serialize(),
+                success: function(result) {
+                    $.each(result,function(index,item){
+
+                        xAxisData.push(item.reportTime);
+                        if(item.reportCost==null){
+                            data.push(0);
+                        }else {
+                            data.push(item.reportCost);
+                        }
+
+                    });
+                    var lineoption = {
+                        title : {
+                            text: '订单累计消费趋势图'
+                        },
+                        tooltip : {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            data:['消耗']
+                        },
+                        grid:{
+                            x:40,
+                            x2:40,
+                            y2:24
+                        },
+                        calculable : true,
+                        xAxis : [
+                            {
+                                type : 'category',
+                                boundaryGap : false,
+                                data : xAxisData
+                            }
+                        ],
+                        yAxis : [
+                            {
+                                type : 'value',
+                                axisLabel : {
+                                    formatter: '{value}'
+                                }
+                            }
+                        ],
+                        series : [
+
+                            {
+                                name:'消耗',
+                                type:'line',
+                                data:data
+
+                            }
+                        ]
+                    };
+                    lineChart.setOption(lineoption);
+                    $(window).resize(lineChart.resize);
+                }
+            };
+            $.ajax(config)
+        }
+
+        function submitHandler(){
+            $.modal.close();
+        }
+
+        $(function () {
+            layui.use('laydate', function(){
+                var laydate = layui.laydate;
+
+                laydate.render({
+                    elem: '#putTime',
+                    range: true
+                });
+
+            });
+            initView()
+        });
+    </script>
+</body>
+</html>

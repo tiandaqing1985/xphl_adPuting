@@ -59,4 +59,6 @@ public interface IThCreativityCreativesService
      * @return 结果
      */
     public int deleteThCreativityCreativesById(Long id);
+
+    void syncCreativities(ThCreativityCreatives creatives);
 }

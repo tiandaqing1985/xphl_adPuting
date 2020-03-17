@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.today.mapper.ThVideoNeedMapper">
+    
+    <resultMap type="ThVideoNeed" id="ThVideoNeedResult">
+        <result property="id"    column="id"    />
+        <result property="needName"    column="need_name"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="productName"    column="product_name"    />
+        <result property="putUrl"    column="put_url"    />
+        <result property="logoUrl"    column="logo_url"    />
+        <result property="productDetail"    column="product_detail"    />
+        <result property="optimizeGroupLeader"    column="optimize_group_leader"    />
+        <result property="orderType"    column="order_type"    />
+        <result property="putMedia"    column="put_media"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="group"    column="video_group"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="productTrade"    column="product_trade"    />
+        <result property="videoDept"    column="video_dept"    />
+    </resultMap>
+
+    <sql id="selectThVideoNeedVo">
+        select video_dept,id, product_trade, need_name, order_id, product_name, put_url, logo_url, product_detail,  optimize_group_leader, order_type, put_media, end_time, video_group, create_time, create_by, update_time, update_by from th_video_need
+    </sql>
+
+    <select id="selectThVideoNeedList" parameterType="ThVideoNeed" resultMap="ThVideoNeedResult">
+        <include refid="selectThVideoNeedVo"/>
+        <where>  
+            <if test="needName != null  and needName != ''"> and need_name like concat('%', #{needName}, '%')</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectThVideoNeedById" parameterType="Long" resultMap="ThVideoNeedResult">
+        <include refid="selectThVideoNeedVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertThVideoNeed" parameterType="ThVideoNeed" useGeneratedKeys="true" keyProperty="id">
+        insert into th_video_need
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="needName != null  and needName != ''">need_name,</if>
+            <if test="orderId != null  and orderId != ''">order_id,</if>
+            <if test="productName != null  and productName != ''">product_name,</if>
+            <if test="putUrl != null  and putUrl != ''">put_url,</if>
+            <if test="logoUrl != null  and logoUrl != ''">logo_url,</if>
+            <if test="productDetail != null  and productDetail != ''">product_detail,</if>
+            <if test="optimizeGroupLeader != null  and  optimizeGroupLeader != ''"> optimize_group_leader,</if>
+            <if test="orderType != null  and orderType != ''">order_type,</if>
+            <if test="putMedia != null  and putMedia != ''">put_media,</if>
+            <if test="endTime != null ">end_time,</if>
+            <if test="group != null  and group != ''">video_group,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="productTrade != null  and productTrade != ''">product_trade,</if>
+            <if test="videoDept != null  and videoDept != ''">video_dept,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="needName != null  and needName != ''">#{needName},</if>
+            <if test="orderId != null  and orderId != ''">#{orderId},</if>
+            <if test="productName != null  and productName != ''">#{productName},</if>
+            <if test="putUrl != null  and putUrl != ''">#{putUrl},</if>
+            <if test="logoUrl != null  and logoUrl != ''">#{logoUrl},</if>
+            <if test="productDetail != null  and productDetail != ''">#{productDetail},</if>
+            <if test="optimizeGroupLeader != null  and  optimizeGroupLeader != ''">#{ optimizeGroupLeader},</if>
+            <if test="orderType != null  and orderType != ''">#{orderType},</if>
+            <if test="putMedia != null  and putMedia != ''">#{putMedia},</if>
+            <if test="endTime != null ">#{endTime},</if>
+            <if test="group != null  and group != ''">#{group},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="productTrade != null  and productTrade != ''">#{productTrade},</if>
+            <if test="videoDept != null  and videoDept != ''">#{videoDept},</if>
+         </trim>
+    </insert>
+
+    <update id="updateThVideoNeed" parameterType="ThVideoNeed">
+        update th_video_need
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="needName != null  and needName != ''">need_name = #{needName},</if>
+            <if test="orderId != null  and orderId != ''">order_id = #{orderId},</if>
+            <if test="productName != null  and productName != ''">product_name = #{productName},</if>
+            <if test="putUrl != null  and putUrl != ''">put_url = #{putUrl},</if>
+            <if test="logoUrl != null  and logoUrl != ''">logo_url = #{logoUrl},</if>
+            <if test="productDetail != null  and productDetail != ''">product_detail = #{productDetail},</if>
+            <if test="optimizeGroupLeader != null  and  optimizeGroupLeader != ''"> optimize_group_leader = #{ optimizeGroupLeader},</if>
+            <if test="orderType != null  and orderType != ''">order_type = #{orderType},</if>
+            <if test="putMedia != null  and putMedia != ''">put_media = #{putMedia},</if>
+            <if test="endTime != null ">end_time = #{endTime},</if>
+            <if test="group != null  and group != ''">video_group = #{group},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="productTrade != null  and productTrade != ''">product_trade = #{productTrade},</if>
+            <if test="videoDept != null  and videoDept != ''">video_dept = #{videoDept},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteThVideoNeedById" parameterType="Long">
+        delete from th_video_need where id = #{id}
+    </delete>
+    <delete id="deleteThVideoNeedByOrderId" parameterType="Long">
+        delete from th_video_need where order_id = #{id}
+    </delete>
+
+    <delete id="deleteThVideoNeedByIds" parameterType="String">
+        delete from th_video_need where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

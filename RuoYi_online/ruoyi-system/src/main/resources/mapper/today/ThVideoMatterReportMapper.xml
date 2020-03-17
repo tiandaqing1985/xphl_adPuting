@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.today.mapper.ThVideoMatterReportMapper">
+    
+    <resultMap type="ThVideoMatterReport" id="ThVideoMatterReportResult">
+        <result property="id"    column="id"    />
+        <result property="advertiserId"    column="advertiser_id"    />
+        <result property="matterId"    column="matter_id"    />
+        <result property="cost"    column="report_cost"    />
+        <result property="show"    column="report_show"    />
+        <result property="click"    column="report_click"    />
+        <result property="convert"    column="report_convert"    />
+        <result property="averagePlayTimePerPlay"    column="average_play_time_per_play"    />
+        <result property="play25FeedBreak"    column="play_25_feed_break"    />
+        <result property="play50FeedBreak"    column="play_50_feed_break"    />
+        <result property="play75FeedBreak"    column="play_75_feed_break"    />
+        <result property="play100FeedBreak"    column="play_100_feed_break"    />
+        <result property="aboutCreativity"    column="about_creativity"    />
+        <result property="time"    column="report_time"    />
+        <result property="totalPlay"    column="total_play"    />
+    </resultMap>
+
+    <resultMap id="AdMatterVOMap" type="AdMatterVO">
+        <result property="advertiserId" column="advertiser_id"/>
+        <result property="matterId" column="matter_id"/>
+        <result property="adIds" column="adIds"/>
+    </resultMap>
+
+    <sql id="selectThVideoMatterReportVo">
+        select total_play,id, advertiser_id, matter_id, report_cost, report_show, report_click, report_convert, average_play_time_per_play, play_25_feed_break, play_50_feed_break, play_75_feed_break, play_100_feed_break, about_creativity, report_time from th_video_matter_report
+    </sql>
+
+    <select id="selectGroupByTimeList" parameterType="MatterReportVO" resultType="MatterReportVO">
+        select a.report_time reportTime,sum(a.report_cost) reportCost from th_video_matter_report a
+        left join th_video_matter b on a.matter_id = b.id
+        where
+        <if test="orderId != null and orderId != ''">
+            b.order_id = #{orderId}
+        </if>
+        <if test="matterId != null and matterId != ''">
+            a.matter_id = #{matterId}
+        </if>
+        and a.report_time &gt;= left (#{rangeTime},10) and a.report_time &lt;= right (#{rangeTime},10) group by a.report_time order by a.report_time
+    </select>
+
+    <select id="selectAdMatterList" resultMap="AdMatterVOMap">
+        select advertiser_id,matter_id,group_concat(ad_id) adIds from th_ad group by advertiser_id,matter_id
+    </select>
+
+    <select id="selectThVideoMatterReportList" parameterType="ThVideoMatterReport" resultMap="ThVideoMatterReportResult">
+        <include refid="selectThVideoMatterReportVo"/>
+        <where>
+        </where>
+    </select>
+    <select id="selectGroupByOrderList" parameterType="ThVideoMatterReport" resultMap="ThVideoMatterReportResult">
+        select
+         sum(a.total_play) total_play,
+         sum(a.report_cost) report_cost,
+         sum(a.report_show) report_show,
+         sum(a.report_click) report_click,
+         sum(a.report_convert) report_convert,
+         sum(a.about_creativity) about_creativity from th_video_matter_report a
+        left join th_video_matter b on a.matter_id = b.id
+        <where>
+            <if test="orderId != null and orderId != ''">
+                and b.order_id = #{orderId}
+            </if>
+        </where>
+        group by b.order_id
+    </select>
+
+
+    <select id="selectThVideoMatterReportById" parameterType="Long" resultMap="ThVideoMatterReportResult">
+        <include refid="selectThVideoMatterReportVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertThVideoMatterReport" parameterType="ThVideoMatterReport" useGeneratedKeys="true" keyProperty="id">
+        insert into th_video_matter_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="advertiserId != null  and advertiserId != ''">advertiser_id,</if>
+            <if test="matterId != null ">matter_id,</if>
+            <if test="cost != null  and cost != ''">report_cost,</if>
+            <if test="show != null  and show != ''">report_show,</if>
+            <if test="click != null  and click != ''">report_click,</if>
+            <if test="convert != null  and convert != ''">report_convert,</if>
+            <if test="averagePlayTimePerPlay != null  and averagePlayTimePerPlay != ''">average_play_time_per_play,</if>
+            <if test="play25FeedBreak != null  and play25FeedBreak != ''">play_25_feed_break,</if>
+            <if test="play50FeedBreak != null  and play50FeedBreak != ''">play_50_feed_break,</if>
+            <if test="play75FeedBreak != null  and play75FeedBreak != ''">play_75_feed_break,</if>
+            <if test="play100FeedBreak != null  and play100FeedBreak != ''">play_100_feed_break,</if>
+            <if test="aboutCreativity != null  and aboutCreativity != ''">about_creativity,</if>
+            <if test="time != null ">report_time,</if>
+            <if test="totalPlay != null and totalPlay != ''">total_play,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="advertiserId != null  and advertiserId != ''">#{advertiserId},</if>
+            <if test="matterId != null ">#{matterId},</if>
+            <if test="cost != null  and cost != ''">#{cost},</if>
+            <if test="show != null  and show != ''">#{show},</if>
+            <if test="click != null  and click != ''">#{click},</if>
+            <if test="convert != null  and convert != ''">#{convert},</if>
+            <if test="averagePlayTimePerPlay != null  and averagePlayTimePerPlay != ''">#{averagePlayTimePerPlay},</if>
+            <if test="play25FeedBreak != null  and play25FeedBreak != ''">#{play25FeedBreak},</if>
+            <if test="play50FeedBreak != null  and play50FeedBreak != ''">#{play50FeedBreak},</if>
+            <if test="play75FeedBreak != null  and play75FeedBreak != ''">#{play75FeedBreak},</if>
+            <if test="play100FeedBreak != null  and play100FeedBreak != ''">#{play100FeedBreak},</if>
+            <if test="aboutCreativity != null  and aboutCreativity != ''">#{aboutCreativity},</if>
+            <if test="time != null ">#{time},</if>
+            <if test="totalPlay != null and totalPlay != ''">#{totalPlay},</if>
+         </trim>
+    </insert>
+
+    <update id="updateThVideoMatterReport" parameterType="ThVideoMatterReport">
+        update th_video_matter_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="advertiserId != null  and advertiserId != ''">advertiser_id = #{advertiserId},</if>
+            <if test="matterId != null ">matter_id = #{matterId},</if>
+            <if test="cost != null  and cost != ''">report_cost = #{cost},</if>
+            <if test="show != null  and show != ''">report_show = #{show},</if>
+            <if test="click != null  and click != ''">report_click = #{click},</if>
+            <if test="convert != null  and convert != ''">report_convert = #{convert},</if>
+            <if test="averagePlayTimePerPlay != null  and averagePlayTimePerPlay != ''">average_play_time_per_play = #{averagePlayTimePerPlay},</if>
+            <if test="play25FeedBreak != null  and play25FeedBreak != ''">play_25_feed_break = #{play25FeedBreak},</if>
+            <if test="play50FeedBreak != null  and play50FeedBreak != ''">play_50_feed_break = #{play50FeedBreak},</if>
+            <if test="play75FeedBreak != null  and play75FeedBreak != ''">play_75_feed_break = #{play75FeedBreak},</if>
+            <if test="play100FeedBreak != null  and play100FeedBreak != ''">play_100_feed_break = #{play100FeedBreak},</if>
+            <if test="aboutCreativity != null  and aboutCreativity != ''">about_creativity = #{aboutCreativity},</if>
+            <if test="time != null ">report_time = #{time},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteThVideoMatterReportById" parameterType="Long">
+        delete from th_video_matter_report where id = #{id}
+    </delete>
+
+    <delete id="deleteThVideoMatterReportByIds" parameterType="String">
+        delete from th_video_matter_report where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

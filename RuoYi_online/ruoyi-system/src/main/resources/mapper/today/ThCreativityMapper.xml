@@ -41,6 +41,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="isFeedAndFavSee"    column="is_feed_and_fav_see"    />
         <result property="playableUrl"    column="playable_url"    />
         <result property="status" column="status"/>
+        <collection property="title_list" javaType="java.util.ArrayList" ofType="ThCreativityTitle"
+                    select="com.ruoyi.today.mapper.ThCreativityTitleMapper.selectThCreativityTitleList"
+                    column="{creativityId=id}"/>
+        <collection property="image_list" javaType="java.util.ArrayList" ofType="ThCreativityImage"
+                    select="com.ruoyi.today.mapper.ThCreativityImageMapper.selectThCreativityImageList"
+                    column="{creativityId=id}"/>
+        <collection property="creatives" javaType="java.util.ArrayList" ofType="ThCreativityCreatives"
+                    select="com.ruoyi.today.mapper.ThCreativityCreativesMapper.selectThCreativityCreativesList"
+                    column="{creativityId=id}"/>
     </resultMap>
 
     <sql id="selectThCreativityVo">
@@ -52,6 +61,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="appName != null  and appName != ''"> and app_name like concat('%', #{appName}, '%')</if>
             <if test="thAdId != null and thAdId != ''"> and th_ad_id = #{thAdId} </if>
+            <if test="advertiserId != null and advertiserId != ''">and advertiser_id = #{advertiserId}</if>
+            <if test="adId != null and adId != ''">and ad_id = #{adId}</if>
         </where>
     </select>
     

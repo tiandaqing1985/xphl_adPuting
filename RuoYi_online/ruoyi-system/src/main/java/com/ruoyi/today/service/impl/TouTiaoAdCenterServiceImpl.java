@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.today.TouTiaoApiConfig;
 import com.ruoyi.today.domain.ThAdMateria;
 import com.ruoyi.today.domain.ThCreativity;
-import com.ruoyi.today.domain.request.AdCreativitySelectRequest;
-import com.ruoyi.today.domain.request.AdGroupCreateRequest;
-import com.ruoyi.today.domain.request.AdGroupSelectRequest;
-import com.ruoyi.today.domain.request.PlanSyncRequest;
+import com.ruoyi.today.domain.request.*;
 import com.ruoyi.today.domain.response.*;
 import com.ruoyi.today.http.HttpBuilder;
 import com.ruoyi.today.service.AdCenterService;
@@ -271,4 +268,36 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
 
     }
 
+    @Override
+    public Object updateCreativity(Object thCreativity) {
+        HttpHeaders headers = httpBuilder.buildTouTiaoHeader();
+        HttpEntity<String> request = new HttpEntity<>(JSON.toJSONString(thCreativity), headers);
+        logger.info("更新创意信息请求报文：" + JSON.toJSONString(request));
+        ResponseVO response = httpBuilder.buildRestTemplate().postForObject(touTiaoApiConfig.getAdGroupAPIUrls().get("updateCreativity"), request, ResponseVO.class);
+        logger.info("更新创意信息响应报文：" + JSON.toJSONString(response));
+        return response;
+    }
+
+    @Override
+    public Object reportPlan(Object reportRequest) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(touTiaoApiConfig.getAdPlanAPIUrls().get("reportPlan"));
+
+        HttpHeaders headers = httpBuilder.buildTouTiaoHeader();
+        // 获取单例RestTemplate
+        RestTemplate restTemplate = httpBuilder.buildRestTemplate();
+        HttpEntity request = new HttpEntity(headers);
+        // 构造execute()执行所需要的参数。
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(request, JSONObject.class);
+        ResponseExtractor<ResponseEntity<JSONObject>> responseExtractor = restTemplate.responseEntityExtractor(JSONObject.class);
+        //查询条件
+        PlanReportSyncRequest syncRequest = (PlanReportSyncRequest) reportRequest;
+        Map<String, Object> params = syncRequest.requestMap();
+        params.entrySet().stream().forEach(o -> builder.queryParam(o.getKey(), o.getValue()));
+        // 执行execute()，发送请求
+        logger.info("同步广告计划报表信息请求报文：" + JSON.toJSONString(reportRequest));
+        ResponseEntity<JSONObject> responseObject = restTemplate.execute(builder.build().toUriString(), HttpMethod.GET, requestCallback, responseExtractor, syncRequest.getFiltering());
+        logger.info("同步广告计划报表信息响应报文：" + responseObject.getBody().toJSONString());
+        ResponseVO response = JSON.parseObject(responseObject.getBody().toJSONString(), ResponseVO.class);
+        return response;
+    }
 }

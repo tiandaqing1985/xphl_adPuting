@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="budget != null "> and budget = #{budget}</if>
             <if test="landingType != null  and landingType != ''"> and landing_type = #{landingType}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="advertiesIds != null">
+            <if test="advertiesIds != null and advertiesIds.size()!=0">
                 and advertiser_id in
                 <foreach collection="advertiesIds" item="item" separator="," open="(" close=")">
                     #{item}

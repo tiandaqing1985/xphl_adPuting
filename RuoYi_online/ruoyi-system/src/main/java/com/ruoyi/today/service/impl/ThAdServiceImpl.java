@@ -1353,4 +1353,9 @@ public class ThAdServiceImpl implements IThAdService {
     public List<ThAd> selectThAdListByAdvertiesIds(List<String> advertiserIds) {
         return thAdMapper.selectThAdListByAdvertiesIds(advertiserIds);
     }
+
+    @Override
+    public void deleteThAdByAdvertiserId(Long id) {
+        thAdMapper.deleteThAdByAdvertiserId(id);
+    }
 }

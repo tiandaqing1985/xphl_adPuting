@@ -71,4 +71,6 @@ public interface ThAdMapper
     public List<ThAd> selectSyncThAdList(ThAd thAd);
 
     public List<ThAd> selectThAdListByAdvertiesIds(List<String> advertiserIds);
+
+    void deleteThAdByAdvertiserId(Long id);
 }

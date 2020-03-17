@@ -2,12 +2,8 @@ package com.ruoyi.web.controller.today;
 
 import java.util.List;
 
-import com.ruoyi.today.domain.ThAdMateria;
-import com.ruoyi.today.domain.ThAdMediaMateria;
-import com.ruoyi.today.domain.ThCreativityCreatives;
-import com.ruoyi.today.service.IThAdMateriaService;
-import com.ruoyi.today.service.IThAdMediaMateriaService;
-import com.ruoyi.today.service.IThCreativityCreativesService;
+import com.ruoyi.today.domain.*;
+import com.ruoyi.today.service.*;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,6 +41,63 @@ public class ThCreativityCreativesController extends BaseController {
     public String creatives(@PathVariable("id") String id, ModelMap mmap) {
         mmap.put("id", id);
         return prefix + "/creatives";
+    }
+
+    @Autowired
+    private IThAdvertiserService thAdvertiserService;
+    @Autowired
+    private IThAdService thAdService;
+
+    /**
+     * 查询创意列表
+     */
+    @PostMapping("/listInfo")
+    @ResponseBody
+    public TableDataInfo listInfo(ThCreativityCreatives thCreativityCreatives) {
+//        startPage();
+        List<ThCreativityCreatives> list = thCreativityCreativesService.selectThCreativityCreativesList(thCreativityCreatives);
+        return getDataTable(list);
+    }
+
+    /**
+     * 同步广告组
+     *
+     * @return
+     */
+    @PostMapping("/syncCreativities")
+    @ResponseBody
+    public AjaxResult syncCreativities(String advertiserId, String adId) {
+
+        StringBuilder msg = new StringBuilder();
+        //若广告主或广告计划id没有，则同步广告主下或广告计划下的所有创意
+        ThAdvertiser thAdvertiser = new ThAdvertiser();
+        ThAd thAd = new ThAd();
+        ThCreativityCreatives creatives = new ThCreativityCreatives();
+        if (advertiserId != null && !advertiserId.equals("")) {
+            thAdvertiser.setId(Long.valueOf(advertiserId));
+        }
+        List<ThAdvertiser> thAdvertisers = thAdvertiserService.selectThAdvertiserList(thAdvertiser);
+        for (ThAdvertiser advertiser : thAdvertisers) {
+            try {
+                if (adId != null && !adId.equals("")) {
+                    thAd.setAdId(Long.valueOf(adId));
+                }
+                List<ThAd> thAds = thAdService.selectThAdList(thAd);
+                for (ThAd ad : thAds) {
+                    creatives.setAdvertiserId(advertiser.getId().toString());
+                    creatives.setAdId(ad.getAdId().toString());
+                    thCreativityCreativesService.syncCreativities(creatives);
+                }
+            } catch (Exception e) {
+                logger.error("出现错误：", e);
+                msg.append(e.getMessage());
+            }
+        }
+        if (msg.length() == 0) {
+            return AjaxResult.success();
+        } else {
+            return AjaxResult.error(msg.toString());
+        }
     }
 
     /**

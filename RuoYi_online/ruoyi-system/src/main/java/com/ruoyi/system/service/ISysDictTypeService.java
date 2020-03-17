@@ -19,6 +19,8 @@ public interface ISysDictTypeService
      */
     public List<SysDictType> selectDictTypeList(SysDictType dictType);
 
+    List<SysDictType> selectDictTypeListByType(String dictType);
+
     /**
      * 根据所有字典类型
      * 

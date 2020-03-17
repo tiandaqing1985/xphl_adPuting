@@ -11,6 +11,9 @@ import java.util.Map;
 
 import com.ruoyi.common.utils.DateUtils;
 
+import com.ruoyi.today.domain.ThToken;
+import com.ruoyi.today.service.AdCenterService;
+import com.ruoyi.today.service.IThTokenService;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -39,6 +42,8 @@ import com.ruoyi.common.core.text.Convert;
 public class ThAdvertiserServiceImpl implements IThAdvertiserService {
     @Autowired
     private ThAdvertiserMapper thAdvertiserMapper;
+    @Autowired
+    private IThTokenService thTokenService;
 
     /**
      * 查询广告主
@@ -111,7 +116,9 @@ public class ThAdvertiserServiceImpl implements IThAdvertiserService {
     @Transactional
     public int adMutual(String createBy) {
 
-        String access_token = "1d51450e7ef1ae9dfe2b3bf74e14a5f91c6f4ddb";
+        List<ThToken> thTokens = thTokenService.selectThTokenList(new ThToken());
+
+        String access_token = thTokens.get(0).getAccessToken();
 
         thAdvertiserMapper.deleteThAdvertiserById(null);
 

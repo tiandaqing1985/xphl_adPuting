@@ -37,7 +37,6 @@ public class ThCreativityController extends BaseController {
     @Autowired
     private IThCreativityService thCreativityService;
 
-    @RequiresPermissions("system:creativity:view")
     @GetMapping("/{id}")
     public String creativity(@PathVariable("id") String id, ModelMap mmap) {
         mmap.put("id", id);

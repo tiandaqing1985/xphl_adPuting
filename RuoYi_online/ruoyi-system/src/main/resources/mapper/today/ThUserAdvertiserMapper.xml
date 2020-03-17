@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="userName"    column="user_name"    />
         <result property="advertiserId"    column="advertiser_id"    />
+        <result property="fileName"    column="file_name"    />
     </resultMap>
 
     <sql id="selectThUserAdvertiserVo">

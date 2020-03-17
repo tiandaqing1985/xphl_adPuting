@@ -9,6 +9,7 @@ import com.ruoyi.today.mapper.ThCreativityImageMapper;
 import com.ruoyi.today.mapper.ThCreativityMapper;
 import com.ruoyi.today.mapper.ThCreativityTitleMapper;
 import com.ruoyi.today.service.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,24 +72,41 @@ public class ThCreativityServiceImpl implements IThCreativityService {
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertThCreativity(ThCreativity thCreativity) {
+
+        ThCreativity creativity = new ThCreativity();
+        creativity.setAdId(thCreativity.getAdId());
+        creativity.setAdvertiserId(thCreativity.getAdvertiserId());
+        List<ThCreativity> thCreativities = thCreativityMapper.selectThCreativityList(creativity);
+        if (thCreativities.size() != 0) {
+            thCreativityMapper.deleteThCreativityById(thCreativities.get(0).getId());
+            thCreativityCreativesMapper.deleteThCreativityCreativesByCreativityId(thCreativities.get(0).getId().toString());
+            thCreativityTitleMapper.deleteThCreativityTitleByCreativityId(thCreativities.get(0).getId().toString());
+            thCreativityImageMapper.deleteThCreativityImageByCreativityId(thCreativities.get(0).getId().toString());
+        }
+
         thCreativity.setCreateTime(DateUtils.getNowDate());
         int i = thCreativityMapper.insertThCreativity(thCreativity);
         if (thCreativity.getImage_list() != null) {
             for (ThCreativityImage image : thCreativity.getImage_list()) {
                 image.setCreativityId(thCreativity.getId());
+                image.setImageIds(StringUtils.join(image.getImage_ids(), ","));
                 thCreativityImageMapper.insertThCreativityImage(image);
             }
         }
         if (thCreativity.getTitle_list() != null) {
             for (ThCreativityTitle title : thCreativity.getTitle_list()) {
                 title.setCreativityId(thCreativity.getId());
+                title.setCreativeWordIds(StringUtils.join(title.getCreative_word_ids(), ","));
                 thCreativityTitleMapper.insertThCreativityTitle(title);
             }
         }
         if (thCreativity.getCreatives() != null) {
             for (ThCreativityCreatives creatives : thCreativity.getCreatives()) {
-                creatives.setCreativeId(thCreativity.getId().toString());
+                creatives.setCreativeWordIds(StringUtils.join(creatives.getCreative_word_ids(), ","));
+                creatives.setImageIds(StringUtils.join(creatives.getImage_ids(), ","));
+                creatives.setCreativityId(thCreativity.getId());
                 thCreativityCreativesMapper.insertThCreativityCreatives(creatives);
             }
         }
@@ -149,7 +167,7 @@ public class ThCreativityServiceImpl implements IThCreativityService {
     }
 
     @Override
-    public ThCreativity selectThCreativityByThAdId(String id){
+    public ThCreativity selectThCreativityByThAdId(String id) {
         return thCreativityMapper.selectThCreativityByThAdId(id);
     }
 

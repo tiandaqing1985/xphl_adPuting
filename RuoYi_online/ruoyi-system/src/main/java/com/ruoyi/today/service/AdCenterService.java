@@ -56,4 +56,10 @@ public interface AdCenterService {
 
     //查询创意
     public Object selectCreativity(Object creativity);
+
+    public Object updateCreativity(Object thCreativity);
+
+    //查询广告计划报表数据
+    public Object reportPlan(Object object);
+
 }
