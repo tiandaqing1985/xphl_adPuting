@@ -65,4 +65,6 @@ public interface IThVideoMatterReportService
     List<AdMatterVO> selectAdMatterList();
 
     List<MatterReportVO> selectGroupByTimeList(MatterReportVO matterReportVO);
+
+
 }

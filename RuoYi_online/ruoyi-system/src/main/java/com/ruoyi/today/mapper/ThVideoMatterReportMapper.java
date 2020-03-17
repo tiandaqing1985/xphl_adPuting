@@ -32,6 +32,7 @@ public interface ThVideoMatterReportMapper
 
     public List<ThVideoMatterReport> selectGroupByOrderList(ThVideoMatterReport thVideoMatterReport);
 
+
     /**
      * 新增素材报
      * 

@@ -69,8 +69,8 @@
             <groupId>org.bytedeco.javacpp-presets</groupId>
             <artifactId>opencv</artifactId>
             <version>3.4.1-1.4.1</version>
-            <classifier>linux-x86_64</classifier>
-<!--            <classifier>windows-x86_64</classifier>-->
+<!--            <classifier>linux-x86_64</classifier>-->
+            <classifier>windows-x86_64</classifier>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.bytedeco.javacpp-presets/ffmpeg -->
         <dependency>
@@ -82,8 +82,8 @@
             <groupId>org.bytedeco.javacpp-presets</groupId>
             <artifactId>ffmpeg</artifactId>
             <version>4.0.1-1.4.2</version>
-            <classifier>linux-x86_64</classifier>
-<!--            <classifier>windows-x86_64</classifier>-->
+<!--            <classifier>linux-x86_64</classifier>-->
+            <classifier>windows-x86_64</classifier>
         </dependency>
 
         <!-- 通用工具-->

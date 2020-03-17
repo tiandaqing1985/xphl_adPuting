@@ -1,5 +1,6 @@
 package com.ruoyi.today.mapper;
 
+import com.ruoyi.today.domain.ThMediaVideoCountVO;
 import com.ruoyi.today.domain.ThVideoMatter;
 
 import java.util.List;
@@ -65,4 +66,6 @@ public interface ThVideoMatterMapper
     void deleteThVideoMatterByOrderId(Long id);
 
     void deleteThVideoMatter(ThVideoMatter thVideoMatter);
+
+    List<ThMediaVideoCountVO> selectThVideoMatterGroupByMedia(ThMediaVideoCountVO thMediaVideoCountVO);
 }

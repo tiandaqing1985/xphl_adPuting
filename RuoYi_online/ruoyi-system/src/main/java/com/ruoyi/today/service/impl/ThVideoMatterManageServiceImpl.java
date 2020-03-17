@@ -19,4 +19,9 @@ public class ThVideoMatterManageServiceImpl implements IThVideoMatterManageServi
 
         return thVideoMatterManageMapper.selectMatter(thMatterManage);
     }
+
+    @Override
+    public int selectMatterCount(ThMatterManage thMatterManage) {
+        return thVideoMatterManageMapper.selectMatterCount(thMatterManage);
+    }
 }

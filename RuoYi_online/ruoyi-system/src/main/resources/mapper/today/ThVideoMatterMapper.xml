@@ -25,7 +25,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderId != null and orderId != ''">and order_id = #{orderId}</if>
         </where>
     </select>
-    
+
+    <select id="selectThVideoMatterGroupByMedia" parameterType="ThMediaVideoCountVO" resultType="ThMediaVideoCountVO">
+        select c.dict_label name,count(a.id) value from th_video_matter a left join th_video_need b on a.order_id = b.order_id
+        left join sys_dict_data c on b.put_media = c.dict_value
+        <where>
+            <if test="rangeTime != null and rangeTime != ''">
+                and a.create_time >= left (#{rangeTime},10) and
+                a.create_time &lt;= right(#{rangeTime},10)
+            </if>
+            <if test="videoGroup != null and videoGroup != ''">
+                and b.video_group = #{videoGroup}
+            </if>
+            <if test="videoDept != null and videoDept != ''">
+                and b.video_dept = #{videoDept}
+            </if>
+        </where>
+        group by c.dict_label
+    </select>
+
     <select id="selectThVideoMatterById" parameterType="Long" resultMap="ThVideoMatterResult">
         <include refid="selectThVideoMatterVo"/>
         where id = #{id}

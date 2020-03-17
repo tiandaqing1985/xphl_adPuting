@@ -71,6 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         group by b.order_id
     </select>
 
+
     <select id="selectThVideoMatterReportById" parameterType="Long" resultMap="ThVideoMatterReportResult">
         <include refid="selectThVideoMatterReportVo"/>
         where id = #{id}

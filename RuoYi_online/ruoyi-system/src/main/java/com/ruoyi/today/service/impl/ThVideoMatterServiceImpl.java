@@ -2,6 +2,7 @@ package com.ruoyi.today.service.impl;
 
 import java.util.List;
 
+import com.ruoyi.today.domain.ThMediaVideoCountVO;
 import com.ruoyi.today.domain.ThVideoMatter;
 import com.ruoyi.today.mapper.ThVideoMatterMapper;
 import com.ruoyi.today.service.IThVideoMatterService;
@@ -105,5 +106,10 @@ public class ThVideoMatterServiceImpl implements IThVideoMatterService
     @Override
     public void deleteThVideoMatter(ThVideoMatter thVideoMatter) {
         thVideoMatterMapper.deleteThVideoMatter(thVideoMatter);
+    }
+
+    @Override
+    public List<ThMediaVideoCountVO> selectThVideoMatterGroupByMedia(ThMediaVideoCountVO thMediaVideoCountVO) {
+        return thVideoMatterMapper.selectThVideoMatterGroupByMedia(thMediaVideoCountVO);
     }
 }

@@ -7,4 +7,6 @@ import java.util.List;
 @Mapper
 public interface ThVideoMatterManageMapper {
     List<ThMatterManage> selectMatter(ThMatterManage thMatterManage);
+
+    int selectMatterCount(ThMatterManage thMatterManage);
 }

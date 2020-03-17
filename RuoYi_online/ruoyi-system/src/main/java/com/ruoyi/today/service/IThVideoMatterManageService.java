@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface IThVideoMatterManageService {
     List<ThMatterManage> selectMatter(ThMatterManage thMatterManage);
+
+    int selectMatterCount(ThMatterManage thMatterManage);
 }

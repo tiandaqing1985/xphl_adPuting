@@ -53,7 +53,15 @@
 
          </div>
 
-         <div id="page"></div>
+         <div  class="search-collapse" style="text-align: center">
+             <div class="btn-group" style="text-align: center">
+                 <button id="prePage" type="button" onclick="prePage()" class="btn btn-white">上一页
+                 </button>
+                 <button id="lastPage" type="button" onclick="lastPage()" class="btn btn-white">下一页
+                 </button>
+             </div>
+             <span id="pageNum"></span>
+         </div>
     </div>
     <th:block th:include="include :: footer" />
      <th:block th:include="include :: datetimepicker-js" />
@@ -64,9 +72,36 @@
         }
 
         function searchVal(){
-            var data = $("#formId").serialize();
+            // $.common.formToJSON(currentId)
+            // var data = $("#formId").serialize();
+            var data = $.common.formToJSON("formId");
+            currPage = 1;
             initBox(data);
+            isDisabled();
+        }
 
+        function isDisabled(){
+            if(currPage==1){
+                $("#prePage").attr("disabled","disabled");
+            }else{
+                $("#prePage").attr("disabled",false);
+            }
+            if(currPage==totalPage){
+                $("#lastPage").attr("disabled","disabled");
+            }else {
+                $("#lastPage").attr("disabled",false);
+            }
+        }
+
+        function prePage(){
+            currPage = currPage - 1;
+            initBox(searchData);
+            isDisabled();
+        }
+        function lastPage(){
+            currPage = currPage + 1;
+            initBox(searchData);
+            isDisabled();
         }
 
         function nullToZero(val){
@@ -112,13 +147,33 @@
             });
 
         });
-        function initBox(data){
 
+        var searchData = null;
+        var totalPage = null;
+        var currPage = null;
+
+        function initBox(data){
+            searchData = data;
+            var config1 = {
+                url: prefix+"/materiaCount",
+                type: "post",
+                dataType: "json",
+                data: searchData,
+                async: false,
+                success: function(result) {
+
+                    totalPage = Math.ceil(result/6);
+                    $("#pageNum").html("第"+currPage+"页（共"+totalPage+"页）")
+                }
+            };
+            $.ajax(config1)
+            searchData.page = currPage;
             var config = {
                 url: prefix+"/materia",
                 type: "post",
                 dataType: "json",
-                data: data,
+                data: searchData,
+                async: false,
                 success: function(result) {
                     var html = [];
                     $.each(result,function (index,item) {
@@ -175,8 +230,9 @@
         }
 
         $(function() {
-            initBox();
-
+            currPage = 1;
+            initBox({});
+            isDisabled();
         });
     </script>
 </body>

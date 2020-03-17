@@ -1,39 +1,270 @@
 <!DOCTYPE html>
-<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--360浏览器优先以webkit内核解析-->
-    <title>若依介绍</title>
-    <link rel="shortcut icon" href="favicon.ico">
-    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
-    <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
-    <link href="../static/css/main/animate.min.css" th:href="@{/css/main/animate.min.css}" rel="stylesheet"/>
-    <link href="../static/css/main/style.min862f.css" th:href="@{/css/main/style.min862f.css}" rel="stylesheet"/>
+    <th:block th:include="include :: header('素材列表')" />
 </head>
-
 <body class="gray-bg">
-    <div class="row  border-bottom white-bg dashboard-header">
+     <div class="container-div">
 
-    </div>
-    <div class="wrapper wrapper-content">
+         <div class="col-sm-12 search-collapse" id="formDiv">
+             <form id="formId">
+                 <div class="select-list">
+                     <ul>
+                         <li>
+                             <div class="col-sm-2" style="padding: 0px">
+                                 <div class="form-group">
+                                     <div class="input-group date">
+                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                         <input name="timeRange" type="text" class="form-control" id="putTime" placeholder="开始日期 至 结束日期">
+                                     </div>
+                                 </div>
+                             </div>
+                         </li>
+                         <li>
+                             <a class="btn btn-primary btn-rounded btn-sm" onclick="searchVal()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                             <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                         </li>
+                     </ul>
+                 </div>
+             </form>
+         </div>
 
+         <div id="mediaCount" class="col-sm-12 search-collapse" style="text-align: center">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="echarts" id="echarts-pie-chart"></div>
+                </div>
+            </div>
+         </div>
+         <div class="col-sm-12 search-collapse" style="text-align: center">
+             <h1>总消耗TOP</h1>
+         </div>
+         <div id="context" class="col-sm-12 search-collapse" style="text-align: center">
+         </div>
+
+         <div id="page"></div>
     </div>
-    <script th:src="@{/js/jquery.min.js}"></script>
-    <script th:src="@{/js/bootstrap.min.js}"></script>
-    <script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
-    <script type="text/javascript">
-	    $('#pay-qrcode').click(function(){
-	        var html=$(this).html();
-	        parent.layer.open({
-	            title: false,
-	            type: 1,
-	            closeBtn:false,
-	            shadeClose:true,
-	            area: ['600px', 'auto'],
-	            content: html
-	        });
-	    });
+    <th:block th:include="include :: footer" />
+     <th:block th:include="include :: datetimepicker-js" />
+     <th:block th:include="include :: echarts-js" />
+    <script th:inline="javascript">
+        var prefix = ctx + "today/videoReport";
+        function yulan(fileName,url){
+            $.modal.openFull("预览:"+fileName,url);
+        }
+
+        function searchVal(){
+
+            iniMediaCount($("#putTime").val())
+
+        }
+
+        var roleList = [[${@sysRoleServiceImpl.selectRolesByUserId(@permission.getPrincipalProperty('userId'))}]];
+        function isVideo(){
+            var flg = "hidden";
+            $.each(roleList,function(index,role){
+                if(role.roleKey=="videogroup"){
+                    if(role.flag==true){
+                        flg = "";
+                    }
+                }
+                if(role.roleKey=="videomanage"){
+                    if(role.flag==true){
+                        flg = "";
+                    }
+                }
+                if(role.roleKey=="adminyu"){
+                    if(role.flag==true){
+                        flg = "";
+                    }
+                }
+                if(role.roleKey=="admin"){
+                    if(role.flag==true){
+                        flg = "";
+                    }
+                }
+            });
+            if(flg=="hidden"){
+
+                $("#formDiv").css("display","none");
+                $("#mediaCount").css("display","none");
+            }
+        }
+
+        function nullToZero(val){
+            if(val==undefined||val==null){
+                return "0.0";
+            }else{
+                return val;
+            }
+        }
+        function nullToBlank(val){
+            if(val==undefined||val==null){
+                return "";
+            }else{
+                return val;
+            }
+        }
+        function videoDeptChange(){
+            var dept = $("#dept").val();
+            $.ajax({
+                url: prefix + "/dictGetType",
+                type: "post",
+                data: {"type":dept},
+                datatype: "json",
+                success:function(data){
+                    optionJson = data;
+                    var selectObj=document.getElementById("group");
+                    selectObj.options.length=0;
+                    selectObj.options.add(new Option("全部视频团队" , ""));
+                    for(var i=0;i<data.length;i++){
+                        selectObj.add(new Option(optionJson[i].dictLabel,optionJson[i].dictValue));
+                    }
+                }
+            })
+
+        }
+        <!-- laydate示例 -->
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+
+            laydate.render({
+                elem: '#putTime',
+                range: true
+            });
+
+        });
+
+        function iniMediaCount(subtext){
+
+            var mediaList = [];
+            var data = [];
+            var config = {
+                url: prefix+"/mediaVideoCount",
+                type: "post",
+                dataType: "json",
+                data: {"rangeTime":subtext},
+                async: false,
+                success: function(result) {
+                    $.each(result,function (index,item) {
+                        mediaList.push(item.name);
+                    });
+                    data = result;
+                }
+            };
+            $.ajax(config);
+            var pieChart = echarts.init(document.getElementById("echarts-pie-chart"));
+            var pieoption = {
+                title : {
+                    text: '交付视频数量',
+                    subtext: subtext,
+                    x:'center'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient : 'vertical',
+                    x : 'left',
+                    data:mediaList
+                },
+                calculable : true,
+                series : [
+                    {
+                        name:'交付视频数量',
+                        type:'pie',
+                        radius : '55%',
+                        center: ['50%', '60%'],
+                        data:data
+                    }
+                ]
+            };
+            pieChart.setOption(pieoption);
+            $(window).resize(pieChart.resize);
+
+
+        }
+        var videoGroup = [[${@sysDictTypeServiceImpl.selectDictTypeListByType('ta_video_group_')}]];//视频部门
+
+        function transDept(value){
+            var val = null;
+            $.each(videoGroup, function(index, dict) {
+                if (dict.dictType == ('' + value)) {
+                    val = dict.dictName;
+                    return false;
+                }
+            });
+            return val;
+        }
+
+        function initBox(data){
+
+            var config = {
+                url: prefix+"/topCost",
+                type: "post",
+                dataType: "json",
+                data: data,
+                success: function(result) {
+                    var html = [];
+                    $.each(result,function (index,item) {
+
+                        html.push('<div class="col-sm-4">\n' +
+                            '                     <div class="ibox">\n' +
+                            '                         <div class="ibox-title">\n' +
+                            '                             <h5>第'+(index+1)+'名</h5>\n' +
+                            '                         </div>\n' +
+                            '                         <div class="ibox-content">\n' +
+                            '                             <div class="row">\n' +
+                            '                                 <div class="col-sm-10">\n' +
+                            '                                     <span>'+$.table.tooltip('视频名称：'+nullToBlank(item.fileName))+'</span>\n' +
+                            '                                 </div>\n' +
+                            '                             </div>\n' +
+                            '                             <div class="row">\n' +
+                            '                                 <div class="col-sm-4">\n' +
+                            '                                     <span>平均播放（s）：'+nullToZero(item.averagePlayTimePerPlay)+'</span>\n' +
+                            '                                 </div>\n' +
+                            '                                 <div class="col-sm-3">\n' +
+                            '                                     <span>总播放：'+nullToZero(item.totalPlay)+'</span>\n' +
+                            '                                 </div>\n' +
+                            '                                 <div class="col-sm-3">\n' +
+                            '                                     <span>总消耗：'+nullToZero(item.reportCost)+'</span>\n' +
+                            '                                 </div>\n' +
+                            '                             </div>\n' +
+                            '                             <div class="row" style="text-align: center">\n' +
+                            '                                 <a href="#" onclick="yulan(\''+item.fileName+'\',\''+item.matter+'\');" >\n' +
+                            '                                     <img width="200" height="150" src="'+nullToBlank(item.videoCover)+'">\n' +
+                            '                                 </a>\n' +
+                            '                             </div>\n' +
+                            '                             <div class="row">\n' +
+                            '                                 <div class="col-sm-4">\n' +
+                            '                                     <span>素材链接：<a href="/today/video/downloadFile/'+item.id+'">下载</a></span>\n' +
+                            '                                 </div>\n' +
+                            '                                 <div class="col-sm-4">\n' +
+                            '                                     <span>归属部门：'+transDept(item.videoGroup)+'</span>\n' +
+                            '                                 </div>\n' +
+                            '                                 <div class="col-sm-4">\n' +
+                            '                                     <span>交付日期：'+item.createTime+'</span>\n' +
+                            '                                 </div>\n' +
+                            '                             </div>\n' +
+                            '                         </div>\n' +
+                            '                     </div>\n' +
+                            '                 </div>')
+
+                    });
+                    $("#context").html(html.join(""))
+
+                }
+            };
+            $.ajax(config)
+
+        }
+
+        $(function() {
+            iniMediaCount();
+            initBox();
+            isVideo();
+        });
     </script>
 </body>
 </html>

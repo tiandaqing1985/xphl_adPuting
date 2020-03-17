@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.sql.Date;
+
 /**
  * 订单交付素材关联对象 th_video_matter
  *
@@ -49,6 +51,36 @@ public class ThMatterManage
     private String timeRange;
 
     private String productName;
+
+    private String sql;
+
+    private Date createTime;
+
+    private Integer page;
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
 
     public String getVideoDept() {
         return videoDept;
