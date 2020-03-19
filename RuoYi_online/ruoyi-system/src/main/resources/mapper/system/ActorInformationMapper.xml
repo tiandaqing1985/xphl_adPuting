@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ActorInformationMapper">
+    
+    <resultMap type="ActorInformation" id="ActorInformationResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="num"    column="num"    />
+        <result property="number"    column="number"    />
+        <result property="verification"    column="verification"    />
+        <result property="idnumber"    column="idNumber"    />
+        <result property="telephone"    column="telephone"    />
+        <result property="amount"    column="amount"    />
+        <result property="affiliatedbank"    column="affiliatedBank"    />
+        <result property="documenttype"    column="documentType"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="addTime"    column="add_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="addUser"    column="add_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="isfile"    column="isfile"    />
+    </resultMap>
+
+    <sql id="selectActorInformationVo">
+        select id, name, number, verification, idNumber, telephone, amount, affiliatedBank, documentType, remarks, num, add_time, update_time, add_user,isfile, update_user from actor_information
+    </sql>
+
+    <select id="selectActorInformationList" parameterType="ActorInformation" resultMap="ActorInformationResult">
+        <include refid="selectActorInformationVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="idnumber != null  and idnumber != ''"> and idNumber like concat('%', #{idnumber}, '%')</if>
+            <if test="telephone != null  and telephone != ''"> and telephone like concat('%', #{telephone}, '%')</if>
+            <if test="addUser != null  and addUser != ''"> and add_user like concat('%', #{addUser}, '%')</if>
+        </where>
+    </select>
+
+
+    <select id="selectAllUserModel" resultMap="ActorInformationResult">
+        <include refid="selectActorInformationVo"/>
+
+    </select>
+
+    <select id="selectActorInformationById" parameterType="Long" resultMap="ActorInformationResult">
+        <include refid="selectActorInformationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertActorInformation" parameterType="ActorInformation" useGeneratedKeys="true" keyProperty="id">
+        insert into actor_information
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">name,</if>
+            <if test="num != null  and num != ''">num,</if>
+            <if test="number != null  and number != ''">number,</if>
+            <if test="verification != null  and verification != ''">verification,</if>
+            <if test="idnumber != null  and idnumber != ''">idNumber,</if>
+            <if test="telephone != null  and telephone != ''">telephone,</if>
+            <if test="amount != null ">amount,</if>
+            <if test="affiliatedbank != null  and affiliatedbank != ''">affiliatedBank,</if>
+            <if test="documenttype != null  and documenttype != ''">documentType,</if>
+            <if test="remarks != null  and remarks != ''">remarks,</if>
+            <if test="addTime != null ">add_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="addUser != null  and addUser != ''">add_user,</if>
+            <if test="updateUser != null  and updateUser != ''">update_user,</if>
+            <if test="isfile != null  and isfile != ''">isfile,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="num != null  and num != ''">#{num},</if>
+            <if test="number != null  and number != ''">#{number},</if>
+            <if test="verification != null  and verification != ''">#{verification},</if>
+            <if test="idnumber != null  and idnumber != ''">#{idnumber},</if>
+            <if test="telephone != null  and telephone != ''">#{telephone},</if>
+            <if test="amount != null ">#{amount},</if>
+            <if test="affiliatedbank != null  and affiliatedbank != ''">#{affiliatedbank},</if>
+            <if test="documenttype != null  and documenttype != ''">#{documenttype},</if>
+            <if test="remarks != null  and remarks != ''">#{remarks},</if>
+            <if test="addTime != null ">#{addTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="addUser != null  and addUser != ''">#{addUser},</if>
+            <if test="updateUser != null  and updateUser != ''">#{updateUser},</if>
+            <if test="isfile != null  and isfile != ''">#{isfile},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActorInformation" parameterType="ActorInformation">
+        update actor_information
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="num != null  and num != ''">name = #{num},</if>
+            <if test="number != null  and number != ''">number = #{number},</if>
+            <if test="verification != null  and verification != ''">verification = #{verification},</if>
+            <if test="idnumber != null  and idnumber != ''">idNumber = #{idnumber},</if>
+            <if test="telephone != null  and telephone != ''">telephone = #{telephone},</if>
+            <if test="amount != null ">amount = #{amount},</if>
+            <if test="affiliatedbank != null  and affiliatedbank != ''">affiliatedBank = #{affiliatedbank},</if>
+            <if test="documenttype != null  and documenttype != ''">documentType = #{documenttype},</if>
+            <if test="remarks != null  and remarks != ''">remarks = #{remarks},</if>
+            <if test="addTime != null ">add_time = #{addTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="addUser != null  and addUser != ''">add_user = #{addUser},</if>
+            <if test="updateUser != null  and updateUser != ''">update_user = #{updateUser},</if>
+            <if test="isfile != null  and isfile != ''">isfile = #{isfile},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActorInformationById" parameterType="Long">
+        delete from actor_information where id = #{id}
+    </delete>
+
+    <delete id="deleteActorInformationByIds" parameterType="String">
+        delete from actor_information where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectActorname" parameterType="String" resultMap="ActorInformationResult">
+        <include refid="selectActorInformationVo"/>
+        where name = #{name}
+    </select>
+
+    <select id="selectActorId" resultType="Long">
+        select max(id) from actor_information
+    </select>
+
+</mapper>

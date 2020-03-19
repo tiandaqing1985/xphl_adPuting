@@ -236,9 +236,9 @@ public class ActorShotApplyController extends BaseController {
         actorFacexhibition.setAddName(ShiroUtils.getUserName());
         actorFacexhibition.setAddTime(new Date());
         actorFacexhibition.setAmount(actor.getAmount());
-        actorFacexhibition.setDocumenttype(actorInformation.getDocumenttype());
+        actorFacexhibition.setDocumenttype(actorInformation.getAffiliatedbank());
         actorFacexhibition.setShotTime(actor.getShotTime());
-        actorFacexhibition.setOpi(actorInformation.getRemarks());//备注
+        actorFacexhibition.setOpi(actorInformation.getDocumenttype());//备注
         actorFacexhibition.setIdnumber(actorInformation.getIdnumber());
         actorFacexhibition.setNumber(Long.valueOf(actorInformation.getNumber()));
         actorFacexhibition.setTelephone(Long.valueOf(actorInformation.getTelephone()));

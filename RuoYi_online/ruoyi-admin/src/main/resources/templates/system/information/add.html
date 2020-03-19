@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增演员信息')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-information-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>演员姓名：</label>
+                <div class="col-sm-8">
+                    <input name="name" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>所属银行：</label>
+                <div class="col-sm-8">
+                    <input name="affiliatedbank" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>演员银行卡号：</label>
+                <div class="col-sm-8">
+                    <input name="number" class="form-control" type="text" onkeyup="chkPrice(this);" onblur="chkLast(this)"  required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">银行卡验证：</label>
+                <div class="col-sm-8">
+                    <input name="verification" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>证件类型：</label>
+                <div class="col-sm-8">
+                    <select name="documenttype" class="form-control m-b">
+                        <option value="身份证">身份证</option>
+                        <option value="港澳台通行证">港澳台通行证</option>
+                        <option value="军官证">军官证</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>身份证号：</label>
+                <div class="col-sm-8">
+                    <input name="idnumber" class="form-control" type="text" onblur="checkIDCard(this)" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>手机号：</label>
+                <div class="col-sm-8">
+                    <input id="telephone" name="telephone" class="form-control" type="text" onkeyup="chkPrice(this);" onblur="chkLast(this)"  required>
+                </div>
+            </div>
+
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <textarea name="remarks" class="form-control" type="text"></textarea>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script type="text/javascript">
+        var prefix = ctx + "system/information"
+        $("#form-information-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-information-add').serialize());
+            }
+        }
+
+        $("input[name='addTime']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        function chkPrice(obj){
+            obj.value = obj.value.replace(/[^\d.]/g,"");
+//必须保证第一位为数字而不是.
+            obj.value = obj.value.replace(/^\./g,"");
+//保证只有出现一个.而没有多个.
+            obj.value = obj.value.replace(/\.{2,}/g,".");
+//保证.只出现一次，而不能出现两次以上
+            obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        }
+        function chkLast(obj){
+// 如果出现非法字符就截取掉
+            if(obj.value.substr((obj.value.length - 1), 1) == '.')
+                obj.value = obj.value.substr(0,(obj.value.length - 1));
+        }
+
+
+
+        function checkIDCard(idnum){
+            debugger
+           var idnumber=idnum.value;
+            // 加权因子
+            var weight_factor = [7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2];
+            // 校验码
+            var check_code = ['1', '0', 'X' , '9', '8', '7', '6', '5', '4', '3', '2'];
+
+            var code = idnumber + "";
+            var last = idnumber[17];//最后一位
+
+            var seventeen = code.substring(0,17);
+
+            // ISO 7064:1983.MOD 11-2
+            // 判断最后一位校验码是否正确
+            var arr = seventeen.split("");
+            var len = arr.length;
+            var num;
+            for(var i = 0; i < len; i++){
+                num = num + arr[i] * weight_factor[i];
+            }
+
+            // 获取余数
+            var resisue = num%11;
+            var last_no = check_code[resisue];
+
+            // 格式的正则
+            // 正则思路
+            /*
+            第一位不可能是0
+            第二位到第六位可以是0-9
+            第七位到第十位是年份，所以七八位为19或者20
+            十一位和十二位是月份，这两位是01-12之间的数值
+            十三位和十四位是日期，是从01-31之间的数值
+            十五，十六，十七都是数字0-9
+            十八位可能是数字0-9，也可能是X
+            */
+            var idcard_patter = /^[1-9][0-9]{5}([1][9][0-9]{2}|[2][0][0|1][0-9])([0][1-9]|[1][0|1|2])([0][1-9]|[1|2][0-9]|[3][0|1])[0-9]{3}([0-9]|[X])$/;
+
+            // 判断格式是否正确
+            var format = idcard_patter.test(idnumber);
+            if(format!=true){
+                alert("身份证号填写错误");
+                idnum.value = '';
+            }
+            // 返回验证结果，校验码和格式同时正确才算是合法的身份证号码
+           // return last === last_no && format ? true : false;
+        }
+    </script>
+</body>
+</html>

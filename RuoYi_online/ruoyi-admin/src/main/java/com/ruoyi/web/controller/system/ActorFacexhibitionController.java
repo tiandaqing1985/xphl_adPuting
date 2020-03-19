@@ -6,6 +6,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.domain.ActorFacSys;
 import com.ruoyi.system.domain.ActorFacexhibition;
 import com.ruoyi.system.service.IActorFacexhibitionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -183,9 +185,23 @@ public class ActorFacexhibitionController extends BaseController {
     public AjaxResult exls(String ids) {
 
         List<ActorFacexhibition> list = actorFacexhibitionService.selectApprovalByIds(ids);
+        List<ActorFacSys> lists = new ArrayList<>();
+        for (ActorFacexhibition v : list) {
+            ActorFacSys actorFacSys = new ActorFacSys();
+            actorFacSys.setActorName(v.getActorName());
+            actorFacSys.setNumber(v.getNumber());
+            actorFacSys.setIdnumber(v.getIdnumber());
+            actorFacSys.setTelephone(v.getTelephone());
+            actorFacSys.setAmount(v.getAmount());
+            actorFacSys.setDocumenttype(v.getDocumenttype());
+            actorFacSys.setShotTime(v.getShotTime());
+            actorFacSys.setOpi(v.getOpi());
+            lists.add(actorFacSys);
+        }
+        ExcelUtil<ActorFacSys> util = new ExcelUtil<ActorFacSys>(ActorFacSys.class);
+        return util.exportExcel(lists, "facExhibition");
 
-        ExcelUtil<ActorFacexhibition> util = new ExcelUtil<ActorFacexhibition>(ActorFacexhibition.class);
-        return util.exportExcel(list, "facExhibition");
+
     }
 
 }

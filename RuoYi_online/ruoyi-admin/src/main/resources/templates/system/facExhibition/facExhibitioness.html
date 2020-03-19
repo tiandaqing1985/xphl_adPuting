@@ -92,7 +92,7 @@
                 },
                 {
                     field: 'opi',
-                    title: '备注'
+                    title: '证件类型'
                 },
                 {
                     field: 'shotTime',
@@ -126,6 +126,22 @@
     //      $.operate.submit(url, "post", "json", data);
 
 
+    // function exl() {
+    //     var ids = $.table.selectColumns("id");
+    //     if (ids.length == 0) {
+    //         $.modal.alertWarning("请至少选择一条记录");
+    //         return;
+    //     }
+    //     $.modal.confirm("确认要导出选中的" + ids.length + "条数据吗?", function () {
+    //         //       $.operate.post(prefix + "/exls?ids="+ids);
+    //         $.operate.submit(prefix + "/exls?ids="+ids, "post", "json");
+    //     });
+    // }
+
+
+
+
+
     function exl() {
         var ids = $.table.selectColumns("id");
         if (ids.length == 0) {
@@ -133,9 +149,30 @@
             return;
         }
         $.modal.confirm("确认要导出选中的" + ids.length + "条数据吗?", function () {
-            $.operate.save(prefix + "/exls?ids="+ids);
+               $.post(prefix + "/exls?ids="+ids,function(result) {
+
+                   if (result.code == web_status.SUCCESS) {
+                       window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
+                   } else if (result.code == web_status.WARNING) {
+                       $.modal.alertWarning(result.msg)
+                   } else {
+                       $.modal.alertError(result.msg);
+                   }
+                   $.modal.closeLoading();
+               });
+
         });
     }
+
+
+
+
+
+
+
+
+
+
 
 
 </script>

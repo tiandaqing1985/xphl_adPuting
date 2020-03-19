@@ -7,7 +7,6 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.framework.util.ShiroUtils;
-import com.ruoyi.system.domain.ActorFacexhibition;
 import com.ruoyi.system.domain.ActorShotApply;
 import com.ruoyi.system.domain.ActorSysuserapproval;
 import com.ruoyi.system.service.IActorShotApplyService;
@@ -35,6 +34,7 @@ public class ActorSysuserapprovalController extends BaseController {
 
     @Autowired
     private IActorShotApplyService actorShotApplyService;
+
     @GetMapping()
     public String sysUserApproval() {
         return prefix + "/sysUserApproval";
@@ -61,7 +61,6 @@ public class ActorSysuserapprovalController extends BaseController {
         List<ActorSysuserapproval> list = actorSysuserapprovalService.selectActorSysuserapprovalList(actorSysuserapproval);
         return getDataTable(list);
     }
-
 
 
     /**
@@ -120,10 +119,10 @@ public class ActorSysuserapprovalController extends BaseController {
      */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long id, ModelMap mmap) {
-        ActorSysuserapproval actorSysuserapproval =actorSysuserapprovalService.selectActorSysuserapprovalById(id);
+        ActorSysuserapproval actorSysuserapproval = actorSysuserapprovalService.selectActorSysuserapprovalById(id);
         ActorShotApply actorShotApply = actorShotApplyService.selectActorShotApplyById(actorSysuserapproval.getApplyId());
-        mmap.put("appNameId",actorShotApply.getAppNameId());
-        mmap.put("applyId",actorSysuserapproval.getApplyId());
+        mmap.put("appNameId", actorShotApply.getAppNameId());
+        mmap.put("applyId", actorSysuserapproval.getApplyId());
         mmap.put("actorSysuserapproval", actorSysuserapproval);
         return prefix + "/addAppName";
     }
@@ -134,10 +133,10 @@ public class ActorSysuserapprovalController extends BaseController {
      */
     @GetMapping("/chakan")
     public String chakan(Long id, ModelMap mmap) {
-        ActorSysuserapproval actorSysuserapproval =actorSysuserapprovalService.selectActorSysuserapprovalById(id);
+        ActorSysuserapproval actorSysuserapproval = actorSysuserapprovalService.selectActorSysuserapprovalById(id);
         ActorShotApply actorShotApply = actorShotApplyService.selectActorShotApplyById(actorSysuserapproval.getApplyId());
-        mmap.put("appNameId",actorShotApply.getAppNameId());
-        mmap.put("applyId",actorSysuserapproval.getApplyId());
+        mmap.put("appNameId", actorShotApply.getAppNameId());
+        mmap.put("applyId", actorSysuserapproval.getApplyId());
         mmap.put("actorSysuserapproval", actorSysuserapproval);
         return prefix + "/chakan";
     }
@@ -165,7 +164,6 @@ public class ActorSysuserapprovalController extends BaseController {
     }
 
 
-
     /**
      * 批量修改财务审批
      */
@@ -177,7 +175,6 @@ public class ActorSysuserapprovalController extends BaseController {
     }
 
 
-
     /**
      * 批量财务审批
      */
@@ -187,7 +184,7 @@ public class ActorSysuserapprovalController extends BaseController {
     public AjaxResult PLshenpi(ActorSysuserapproval actorSysuserapproval) {
         List<ActorSysuserapproval> list = actorSysuserapprovalService.selectListPliang(actorSysuserapproval.getApplicantName());
 
-        for(ActorSysuserapproval a:list ){
+        for (ActorSysuserapproval a : list) {
             a.setOpi(actorSysuserapproval.getOpi());
             a.setApprovalState(actorSysuserapproval.getApprovalState());
             actorSysuserapprovalService.updateActorSysuserapproval(a);

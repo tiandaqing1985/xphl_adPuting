@@ -40,8 +40,8 @@
         </div>
 
         <div class="btn-group-sm" id="toolbar" role="group">
-            <a class="btn btn-warning" onclick="$.table.exportExcel()"
-               shiro:hasPermission="system:facExhibition:export">
+            <a class="btn btn-warning" onclick="exl()">
+<!--               shiro:hasPermission="system:facExhibition:export">-->
                 <i class="fa fa-download"></i> 导出
             </a>
         </div>
@@ -97,7 +97,7 @@
                 },
                 {
                     field: 'opi',
-                    title: '备注'
+                    title: '证件类型'
                 },
                 {
                     field: 'shotTime',
@@ -145,7 +145,6 @@
 
         debugger;
         var ids = $.table.selectColumns("id");
-        alert(ids)
             if (ids.length == 0) {
                 $.modal.alertWarning("请至少选择一条记录");
                 return;
@@ -155,6 +154,32 @@
                 $.modal.open('审批', prefix + "/approvalModer?ids=" + ids, '500', '320');
             });
     }
+
+
+
+    function exl() {
+        var ids = $.table.selectColumns("id");
+        if (ids.length == 0) {
+            $.modal.alertWarning("请至少选择一条记录");
+            return;
+        }
+        $.modal.confirm("确认要导出选中的" + ids.length + "条数据吗?", function () {
+            $.post(prefix + "/exls?ids="+ids,function(result) {
+
+                if (result.code == web_status.SUCCESS) {
+                    window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
+                } else if (result.code == web_status.WARNING) {
+                    $.modal.alertWarning(result.msg)
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+                $.modal.closeLoading();
+            });
+
+        });
+    }
+
+
 
 </script>
 </body>
