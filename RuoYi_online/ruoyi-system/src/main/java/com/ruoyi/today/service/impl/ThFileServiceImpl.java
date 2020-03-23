@@ -22,6 +22,9 @@ public class ThFileServiceImpl implements IThFileService {
     //接受上传的文件，并将其传到文件服务器中
     @Override
     public String receiveAndUploadFile(MultipartFile multipartFile) throws Exception {
+        if(multipartFile.getOriginalFilename().equals("")){
+            return "";
+        }
         File file = receiveFile(multipartFile);
         String url = uploadFile(file);
         return url;

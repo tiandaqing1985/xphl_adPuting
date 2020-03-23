@@ -22,13 +22,21 @@
                              </select>
                          </li>
                          <li>
-                             <select name="productName" th:with="type=${@dict.getType('ta_video_product')}">
-                                 <option value="">全部产品</option>
-                                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                             </select>
+                             <input name="productName" type="text" placeholder="产品名称">
+<!--                             <select name="productName" th:with="type=${@dict.getType('ta_video_product')}">-->
+<!--                                 <option value="">全部产品</option>-->
+<!--                                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>-->
+<!--                             </select>-->
                          </li>
                          <li>
                              <input name="fileName" placeholder="视频名称">
+                         </li>
+                         <li>
+                             <select name="sql">
+                                 <option value="">排序</option>
+                                 <option value="order by reportCost">按消耗升序</option>
+                                 <option value="order by reportCost desc">按消耗降序</option>
+                             </select>
                          </li>
                          <li>
                              <div class="col-sm-2" style="padding: 0px">
@@ -53,14 +61,14 @@
 
          </div>
 
-         <div  class="search-collapse" style="text-align: center">
-             <div class="btn-group" style="text-align: center">
+         <div >
+             <div  style="text-align: center">
                  <button id="prePage" type="button" onclick="prePage()" class="btn btn-white">上一页
                  </button>
                  <button id="lastPage" type="button" onclick="lastPage()" class="btn btn-white">下一页
                  </button>
+                 <span id="pageNum"></span>
              </div>
-             <span id="pageNum"></span>
          </div>
     </div>
     <th:block th:include="include :: footer" />

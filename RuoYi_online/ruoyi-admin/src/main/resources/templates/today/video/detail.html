@@ -37,10 +37,11 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red">*</span>产品名称：</label>
                 <div class="col-sm-5">
-                    <select disabled readonly name="need.productName" required="required" class="form-control" th:with="type=${@dict.getType('ta_video_product')}">
-                        <option value="">请选择产品名称</option>
-                        <option th:selected="${thVideoOrder.need.productName==dict.dictValue}?true" th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                    </select>
+                    <input name="need.productName" th:value="${thVideoOrder.need.productName}" type="text" class="form-control" readonly required>
+<!--                    <select disabled readonly name="need.productName" required="required" class="form-control" th:with="type=${@dict.getType('ta_video_product')}">-->
+<!--                        <option value="">请选择产品名称</option>-->
+<!--                        <option th:selected="${thVideoOrder.need.productName==dict.dictValue}?true" th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>-->
+<!--                    </select>-->
                 </div>
             </div>
             <div class="form-group">
@@ -56,7 +57,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label"><span style="color: red">*</span>产品logo：</label>
+                <label class="col-sm-3 control-label">产品logo：</label>
                 <div class="col-sm-1">
 <!--                    <input name="logoFile" id="logoUrl" class="form-control" type="file" required>-->
                     <a th:href="${thVideoOrder.need.logoUrl}">下载</a>
@@ -129,7 +130,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label"><span style="color: red">*</span>视频脚本：</label>
+                <label class="col-sm-3 control-label">视频脚本：</label>
                 <div class="col-sm-1">
                     <a th:href="${thVideoOrder.videoScript}">下载</a>
 <!--                    <input name="videoScriptFile" id="videoScript" class="form-control" type="file">-->

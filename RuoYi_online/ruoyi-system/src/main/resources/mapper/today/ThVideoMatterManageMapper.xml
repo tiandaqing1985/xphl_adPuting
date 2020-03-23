@@ -8,10 +8,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
         select a.create_time createTime,a.id,a.file_name fileName,a.matter,a.order_id orderId,a.`status`,a.video_cover videoCover,b.order_name orderName,c.need_name needName,c.video_group videoGroup,d.averagePlayTimePerPlay,d.reportCost,d.totalPlay,d.reportShow from th_video_matter a left join th_video_order b on a.order_id = b.id
         left join th_video_need c on a.order_id = c.order_id
-        left join (select matter_id,avg(average_play_time_per_play) averagePlayTimePerPlay,sum(total_play) totalPlay,sum(report_cost) reportCost,sum(report_show) reportShow from th_video_matter_report group by matter_id) d on a.id = d.matter_id
+        left join (select matter_id, truncate(avg(average_play_time_per_play),2) averagePlayTimePerPlay,sum(total_play) totalPlay,sum(report_cost) reportCost,sum(report_show) reportShow from th_video_matter_report group by matter_id) d on a.id = d.matter_id
         <where>
             <if test="productName != null and productName != ''">
-                and c.product_name = #{productName}
+                and c.product_name like  concat('%',#{productName},'%')
             </if>
             <if test="videoDept != null and videoDept != ''">
                 and c.video_dept = #{videoDept}
@@ -37,7 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join (select matter_id,avg(average_play_time_per_play) averagePlayTimePerPlay,sum(total_play) totalPlay,sum(report_cost) reportCost,sum(report_show) reportShow from th_video_matter_report group by matter_id) d on a.id = d.matter_id
         <where>
             <if test="productName != null and productName != ''">
-                and c.product_name = #{productName}
+                and c.product_name like concat('%',#{productName},'%')
             </if>
             <if test="videoDept != null and videoDept != ''">
                 and c.video_dept = #{videoDept}

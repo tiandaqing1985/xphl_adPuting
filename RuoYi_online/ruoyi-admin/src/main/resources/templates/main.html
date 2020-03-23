@@ -21,6 +21,12 @@
                              </div>
                          </li>
                          <li>
+                             <select name="videoDept" id="dept" th:with="type=${@dict.getType('ta_video_dept')}">
+                                 <option value="">全部视频部门</option>
+                                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                             </select>
+                         </li>
+                         <li>
                              <a class="btn btn-primary btn-rounded btn-sm" onclick="searchVal()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
                          </li>
@@ -143,7 +149,7 @@
                 url: prefix+"/mediaVideoCount",
                 type: "post",
                 dataType: "json",
-                data: {"rangeTime":subtext},
+                data: $.common.formToJSON("formId"),
                 async: false,
                 success: function(result) {
                     $.each(result,function (index,item) {

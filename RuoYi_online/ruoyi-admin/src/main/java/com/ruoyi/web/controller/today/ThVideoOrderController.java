@@ -80,7 +80,10 @@ public class ThVideoOrderController extends BaseController {
     @PostMapping("/materia")
     @ResponseBody
     public List<ThMatterManage> materia(ThMatterManage thMatterManage) {
-        thMatterManage.setSql("limit "+((thMatterManage.getPage()-1)*6)+",6");
+        if(thMatterManage.getSql()==null){
+            thMatterManage.setSql("");
+        }
+        thMatterManage.setSql(thMatterManage.getSql()+" limit "+((thMatterManage.getPage()-1)*6)+",6");
         List<ThMatterManage> list = thVideoMatterManageService.selectMatter(thMatterManage);
         return list;
     }

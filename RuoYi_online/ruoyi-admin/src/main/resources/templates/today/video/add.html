@@ -19,10 +19,11 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red">*</span>产品名称：</label>
                 <div class="col-sm-5">
-                    <select name="need.productName" required="required" class="form-control" th:with="type=${@dict.getType('ta_video_product')}">
-                        <option value="">请选择产品名称</option>
-                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                    </select>
+                    <input name="need.productName" class="form-control" type="text" required>
+<!--                    <select name="need.productName" required="required" class="form-control" th:with="type=${@dict.getType('ta_video_product')}">-->
+<!--                        <option value="">请选择产品名称</option>-->
+<!--                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>-->
+<!--                    </select>-->
                 </div>
             </div>
             <div class="form-group">
@@ -38,9 +39,9 @@
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label"><span style="color: red">*</span>产品logo：</label>
+                <label class="col-sm-3 control-label">产品logo：</label>
                 <div class="col-sm-1">
-                    <input name="logoFile" id="logoUrl" class="form-control" type="file" required>
+                    <input name="logoFile" id="logoUrl" class="form-control" type="file">
                 </div>
                 <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件名要求:不可超过50字,可由"汉字,英文,数字"组成,不要使用特殊字符"如-丶~!等"</span>
             </div>
@@ -110,9 +111,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label"><span style="color: red">*</span>视频脚本：</label>
+                <label class="col-sm-3 control-label">视频脚本：</label>
                 <div class="col-sm-1">
-                    <input name="videoScriptFile" id="videoScript" class="form-control" type="file" required>
+                    <input name="videoScriptFile" id="videoScript" class="form-control" type="file" >
                 </div>
                 <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件名要求:不可超过50字,可由"汉字,英文,数字"组成,不要使用特殊字符"如-丶~!等"</span>
             </div>

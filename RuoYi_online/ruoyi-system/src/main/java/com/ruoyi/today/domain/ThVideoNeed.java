@@ -5,7 +5,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * 视频需求对象 th_video_need
@@ -79,7 +79,7 @@ public class ThVideoNeed extends BaseEntity {
      * 截止日期
      */
     @Excel(name = "截止日期", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date endTime;
+    private java.sql.Date endTime;
 
     /**
      * 接单团队
@@ -189,12 +189,12 @@ public class ThVideoNeed extends BaseEntity {
         return putMedia;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
     public Date getEndTime() {
         return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     public void setGroup(String group) {

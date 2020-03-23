@@ -47,11 +47,13 @@
                                 </select>
                             </li>
                             <li>
-                                <select name="need.productName" th:with="type=${@dict.getType('ta_video_product')}">
-                                    <option value="">全部产品</option>
-                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                                </select>
+                                <input name="need.productName" placeholder="产品名称" type="text">
+<!--                                <select name="need.productName" th:with="type=${@dict.getType('ta_video_product')}">-->
+<!--                                    <option value="">全部产品</option>-->
+<!--                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>-->
+<!--                                </select>-->
                             </li>
+
                             <li>
                                 <div class="col-sm-2" style="padding: 0px">
                                     <div class="form-group">
@@ -178,13 +180,10 @@
                 deliveryAgainUrl: prefix + "/deliveryAgain/{id}",
                 putInUrl: prefix + "/putIn/{id}",
                 modalName: "视频订单",
-                columns: [{
-                    checkbox: false
-                },
+                columns: [
                 {
                     field : 'id', 
-                    title : 'id主键',
-                    visible: false
+                    title : '订单号'
                 },
                 {
                     field : 'orderName', 
