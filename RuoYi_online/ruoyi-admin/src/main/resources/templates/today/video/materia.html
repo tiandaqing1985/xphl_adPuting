@@ -57,7 +57,7 @@
                  </div>
              </form>
          </div>
-         <div class="row" id="context">
+         <div id="context">
 
 
          </div>
@@ -199,7 +199,9 @@
                 success: function(result) {
                     var html = [];
                     $.each(result,function (index,item) {
-
+                        if(index==0||index==3){
+                            html.push('<div class="row">')
+                        }
                         html.push('<div class="col-sm-4">\n' +
                             '                     <div class="ibox">\n' +
                             '                         <div class="ibox-title">\n' +
@@ -241,8 +243,14 @@
                             '                         </div>\n' +
                             '                     </div>\n' +
                             '                 </div>')
+                        if(index == 2){
+                            html.push('</div>')
+                        }
 
                     });
+                    if(result.length!=3&&result.length!=0){
+                        html.push('</div>')
+                    }
                     $("#context").html(html.join(""))
 
                 }
