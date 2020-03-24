@@ -294,4 +294,9 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
         }
 
     }
+
+    @Override
+    public List<ThVideoOrder> selectVideoOrderList(ThVideoOrder thVideoOrder) {
+        return thVideoOrderMapper.selectVideoOrderList(thVideoOrder);
+    }
 }

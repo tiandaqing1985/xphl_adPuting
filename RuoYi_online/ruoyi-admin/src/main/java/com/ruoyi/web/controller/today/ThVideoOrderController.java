@@ -87,6 +87,13 @@ public class ThVideoOrderController extends BaseController {
         List<ThMatterManage> list = thVideoMatterManageService.selectMatter(thMatterManage);
         return list;
     }
+    @PostMapping("/materiaCostSum")
+    @ResponseBody
+    public String materiaCostSum(ThMatterManage thMatterManage) {
+        String sum = thVideoMatterManageService.selectMatterCostSum(thMatterManage);
+        return sum;
+    }
+
     @PostMapping("/materiaCount")
     @ResponseBody
     public int materiaCount(ThMatterManage thMatterManage) {
@@ -227,6 +234,9 @@ public class ThVideoOrderController extends BaseController {
     @ResponseBody
     public TableDataInfo list(ThVideoOrder thVideoOrder) {
         List<SysRole> roles = ShiroUtils.getSysUser().getRoles();
+        if(thVideoOrder.getSql()==null||thVideoOrder.getSql().equals("")){
+            thVideoOrder.setSql("order by a.id desc");
+        }
         //是否有视频组角色
         for (SysRole role : roles) {
             if (role.getRoleKey().equals("videogroup")) {
@@ -234,13 +244,15 @@ public class ThVideoOrderController extends BaseController {
                 SysDictData sysDictData = dictDataService.selectDictDataByDictValue(ShiroUtils.getLoginName());
                 thVideoOrder.getNeed().setGroup(sysDictData.getDictType());
                 startPage();
-                List<ThVideoOrder> list = thVideoOrderService.selectThVideoOrderList(thVideoOrder);
+//                List<ThVideoOrder> list = thVideoOrderService.selectThVideoOrderList(thVideoOrder);
+                List<ThVideoOrder> list = thVideoOrderService.selectVideoOrderList(thVideoOrder);
                 return getDataTable(list);
             }
             if (role.getRoleKey().equals("admin") || role.getRoleKey().equals("yunyingmanage")) {
                 //管理员
                 startPage();
-                List<ThVideoOrder> list = thVideoOrderService.selectThVideoOrderList(thVideoOrder);
+//                List<ThVideoOrder> list = thVideoOrderService.selectThVideoOrderList(thVideoOrder);
+                List<ThVideoOrder> list = thVideoOrderService.selectVideoOrderList(thVideoOrder);
                 return getDataTable(list);
             }
             if (role.getRoleKey().equals("videomanage")) {
@@ -253,14 +265,16 @@ public class ThVideoOrderController extends BaseController {
                 }
                 //视频管理员
                 startPage();
-                List<ThVideoOrder> list = thVideoOrderService.selectThVideoOrderList(thVideoOrder);
+//                List<ThVideoOrder> list = thVideoOrderService.selectThVideoOrderList(thVideoOrder);
+                List<ThVideoOrder> list = thVideoOrderService.selectVideoOrderList(thVideoOrder);
                 return getDataTable(list);
             }
             if (role.getRoleKey().equals("yunying")) {
                 //运营
                 thVideoOrder.setCreateDept(ShiroUtils.getSysUser().getDept().getDeptId());
                 startPage();
-                List<ThVideoOrder> list = thVideoOrderService.selectThVideoOrderList(thVideoOrder);
+//                List<ThVideoOrder> list = thVideoOrderService.selectThVideoOrderList(thVideoOrder);
+                List<ThVideoOrder> list = thVideoOrderService.selectVideoOrderList(thVideoOrder);
                 return getDataTable(list);
             }
         }

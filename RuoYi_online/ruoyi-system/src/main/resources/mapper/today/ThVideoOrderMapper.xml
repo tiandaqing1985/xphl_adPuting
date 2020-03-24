@@ -43,6 +43,46 @@
                     select="com.ruoyi.today.mapper.ThVideoMatterMapper.selectThVideoMatterList" column="{orderId=id}"/>
     </resultMap>
 
+    <resultMap type="ThVideoOrder" id="VideoOrderResult">
+        <result property="id" column="id"/>
+        <result property="orderName" column="order_name"/>
+        <result property="videoScript" column="video_script"/>
+        <result property="type" column="type"/>
+        <result property="specialNeed" column="special_need"/>
+        <result property="riskWord" column="risk_word"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="status" column="status"/>
+        <result property="process" column="process"/>
+        <association property="need" javaType="ThVideoNeed">
+            <id column="video_need_id" property="id"></id>
+            <result property="needName" column="need_name"/>
+            <result property="orderId" column="need_order_id"/>
+            <result property="productName" column="product_name"/>
+            <result property="putUrl" column="put_url"/>
+            <result property="logoUrl" column="logo_url"/>
+            <result property="productDetail" column="product_detail"/>
+            <result property="optimizeGroupLeader" column="optimize_group_leader"/>
+            <result property="orderType" column="order_type"/>
+            <result property="putMedia" column="put_media"/>
+            <result property="endTime" column="end_time"/>
+            <result property="group" column="video_group"/>
+            <result property="createTime" column="create_time"/>
+            <result property="createBy" column="create_by"/>
+            <result property="updateTime" column="update_time"/>
+            <result property="updateBy" column="update_by"/>
+            <result property="productTrade" column="product_trade"/>
+            <result property="videoDept" column="video_dept"/>
+        </association>
+        <association property="report" javaType="ThVideoMatterReport">
+            <result property="reportCost" column="report_cost"></result>
+        </association>
+        <collection property="matters" javaType="java.util.ArrayList" ofType="ThVideoMatter"
+                    select="com.ruoyi.today.mapper.ThVideoMatterMapper.selectThVideoMatterList" column="{orderId=id}"/>
+    </resultMap>
+
     <sql id="selectThVideoOrderVo">
         select t1.process,a.id,a.status, a.order_name, a.video_script, a.type, a.special_need, a.risk_word, a.create_time, a.create_by, a.update_time, a.update_by,
         b.id video_need_id,b.product_trade, b.video_dept,b.need_name, b.order_id need_order_id, b.product_name, b.put_url, b.logo_url, b.product_detail,  b.optimize_group_leader, b.order_type, b.put_media, b.end_time, b.video_group
@@ -50,6 +90,46 @@
         (select order_id,group_concat(status,'(',date_format(operation_time,'%m-%d %H'),')') process from th_video_operation_history  group by order_id) t1
         on a.id=t1.order_id
     </sql>
+
+    <select id="selectVideoOrderList" parameterType="ThVideoOrder" resultMap="ThVideoOrderResult">
+        select t2.report_cost,t1.process,a.id,a.status, a.order_name, a.video_script, a.type, a.special_need, a.risk_word, a.create_time, a.create_by, a.update_time, a.update_by,
+        b.id video_need_id,b.product_trade, b.video_dept,b.need_name, b.order_id need_order_id, b.product_name, b.put_url, b.logo_url, b.product_detail,  b.optimize_group_leader, b.order_type, b.put_media, b.end_time, b.video_group
+        from th_video_order a left join th_video_need b on a.id = b.order_id left join
+        (select order_id,group_concat(status,'(',date_format(operation_time,'%m-%d %H'),')') process from th_video_operation_history  group by order_id) t1
+        on a.id=t1.order_id
+        left join (
+        select
+        b.order_id,
+        sum(a.total_play) total_play,
+        sum(a.report_cost) report_cost,
+        sum(a.report_show) report_show,
+        sum(a.report_click) report_click,
+        sum(a.report_convert) report_convert,
+        sum(a.about_creativity) about_creativity from th_video_matter_report a
+        left join th_video_matter b on a.matter_id = b.id
+        group by b.order_id) t2 on a.id = t2.order_id
+        <where>
+            <!--            <if test="need.putMedia != null  and need.putMedia != ''"> and putMedia like concat('%', #{orderName}, '%')</if>-->
+            <if test="need.putMedia != null  and need.putMedia != ''">and b.put_media = #{need.putMedia}</if>
+            <if test="need.orderType != null  and need.orderType != ''">and b.order_type = #{need.orderType}</if>
+            <if test="need.videoDept != null  and need.videoDept != ''">and b.video_dept = #{need.videoDept}</if>
+            <if test="need.group != null  and need.group != ''">and b.video_group = #{need.group}</if>
+            <if test="need.optimizeGroupLeader != null  and need.optimizeGroupLeader != ''">and b.optimize_group_leader
+                = #{need.optimizeGroupLeader}
+            </if>
+            <if test="need.productName != null  and need.productName != ''">and b.product_name like concat('%', #{need.productName}, '%')
+            </if>
+            <if test="status != null  and status != ''">and a.status = #{status}</if>
+            <if test="timeRange != null  and timeRange != ''">and a.create_time >= left (#{timeRange},10) and
+                a.create_time &lt;= right(#{timeRange},10)
+            </if>
+            <if test="createBy != null and createBy != ''">and a.create_by = #{createBy}</if>
+            <if test="createDept != null and createDept != ''">and a.create_dept = #{createDept}</if>
+        </where>
+        <if test="sql != null and sql != ''">
+            ${sql}
+        </if>
+    </select>
 
     <select id="selectThVideoOrderList" parameterType="ThVideoOrder" resultMap="ThVideoOrderResult">
         <include refid="selectThVideoOrderVo"/>
@@ -71,7 +151,9 @@
             <if test="createBy != null and createBy != ''">and a.create_by = #{createBy}</if>
             <if test="createDept != null and createDept != ''">and a.create_dept = #{createDept}</if>
         </where>
-        order by a.id desc
+        <if test="sql != null and sql != ''">
+            ${sql}
+        </if>
     </select>
 
     <select id="selectThVideoOrderById" parameterType="Long" resultMap="ThVideoOrderResult">

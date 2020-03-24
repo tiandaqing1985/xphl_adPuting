@@ -68,4 +68,6 @@ public interface IThVideoOrderService
     void putInMatter(ThCreativity thCreativity) throws Exception;
 
     void orderDeliveryAgain(ThVideoOrder thVideoOrder) throws Exception;
+
+    List<ThVideoOrder> selectVideoOrderList(ThVideoOrder thVideoOrder);
 }

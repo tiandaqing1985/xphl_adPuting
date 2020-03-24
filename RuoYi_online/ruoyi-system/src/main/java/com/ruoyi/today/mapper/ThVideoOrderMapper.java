@@ -59,4 +59,6 @@ public interface ThVideoOrderMapper
      * @return 结果
      */
     public int deleteThVideoOrderByIds(String[] ids);
+
+    List<ThVideoOrder> selectVideoOrderList(ThVideoOrder thVideoOrder);
 }

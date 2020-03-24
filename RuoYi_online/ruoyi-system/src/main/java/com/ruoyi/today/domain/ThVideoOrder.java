@@ -19,6 +19,7 @@ public class ThVideoOrder extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    private String sql;
     /** id主键 */
     private Long id;
 
@@ -60,6 +61,14 @@ public class ThVideoOrder extends BaseEntity
     private String status;
 
     private String process;
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
 
     public ThVideoMatterReport getReport() {
         return report;

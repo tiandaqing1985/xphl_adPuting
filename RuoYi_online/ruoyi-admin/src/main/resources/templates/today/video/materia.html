@@ -51,6 +51,7 @@
                          <li>
                              <a class="btn btn-primary btn-rounded btn-sm" onclick="searchVal()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                             <span>当前条件下总消耗：<span id="sumcost"></span></span>
                          </li>
                      </ul>
                  </div>
@@ -82,10 +83,23 @@
         function searchVal(){
             // $.common.formToJSON(currentId)
             // var data = $("#formId").serialize();
+
             var data = $.common.formToJSON("formId");
             currPage = 1;
             initBox(data);
             isDisabled();
+            var config1 = {
+                url: prefix+"/materiaCostSum",
+                type: "post",
+                dataType: "json",
+                data: searchData,
+                success: function(result) {
+
+                    $("#sumcost").text(result);
+
+                }
+            };
+            $.ajax(config1)
         }
 
         function isDisabled(){

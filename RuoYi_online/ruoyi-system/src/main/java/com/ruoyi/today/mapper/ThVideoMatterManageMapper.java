@@ -9,4 +9,6 @@ public interface ThVideoMatterManageMapper {
     List<ThMatterManage> selectMatter(ThMatterManage thMatterManage);
 
     int selectMatterCount(ThMatterManage thMatterManage);
+
+    String selectMatterCostSum(ThMatterManage thMatterManage);
 }

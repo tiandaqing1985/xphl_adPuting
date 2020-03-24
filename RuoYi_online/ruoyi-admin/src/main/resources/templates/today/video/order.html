@@ -53,7 +53,13 @@
 <!--                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>-->
 <!--                                </select>-->
                             </li>
-
+                            <li>
+                                <select name="sql">
+                                    <option value="">排序</option>
+                                    <option value="order by t2.report_cost">按消耗升序</option>
+                                    <option value="order by t2.report_cost desc">按消耗降序</option>
+                                </select>
+                            </li>
                             <li>
                                 <div class="col-sm-2" style="padding: 0px">
                                     <div class="form-group">

@@ -30,6 +30,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             ${sql}
         </if>
     </select>
+    <select id="selectMatterCostSum" parameterType="ThMatterManage" resultType="String">
+
+        select ifnull(sum(d.reportCost),'0') from th_video_matter a left join th_video_order b on a.order_id = b.id
+        left join th_video_need c on a.order_id = c.order_id
+        left join (select matter_id, truncate(avg(average_play_time_per_play),2) averagePlayTimePerPlay,sum(total_play) totalPlay,sum(report_cost) reportCost,sum(report_show) reportShow from th_video_matter_report group by matter_id) d on a.id = d.matter_id
+        <where>
+            <if test="productName != null and productName != ''">
+                and c.product_name like  concat('%',#{productName},'%')
+            </if>
+            <if test="videoDept != null and videoDept != ''">
+                and c.video_dept = #{videoDept}
+            </if>
+            <if test="videoGroup != null and videoGroup != ''">
+                and c.video_group = #{videoGroup}
+            </if>
+            <if test="fileName != null and fileName != ''">
+                and a.file_name like concat('%', #{fileName}, '%')
+            </if>
+            <if test="timeRange != null  and timeRange != ''">
+                and a.create_time >= left (#{timeRange},10) and a.create_time &lt;= right(#{timeRange},10)
+            </if>
+        </where>
+    </select>
     <select id="selectMatterCount" parameterType="ThMatterManage" resultType="Integer">
 
         select count(a.id) from th_video_matter a left join th_video_order b on a.order_id = b.id
