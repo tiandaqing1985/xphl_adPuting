@@ -61,7 +61,10 @@ public class SyncTodayAdPlanTask {
                     try {
                         adVO.setCreateBy("syncTask");
                         adVO.setCreateTime(DateUtils.getNowDate());
-                        String[] splitArrays = adVO.getName().split("-");
+                        String adName = adVO.getName();
+                        adName.replace("_","-");
+                        adName.replace(" ","");
+                        String[] splitArrays = adName.split("-");
                         String name = null;
                         for(String str : splitArrays){
                             if(str.contains("xphlsc")){
@@ -69,7 +72,7 @@ public class SyncTodayAdPlanTask {
                                 break;
                             }
                         }
-                        adVO.setMatterId(name.substring(14));
+                        adVO.setMatterId(name.trim().substring(14));
                         thAdService.insertThAd(adVO);
                     } catch (Exception e) {
                         logger.error("同步更新广告计划出现错误：", e);
