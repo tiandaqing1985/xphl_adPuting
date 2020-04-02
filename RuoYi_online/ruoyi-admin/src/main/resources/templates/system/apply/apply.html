@@ -47,18 +47,18 @@
         </div>
 
         <div class="btn-group-sm" id="toolbar" role="group">
-            <a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="system:apply:add">
+            <a class="btn btn-success" onclick="$.operate.addFull()" >
                 <i class="fa fa-plus"></i> 添加
             </a>
             <a class="btn btn-primary single disabled" onclick="$.operate.editFull()"
-               shiro:hasPermission="system:apply:edit">
+              >
                 <i class="fa fa-edit"></i> 修改
             </a>
             <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
-               shiro:hasPermission="system:apply:remove">
+              >
                 <i class="fa fa-remove"></i> 删除
             </a>
-            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:apply:export">
+            <a class="btn btn-warning" onclick="$.table.exportExcel()">
                 <i class="fa fa-download"></i> 导出
             </a>
         </div>
