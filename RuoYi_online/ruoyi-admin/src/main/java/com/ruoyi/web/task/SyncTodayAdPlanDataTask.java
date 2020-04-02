@@ -73,4 +73,3 @@ public class SyncTodayAdPlanDataTask {
     }
 
 }
-image123
