@@ -62,8 +62,8 @@ public class SyncTodayAdPlanTask {
                         adVO.setCreateBy("syncTask");
                         adVO.setCreateTime(DateUtils.getNowDate());
                         String adName = adVO.getName();
-                        adName.replace("_","-");
-                        adName.replace(" ","");
+                        adName = adName.replace("_","-");
+                        adName = adName.replace(" ","");
                         String[] splitArrays = adName.split("-");
                         String name = null;
                         for(String str : splitArrays){
