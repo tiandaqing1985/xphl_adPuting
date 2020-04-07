@@ -1,6 +1,7 @@
 package com.ruoyi.today.service;
 
 import com.ruoyi.today.domain.ThCreativity;
+import com.ruoyi.today.domain.request.GetImagesRequest;
 import com.ruoyi.today.domain.request.PlanSyncRequest;
 import com.ruoyi.today.domain.response.PlanSyncResponse;
 import com.ruoyi.today.domain.response.ResponseVO;
@@ -62,4 +63,6 @@ public interface AdCenterService {
     //查询广告计划报表数据
     public Object reportPlan(Object object);
 
+    //查询广告主的图片素材库
+    Object getImages(Object request);
 }
