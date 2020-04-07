@@ -46,13 +46,15 @@ public class ActorInformationController extends BaseController {
     public TableDataInfo list(ActorInformation actorInformation) {
         startPage();
         List<ActorInformation> list = actorInformationService.selectActorInformationList(actorInformation);
-       for(ActorInformation v:list){
-           if(ShiroUtils.getUserName().equals("若依")){
-               if(v.getIsfile()!=null&&v.getIsfile().equals("1")){
-                   v.setIsfile("3");
-               }
-           }
-       }
+        for (ActorInformation v : list) {
+            if (ShiroUtils.getUserName().equals("若依")) {
+                if (v.getIsfile() != null && v.getIsfile().equals("1")) {
+                    v.setIsfile("3");
+                }
+            } else if (ShiroUtils.getUserName().equals("马俊")) {
+                v.setDisplay("1");
+            }
+        }
         return getDataTable(list);
     }
 
@@ -124,8 +126,6 @@ public class ActorInformationController extends BaseController {
         actorInformation.setUpdateTime(new Date());
         return toAjax(actorInformationService.updateActorInformation(actorInformation));
     }
-
-
 
 
     /**

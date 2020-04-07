@@ -12,7 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="verification"    column="verification"    />
         <result property="idnumber"    column="idNumber"    />
         <result property="telephone"    column="telephone"    />
-        <result property="amount"    column="amount"    />
+        <result property="telephones"    column="telephones"    />
         <result property="affiliatedbank"    column="affiliatedBank"    />
         <result property="documenttype"    column="documentType"    />
         <result property="remarks"    column="remarks"    />
@@ -24,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectActorInformationVo">
-        select id, name, number, verification, idNumber, telephone, amount, affiliatedBank, documentType, remarks, num, add_time, update_time, add_user,isfile, update_user from actor_information
+        select id, name, number, verification, idNumber, telephone, telephones, affiliatedBank, documentType, remarks, num, add_time, update_time, add_user,isfile, update_user from actor_information
     </sql>
 
     <select id="selectActorInformationList" parameterType="ActorInformation" resultMap="ActorInformationResult">
@@ -57,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="verification != null  and verification != ''">verification,</if>
             <if test="idnumber != null  and idnumber != ''">idNumber,</if>
             <if test="telephone != null  and telephone != ''">telephone,</if>
-            <if test="amount != null ">amount,</if>
+            <if test="telephones != null  and telephones != ''">telephones,</if>
             <if test="affiliatedbank != null  and affiliatedbank != ''">affiliatedBank,</if>
             <if test="documenttype != null  and documenttype != ''">documentType,</if>
             <if test="remarks != null  and remarks != ''">remarks,</if>
@@ -74,7 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="verification != null  and verification != ''">#{verification},</if>
             <if test="idnumber != null  and idnumber != ''">#{idnumber},</if>
             <if test="telephone != null  and telephone != ''">#{telephone},</if>
-            <if test="amount != null ">#{amount},</if>
+            <if test="telephones != null  and telephones != ''">#{telephones},</if>
             <if test="affiliatedbank != null  and affiliatedbank != ''">#{affiliatedbank},</if>
             <if test="documenttype != null  and documenttype != ''">#{documenttype},</if>
             <if test="remarks != null  and remarks != ''">#{remarks},</if>
@@ -95,7 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="verification != null  and verification != ''">verification = #{verification},</if>
             <if test="idnumber != null  and idnumber != ''">idNumber = #{idnumber},</if>
             <if test="telephone != null  and telephone != ''">telephone = #{telephone},</if>
-            <if test="amount != null ">amount = #{amount},</if>
+            <if test="telephones != null  and telephones != ''">telephones = #{telephones},</if>
             <if test="affiliatedbank != null  and affiliatedbank != ''">affiliatedBank = #{affiliatedbank},</if>
             <if test="documenttype != null  and documenttype != ''">documentType = #{documenttype},</if>
             <if test="remarks != null  and remarks != ''">remarks = #{remarks},</if>

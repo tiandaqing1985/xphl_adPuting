@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:include="include :: header('演员信息列表')"/>
 </head>
@@ -38,18 +38,18 @@
         </div>
 
         <div class="btn-group-sm" id="toolbar" role="group">
-            <a class="btn btn-success" onclick="$.operate.addFull()" >
+            <a class="btn btn-success" onclick="$.operate.addFull()">
                 <i class="fa fa-plus"></i> 添加
             </a>
             <a class="btn btn-primary single disabled" onclick="$.operate.editFull()"
-              >
+            >
                 <i class="fa fa-edit"></i> 修改
             </a>
             <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
-              >
+            >
                 <i class="fa fa-remove"></i> 删除
             </a>
-            <a class="btn btn-warning" onclick="$.table.exportExcel()" >
+            <a class="btn btn-warning" onclick="$.table.exportExcel()">
                 <i class="fa fa-download"></i> 导出
             </a>
         </div>
@@ -93,7 +93,10 @@
                 },
                 {
                     field: 'telephone',
-                    title: '手机号'
+                    title: '手机号(銀行)'
+                }, {
+                    field: 'telephone',
+                    title: '手机号(日常)'
                 },
                 {
                     field: 'affiliatedbank',
@@ -118,6 +121,12 @@
                 {
                     field: 'addUser',
                     title: '添加人'
+
+                },
+                {
+                    field: 'display',
+                    title: '归档展示',
+                    visible: false
                 },
                 {
                     field: 'isfile',
@@ -137,8 +146,11 @@
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
                         actions.push('<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
-                        if (row.isfile == 3) {
-                            actions.push('<a class="btn btn-primary btn-xs" href="javascript:void(0)" onclick="isf(\'' + row.id + '\')"><i class="fa fa-edit"></i>归档</a> ');
+                        if (row.isfile == 1) {
+                            if (row.display == '1') {
+                                actions.push('<a class="btn btn-primary btn-xs" href="javascript:void(0)" onclick="isf(\'' + row.id + '\')"><i class="fa fa-edit"></i>归档</a> ');
+                            }
+
                         }
                         return actions.join('');
                     }
