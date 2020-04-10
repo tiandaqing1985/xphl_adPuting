@@ -120,7 +120,20 @@
             return flg;
         }
 
-        var yunyingFlg = hasRole("yunying");
+        var yunyingFlg = isYunyingUser();
+        function isYunyingUser(){
+            var f1 = hasRole("yunying");
+            var f2 = hasRole("yunyingmanage");
+            if(f2==""){
+                return f2;
+            }else {
+                return f1;
+            }
+        }
+
+
+
+
         var videogroupFlg = isVideoUser();
 
         function isVideoUser(){
@@ -323,7 +336,7 @@
         });
 
         function deliveryAgainUrl(orderName,id){
-            $.modal.confirm("继续补交付将删除之前的素材,是否继续?", function () {
+            $.modal.confirm("继续补交付将删除之前的素材，且删除素材不再统计相关数据,是否继续?", function () {
                 $.modal.openFull("补交付订单"+orderName,$.table._option.deliveryAgainUrl.replace("{id}", id));
             });
         }

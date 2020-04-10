@@ -36,6 +36,16 @@ public class ThVideoMatter extends BaseEntity
 
     private String createBy;
 
+    private String signature;
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
     @Override
     public Date getCreateTime() {
         return createTime;

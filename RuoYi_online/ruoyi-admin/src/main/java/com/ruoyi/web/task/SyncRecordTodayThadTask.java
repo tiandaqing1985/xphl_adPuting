@@ -1,10 +1,12 @@
 package com.ruoyi.web.task;
 
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.today.domain.MatterUseRecord;
 import com.ruoyi.today.domain.ThAdvertiser;
 import com.ruoyi.today.domain.request.PlanSyncRequest;
 import com.ruoyi.today.domain.response.PlanSyncResponse;
 import com.ruoyi.today.domain.response.PlanSyncThAdVO;
+import com.ruoyi.today.mapper.ThMatterUseRecordMapper;
 import com.ruoyi.today.service.AdCenterService;
 import com.ruoyi.today.service.IThAdService;
 import com.ruoyi.today.service.IThAdvertiserService;
@@ -14,16 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
-@Component("syncTodayAdPlan")
-public class SyncTodayAdPlanTask {
+@Component
+public class SyncRecordTodayThadTask {
 
-    private static Logger logger = LoggerFactory.getLogger(SyncTodayAdPlanTask.class);
+    private static Logger logger = LoggerFactory.getLogger(SyncRecordTodayThadTask.class);
 
     @Autowired
-    private IThAdService thAdService;
+    private ThMatterUseRecordMapper thMatterUseRecordMapper;
     @Autowired
     private IThAdvertiserService thAdvertiserService;
     @Autowired
@@ -34,7 +36,6 @@ public class SyncTodayAdPlanTask {
     @Transactional(rollbackFor = Exception.class)
     public void syncAdByAdvertiserId(Long id) throws Exception {
 
-        thAdService.deleteThAdByAdvertiserId(id);
         int pageSize = 1000;
         int page = 0;
         int totalPage = -1;
@@ -46,6 +47,7 @@ public class SyncTodayAdPlanTask {
             planSyncRequest.setAd_name("xphlsc");
             planSyncRequest.setPage(page);
             planSyncRequest.setPage_size(pageSize);
+            planSyncRequest.setStatus("AD_STATUS_DELIVERY_OK");
             PlanSyncResponse response = (PlanSyncResponse) touTiaoAdCenterService.selectPlan(planSyncRequest);
 
             if (response.getCode().equals("0")) {
@@ -58,11 +60,10 @@ public class SyncTodayAdPlanTask {
                 }
 
                 List<PlanSyncThAdVO> adVOS = response.getData().getJSONArray("list").toJavaList(PlanSyncThAdVO.class);
-
+                MatterUseRecord matterUseRecord = new MatterUseRecord();
+                matterUseRecord.setTime(new Date(new java.util.Date().getTime()));
                 for (PlanSyncThAdVO adVO : adVOS) {
                     try {
-                        adVO.setCreateBy("syncTask");
-                        adVO.setCreateTime(DateUtils.getNowDate());
                         String adName = adVO.getName();
                         adName = adName.replace("_", "-");
                         adName = adName.replace(" ", "");
@@ -74,8 +75,11 @@ public class SyncTodayAdPlanTask {
                                 break;
                             }
                         }
-                        adVO.setMatterId(name.trim().substring(14));
-                        thAdService.insertThAd(adVO);
+                        matterUseRecord.setMatterId(Long.valueOf(name.trim().substring(14)));
+                        List<MatterUseRecord> matterUseRecords = thMatterUseRecordMapper.selectList(matterUseRecord);
+                        if (matterUseRecords.size() == 0) {
+                            thMatterUseRecordMapper.insertMatterUseRecord(matterUseRecord);
+                        }
                     } catch (Exception e) {
                         logger.error("同步更新广告计划出现错误：", e);
                         errorMsg.append("广告主" + adVO.getAdvertiserId() + ":" + e.getMessage() + "\n");
@@ -92,10 +96,9 @@ public class SyncTodayAdPlanTask {
 
     }
 
-    public void syncAd() throws Exception {
+    public void syncAd() {
 
         errorMsg = new StringBuffer();
-
         List<ThAdvertiser> thAdvertisers = thAdvertiserService.selectThAdvertiserList(new ThAdvertiser());
         for (ThAdvertiser advertiser : thAdvertisers) {
             try {
@@ -106,11 +109,6 @@ public class SyncTodayAdPlanTask {
             }
         }
 
-        if (errorMsg.length() != 0) {
-            throw new Exception(errorMsg.toString());
-        }
-
     }
-
 
 }

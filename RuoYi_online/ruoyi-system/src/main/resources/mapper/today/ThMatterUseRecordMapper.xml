@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.today.mapper.ThMatterUseRecordMapper">
+    
+    <insert id="insertMatterUseRecord" parameterType="MatterUseRecord">
+        insert into th_matter_use_record(matter_id,time) values(#{matterId},#{time})
+    </insert>
+    <select id="selectList" parameterType="MatterUseRecord" resultType="MatterUseRecord">
+        select matter_id matterId,time from th_matter_use_record
+        <where>
+            <if test="time!=null">
+                and time = #{time}
+            </if>
+            <if test="matterId!=null">
+                and matter_id = #{matterId}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteMatterUseRecord" parameterType="MatterUseRecord">
+        delete from th_matter_use_record where time = #{time}
+    </delete>
+    
+</mapper>

@@ -9,6 +9,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="advertiserId"    column="advertiser_id"    />
         <result property="signature"    column="signature"    />
         <result property="type"    column="type"    />
+        <result property="matterId"    column="matter_id"    />
+        <result property="todayId"    column="today_id"    />
     </resultMap>
 
     <sql id="selectThTodayMatterVo">
@@ -25,7 +27,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectThTodayMatterVo"/>
         where id = #{id}
     </select>
-        
+    <select id="selectThTodayMatterByType" parameterType="String" resultMap="ThTodayMatterResult">
+        select a.advertiser_id,b.id matter_id,a.today_id from th_today_matter a left join th_video_matter b on a.signature = b.signature where b.id is not null and a.type = #{param1}
+    </select>
+
     <insert id="insertThTodayMatter" parameterType="ThTodayMatter" useGeneratedKeys="true" keyProperty="id">
         insert into th_today_matter
         <trim prefix="(" suffix=")" suffixOverrides=",">

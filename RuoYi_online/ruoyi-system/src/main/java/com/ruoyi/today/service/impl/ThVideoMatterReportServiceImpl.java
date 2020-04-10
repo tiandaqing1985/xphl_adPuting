@@ -104,4 +104,8 @@ public class ThVideoMatterReportServiceImpl implements IThVideoMatterReportServi
         return thVideoMatterReportMapper.selectGroupByTimeList(matterReportVO);
     }
 
+    @Override
+    public List<ThVideoMatterReport> selectMatterReportList(ThVideoMatterReport report) {
+        return thVideoMatterReportMapper.selectMatterReportList(report);
+    }
 }

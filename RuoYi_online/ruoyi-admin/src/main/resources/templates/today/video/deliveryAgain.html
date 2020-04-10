@@ -191,7 +191,8 @@
 
                 ],
                 uploadExtraData:{
-                    "id":$("#orderId").val()
+                    "id":$("#orderId").val(),
+                    "type":$(":input[name='need.orderType']").filter(':checked').val()
                 }
                 // allowedFileExtensions: ['mp4','MP4','Mp4','m4v','mov']
             });

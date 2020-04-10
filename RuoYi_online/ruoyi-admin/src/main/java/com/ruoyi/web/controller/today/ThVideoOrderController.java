@@ -272,6 +272,7 @@ public class ThVideoOrderController extends BaseController {
             if (role.getRoleKey().equals("yunying")) {
                 //运营
                 thVideoOrder.setCreateDept(ShiroUtils.getSysUser().getDept().getDeptId());
+                thVideoOrder.setCreateBy(ShiroUtils.getLoginName());
                 startPage();
 //                List<ThVideoOrder> list = thVideoOrderService.selectThVideoOrderList(thVideoOrder);
                 List<ThVideoOrder> list = thVideoOrderService.selectVideoOrderList(thVideoOrder);

@@ -62,4 +62,5 @@ public interface ThTodayMatterMapper
 
     public void deleteAllThTodayMatter();
 
+    List<ThTodayMatter> selectThTodayMatterByType(String s);
 }

@@ -51,15 +51,17 @@
                          <li>
                              <a class="btn btn-primary btn-rounded btn-sm" onclick="searchVal()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
-                             <span>当前条件下总消耗：<span id="sumcost"></span></span>
+                             <span >当前条件下总消耗:<span id="sumcost"></span></span>
                          </li>
                      </ul>
                  </div>
              </form>
          </div>
-         <div id="context">
+         <div>
+             <p th:text="'当前数据的最后更新日期:'+${@thVideoMatterManageMapper.selectMaxReportTime()}"></p>
+             <div id="context">
 
-
+             </div>
          </div>
 
          <div >
@@ -206,6 +208,7 @@
                             '                     <div class="ibox">\n' +
                             '                         <div class="ibox-title">\n' +
                             '                             <span class="label label-primary pull-right">'+nullToBlank(item.status)+'</span>\n' +
+                            '                             <span class="label label-info pull-right">已投'+nullToBlank(item.putDayNum)+'天</span>\n' +
                             '                             <h5>'+nullToBlank(item.orderName)+'</h5>\n' +
                             '                         </div>\n' +
                             '                         <div class="ibox-content">\n' +

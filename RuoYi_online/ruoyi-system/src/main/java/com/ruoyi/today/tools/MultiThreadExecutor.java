@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public abstract class MultiThreadExecutor<E> {
 
     //阻塞队列
-    private LinkedBlockingQueue queue;
+    private LinkedBlockingQueue<E> queue;
     //生产者线程计数器
     private CountDownLatch productCountDownLatch;
     //消费者线程计数器
@@ -28,9 +28,13 @@ public abstract class MultiThreadExecutor<E> {
 
     }
 
-    protected abstract void product(LinkedBlockingQueue storage);
+    protected abstract void product(LinkedBlockingQueue<E> storage);
 
-    protected abstract void consume(LinkedBlockingQueue storage);
+    protected abstract void consume(LinkedBlockingQueue<E> storage);
+
+    protected void productEnd(LinkedBlockingQueue<E> storage, CountDownLatch countDownLatch) {
+
+    }
 
     private void startProduct() {
         for (int i = 0; i < productThreadNum; i++) {
@@ -40,7 +44,7 @@ public abstract class MultiThreadExecutor<E> {
                 public void run() {
 
                     product(queue);
-
+                    productEnd(queue, productCountDownLatch);
                     productCountDownLatch.countDown();
                 }
             }.start();

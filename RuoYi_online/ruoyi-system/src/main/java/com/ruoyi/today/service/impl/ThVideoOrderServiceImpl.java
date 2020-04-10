@@ -1,6 +1,7 @@
 package com.ruoyi.today.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 import com.ruoyi.common.utils.DateUtils;
@@ -11,6 +12,7 @@ import com.ruoyi.today.domain.response.ResponseVO;
 import com.ruoyi.today.mapper.ThVideoOrderMapper;
 import com.ruoyi.today.service.*;
 import com.ruoyi.today.tools.VideoUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,7 +183,7 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
         thVideoMatter.setOrderId(thVideoOrder.getId());
         videoMatterService.updateNoSignInThVideoMatterByOrderId(thVideoMatter);
 
-        if(statusName.equals("拒签")){
+        if (statusName.equals("拒签")) {
             videoMatterService.deleteThVideoMatterByOrderId(thVideoOrder.getId());
         }
 
@@ -203,16 +205,18 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
 
             logger.info("订单" + thVideoOrder.getId() + "，开始接收文件");
             File file = thFileService.receiveFile(thVideoOrder.getScript());
-            //获取视频截图作为封面
-            File coverFile = new File(file.getParent() + "封面-" + file.getName());
-            VideoUtils.fetchFrame(file.getAbsolutePath(), coverFile.getAbsolutePath());
+            String matterCover = null;
+            if (!thVideoOrder.getType().equals("image")) {
 
+                //获取视频截图作为封面
+                File coverFile = new File(file.getParent() + "封面-" + file.getName());
+                VideoUtils.fetchFrame(file.getAbsolutePath(), coverFile.getAbsolutePath());
+                logger.info("订单" + thVideoOrder.getId() + "，开始上传视频封面文件");
+                matterCover = thFileService.uploadFile(coverFile);
+            }
+            String signature = DigestUtils.md5Hex(new FileInputStream(file));
             logger.info("订单" + thVideoOrder.getId() + "，开始上传视频文件");
             String matter = thFileService.uploadFile(file);
-            logger.info("订单" + thVideoOrder.getId() + "，开始上传视频封面文件");
-            String matterCover = thFileService.uploadFile(coverFile);
-
-
             ThVideoMatter videoMatter = new ThVideoMatter();
             videoMatter.setMatter(matter);
             videoMatter.setOrderId(thVideoOrder.getId());
@@ -221,6 +225,7 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
             videoMatter.setCreateBy((String) PermissionUtils.getPrincipalProperty("userName"));
             videoMatter.setCreateTime(DateUtils.getNowDate());
             videoMatter.setStatus("交付");
+            videoMatter.setSignature(signature);
             videoMatterService.insertThVideoMatter(videoMatter);
         } catch (Exception e) {
             logger.error("上传素材出现错误:", e);
@@ -252,16 +257,18 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
 
             logger.info("订单" + thVideoOrder.getId() + "，开始接收文件");
             File file = thFileService.receiveFile(thVideoOrder.getScript());
-            //获取视频截图作为封面
-            File coverFile = new File(file.getParent() + "封面-" + file.getName());
-            VideoUtils.fetchFrame(file.getAbsolutePath(), coverFile.getAbsolutePath());
+            String matterCover = null;
+            if(!thVideoOrder.getType().equals("image")){
+                //获取视频截图作为封面
+                File coverFile = new File(file.getParent() + "封面-" + file.getName());
+                VideoUtils.fetchFrame(file.getAbsolutePath(), coverFile.getAbsolutePath());
+                logger.info("订单" + thVideoOrder.getId() + "，开始上传视频封面文件");
+                matterCover = thFileService.uploadFile(coverFile);
+            }
+            String signature = DigestUtils.md5Hex(new FileInputStream(file));
 
             logger.info("订单" + thVideoOrder.getId() + "，开始上传视频文件");
             String matter = thFileService.uploadFile(file);
-            logger.info("订单" + thVideoOrder.getId() + "，开始上传视频封面文件");
-            String matterCover = thFileService.uploadFile(coverFile);
-
-
             ThVideoMatter videoMatter = new ThVideoMatter();
             videoMatter.setMatter(matter);
             videoMatter.setOrderId(thVideoOrder.getId());
@@ -270,6 +277,7 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
             videoMatter.setCreateBy((String) PermissionUtils.getPrincipalProperty("userName"));
             videoMatter.setCreateTime(DateUtils.getNowDate());
             videoMatter.setStatus("补交付");
+            videoMatter.setSignature(signature);
             videoMatterService.insertThVideoMatter(videoMatter);
 
         } catch (Exception e) {

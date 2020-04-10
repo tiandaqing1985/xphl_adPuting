@@ -34,6 +34,8 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
     @Autowired
     HttpBuilder httpBuilder;
 
+    private static int reTry = 5;
+
     private static Logger logger = LoggerFactory.getLogger(TouTiaoAdCenterServiceImpl.class);
 
     public Object getIndustry() {
@@ -302,7 +304,31 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
     }
 
     @Override
-    public Object getImages(Object etImagesRequest) {
+    public Object reportMatter(Object reportRequest) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(touTiaoApiConfig.getReportUrls().get("integrated"));
+
+        HttpHeaders headers = httpBuilder.buildTouTiaoHeader();
+        // 获取单例RestTemplate
+        RestTemplate restTemplate = httpBuilder.buildRestTemplate();
+        HttpEntity request = new HttpEntity(headers);
+        // 构造execute()执行所需要的参数。
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(request, JSONObject.class);
+        ResponseExtractor<ResponseEntity<JSONObject>> responseExtractor = restTemplate.responseEntityExtractor(JSONObject.class);
+        //查询条件
+        PlanReportSyncRequest syncRequest = (PlanReportSyncRequest) reportRequest;
+        Map<String, Object> params = syncRequest.requestMap();
+        params.entrySet().stream().forEach(o -> builder.queryParam(o.getKey(), o.getValue()));
+        // 执行execute()，发送请求
+        logger.info("同步广告计划报表信息请求报文：" + JSON.toJSONString(reportRequest));
+        ResponseEntity<JSONObject> responseObject = restTemplate.execute(builder.build().toUriString(), HttpMethod.GET, requestCallback, responseExtractor, syncRequest.getFiltering());
+        logger.info("同步广告计划报表信息响应报文：" + responseObject.getBody().toJSONString());
+        ResponseVO response = JSON.parseObject(responseObject.getBody().toJSONString(), ResponseVO.class);
+        return response;
+    }
+
+    @Override
+    public Object getImages(Object etImagesRequest) throws Exception {
+        int reTryNum = 0;
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(touTiaoApiConfig.getTools().get("getImages"));
 
         HttpHeaders headers = httpBuilder.buildTouTiaoHeader();
@@ -318,7 +344,23 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
         params.entrySet().stream().forEach(o -> builder.queryParam(o.getKey(), o.getValue()));
         // 执行execute()，发送请求
         logger.info("同步广告主图片素材库信息请求报文：" + JSON.toJSONString(etImagesRequest));
-        ResponseEntity<JSONObject> responseObject = restTemplate.execute(builder.build().toUriString(), HttpMethod.GET, requestCallback, responseExtractor, new HashMap<>());
+        ResponseEntity<JSONObject> responseObject = null;
+        while (responseObject == null && reTryNum <= reTry) {
+            try {
+                responseObject = restTemplate.execute(builder.build().toUriString(), HttpMethod.GET, requestCallback, responseExtractor, new HashMap<>());
+            } catch (Exception e) {
+                logger.error("出现错误：", e);
+                reTryNum++;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        if (responseObject == null) {
+            throw new Exception("请求超时");
+        }
         logger.info("同步广告主图片素材库信息响应报文：" + responseObject.getBody().toJSONString());
         ResponseVO response = JSON.parseObject(responseObject.getBody().toJSONString(), ResponseVO.class);
         return response;

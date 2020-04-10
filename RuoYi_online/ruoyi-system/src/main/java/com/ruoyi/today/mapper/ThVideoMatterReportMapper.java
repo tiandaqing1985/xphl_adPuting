@@ -68,4 +68,6 @@ public interface ThVideoMatterReportMapper
     List<AdMatterVO> selectAdMatterList();
 
     List<MatterReportVO> selectGroupByTimeList(MatterReportVO matterReportVO);
+
+    List<ThVideoMatterReport> selectMatterReportList(ThVideoMatterReport report);
 }

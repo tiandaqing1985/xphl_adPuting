@@ -59,6 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="status != null  and status != ''">status,</if>
+            <if test="signature != null  and signature != ''">signature,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="matter != null  and matter != ''">#{matter},</if>
@@ -68,6 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="status != null  and status != ''">#{status},</if>
+            <if test="signature != null  and signature != ''">#{signature},</if>
          </trim>
     </insert>
 

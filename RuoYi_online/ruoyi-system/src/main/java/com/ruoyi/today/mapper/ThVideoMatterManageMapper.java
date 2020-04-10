@@ -1,6 +1,7 @@
 package com.ruoyi.today.mapper;
 
 import com.ruoyi.today.domain.ThMatterManage;
+import org.apache.ibatis.annotations.Lang;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -11,4 +12,8 @@ public interface ThVideoMatterManageMapper {
     int selectMatterCount(ThMatterManage thMatterManage);
 
     String selectMatterCostSum(ThMatterManage thMatterManage);
+
+    Integer selectMatterPutDayNumByMatterId(ThMatterManage thMatterManage);
+
+    String selectMaxReportTime();
 }

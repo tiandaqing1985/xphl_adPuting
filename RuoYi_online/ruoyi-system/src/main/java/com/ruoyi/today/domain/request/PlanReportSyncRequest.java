@@ -14,8 +14,17 @@ public class PlanReportSyncRequest {
     private Integer page_size;//页面大小 默认10
     private String[] group_by;
     private String[] ad_ids;
+    private String[] material_id;
 
     private Map<String, Object> filtering;//过滤条件
+
+    public String[] getMaterial_id() {
+        return material_id;
+    }
+
+    public void setMaterial_id(String[] material_id) {
+        this.material_id = material_id;
+    }
 
     //当是get请求时 使用Map传参
     public Map<String, Object> requestMap() {
@@ -37,11 +46,14 @@ public class PlanReportSyncRequest {
             request.put("end_date", getEnd_date());
         }
         if (getGroup_by() != null) {
-            request.put("group_by", getGroup_by());
+            request.put("group_by", JSONObject.toJSONString(getGroup_by()));
         }
         JSONObject filtering = new JSONObject();
         if (getAd_ids() != null) {
             filtering.put("ad_ids", getAd_ids());
+        }
+        if (getMaterial_id() != null) {
+            filtering.put("material_id", getMaterial_id());
         }
         if (!filtering.isEmpty()) {
             request.put("filtering", "{filtering}");

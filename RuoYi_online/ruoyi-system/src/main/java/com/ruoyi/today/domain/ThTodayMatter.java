@@ -38,6 +38,16 @@ public class ThTodayMatter extends BaseEntity
     //创建时间
     private Date createTime;
 
+    private String matterId;
+
+    public String getMatterId() {
+        return matterId;
+    }
+
+    public void setMatterId(String matterId) {
+        this.matterId = matterId;
+    }
+
     @Override
     public Date getCreateTime() {
         return createTime;

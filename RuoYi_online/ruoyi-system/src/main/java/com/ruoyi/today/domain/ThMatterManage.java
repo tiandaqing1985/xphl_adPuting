@@ -58,6 +58,17 @@ public class ThMatterManage
 
     private Integer page;
 
+    //素材投放天数
+    private Integer putDayNum;
+
+    public Integer getPutDayNum() {
+        return putDayNum;
+    }
+
+    public void setPutDayNum(Integer putDayNum) {
+        this.putDayNum = putDayNum;
+    }
+
     public Integer getPage() {
         return page;
     }

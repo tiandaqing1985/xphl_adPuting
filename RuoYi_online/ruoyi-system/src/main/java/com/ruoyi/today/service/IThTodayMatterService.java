@@ -61,4 +61,6 @@ public interface IThTodayMatterService
     public int deleteThTodayMatterById(Long id);
 
     void deleteAllThTodayMatter();
+
+    List<ThTodayMatter> selectThTodayMatterByType(String s);
 }

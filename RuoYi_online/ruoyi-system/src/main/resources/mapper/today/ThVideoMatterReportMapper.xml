@@ -32,6 +32,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select total_play,id, advertiser_id, matter_id, report_cost, report_show, report_click, report_convert, average_play_time_per_play, play_25_feed_break, play_50_feed_break, play_75_feed_break, play_100_feed_break, about_creativity, report_time from th_video_matter_report
     </sql>
 
+    <select id="selectMatterReportList" parameterType="ThVideoMatterReport" resultMap="ThVideoMatterReportResult">
+        <include refid="selectThVideoMatterReportVo"/>
+        <where>
+            <if test="time!=null">
+                and report_time = #{time}
+            </if>
+            <if test="matterId!=null">
+                and matter_id = #{matterId}
+            </if>
+        </where>
+    </select>
+
     <select id="selectGroupByTimeList" parameterType="MatterReportVO" resultType="MatterReportVO">
         select a.report_time reportTime,sum(a.report_cost) reportCost from th_video_matter_report a
         left join th_video_matter b on a.matter_id = b.id

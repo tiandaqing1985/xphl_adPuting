@@ -161,3 +161,6 @@ toutiao:
     getIndustry: https://ad.toutiao.com/open_api/2/tools/industry/get/
     uploadVideo: https://ad.toutiao.com/open_api/2/file/video/ad/
     uploadImage: https://ad.toutiao.com/open_api/2/file/image/ad/
+    getImages: https://ad.oceanengine.com/open_api/2/file/image/get/
+  reportUrls:
+    integrated: https://ad.oceanengine.com/open_api/2/report/integrated/get/

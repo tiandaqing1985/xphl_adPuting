@@ -96,4 +96,9 @@ public class ThTodayMatterServiceImpl implements IThTodayMatterService
     public void deleteAllThTodayMatter() {
         thTodayMatterMapper.deleteAllThTodayMatter();
     }
+
+    @Override
+    public List<ThTodayMatter> selectThTodayMatterByType(String s) {
+        return thTodayMatterMapper.selectThTodayMatterByType(s);
+    }
 }
