@@ -71,14 +71,14 @@ public class SyncTodayAdPlanTask {
                         for (String str : splitArrays) {
                             if (str.contains("xphlsc")) {
                                 name = str;
+                                adVO.setMatterId(name.trim().substring(14));
+                                thAdService.insertThAd(adVO);
                                 break;
                             }
                         }
-                        adVO.setMatterId(name.trim().substring(14));
-                        thAdService.insertThAd(adVO);
                     } catch (Exception e) {
                         logger.error("同步更新广告计划出现错误：", e);
-                        errorMsg.append("广告主" + adVO.getAdvertiserId() + ":" + e.getMessage() + "\n");
+                        errorMsg.append("广告主" + adVO.getAdvertiserId() + ":广告计划:" + adVO.getId() + e.getMessage() + "\n");
                     }
                 }
 
