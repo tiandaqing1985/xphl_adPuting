@@ -19,6 +19,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select video_cover,id, matter,order_id,file_name,status,create_time,create_by from th_video_matter
     </sql>
 
+    <select id="selectThVideoMatterList1" parameterType="ThVideoMatter" resultMap="ThVideoMatterResult">
+        <include refid="selectThVideoMatterVo"/>
+        where signature is null
+    </select>
+    <update id="insert" parameterType="ThVideoMatter">
+        update th_video_matter set signature = #{signature} where id = #{id}
+    </update>
     <select id="selectThVideoMatterList" parameterType="ThVideoMatter" resultMap="ThVideoMatterResult">
         <include refid="selectThVideoMatterVo"/>
         <where>

@@ -57,22 +57,31 @@
                  </div>
              </form>
          </div>
-         <div>
+         <div style="text-align: center">
              <p th:text="'当前数据的最后更新日期:'+${@thVideoMatterManageMapper.selectMaxReportTime()}"></p>
-             <div id="context">
+             <div>
+                 <div id="context">
 
+                 </div>
+                 <div  style="text-align: center">
+                     <button id="prePage" type="button" onclick="prePage()" class="btn btn-white">上一页
+                     </button>
+                     <button id="lastPage" type="button" onclick="lastPage()" class="btn btn-white">下一页
+                     </button>
+                     <span id="pageNum"></span>
+                 </div>
              </div>
          </div>
 
-         <div >
-             <div  style="text-align: center">
-                 <button id="prePage" type="button" onclick="prePage()" class="btn btn-white">上一页
-                 </button>
-                 <button id="lastPage" type="button" onclick="lastPage()" class="btn btn-white">下一页
-                 </button>
-                 <span id="pageNum"></span>
-             </div>
-         </div>
+<!--         <div >-->
+<!--             <div  style="text-align: center">-->
+<!--                 <button id="prePage" type="button" onclick="prePage()" class="btn btn-white">上一页-->
+<!--                 </button>-->
+<!--                 <button id="lastPage" type="button" onclick="lastPage()" class="btn btn-white">下一页-->
+<!--                 </button>-->
+<!--                 <span id="pageNum"></span>-->
+<!--             </div>-->
+<!--         </div>-->
     </div>
     <th:block th:include="include :: footer" />
      <th:block th:include="include :: datetimepicker-js" />
@@ -97,7 +106,7 @@
                 data: searchData,
                 success: function(result) {
 
-                    $("#sumcost").text(result);
+                    $("#sumcost").text(new Number(result).toLocaleString());
 
                 }
             };
@@ -132,7 +141,7 @@
             if(val==undefined||val==null){
                 return "0.0";
             }else{
-                return val;
+                return new Number(val).toLocaleString();
             }
         }
         function nullToBlank(val){
@@ -219,13 +228,13 @@
                             '                             </div>\n' +
                             '                             <div class="row">\n' +
                             '                                 <div class="col-sm-4">\n' +
-                            '                                     <span>平均播放（s）：'+nullToZero(item.averagePlayTimePerPlay)+'</span>\n' +
+                            '                                     <span>平均播放(s):'+nullToZero(item.averagePlayTimePerPlay)+'</span>\n' +
                             '                                 </div>\n' +
-                            '                                 <div class="col-sm-3">\n' +
-                            '                                     <span>总播放：'+nullToZero(item.totalPlay)+'</span>\n' +
+                            '                                 <div class="col-sm-4">\n' +
+                            '                                     <span>总播放:'+nullToZero(item.totalPlay)+'</span>\n' +
                             '                                 </div>\n' +
-                            '                                 <div class="col-sm-3">\n' +
-                            '                                     <span>总消耗：'+nullToZero(item.reportCost)+'</span>\n' +
+                            '                                 <div class="col-sm-4">\n' +
+                            '                                     <span>总消耗:'+nullToZero(item.reportCost)+'</span>\n' +
                             '                                 </div>\n' +
                             '                             </div>\n' +
                             '                             <div class="row" style="text-align: center">\n' +

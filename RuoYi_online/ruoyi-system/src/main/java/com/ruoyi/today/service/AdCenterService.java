@@ -67,5 +67,8 @@ public interface AdCenterService {
     //查询广告主的图片素材库
     Object getImages(Object request) throws Exception;
 
-    Object reportMatter(Object reportSyncRequest);
+    //查询广告主的视频素材库
+    Object getVideo(Object request) throws Exception;
+
+    Object reportMatter(Object reportSyncRequest) throws Exception;
 }

@@ -101,7 +101,7 @@
             if(val==undefined||val==null){
                 return "0.0";
             }else{
-                return val;
+                return new Number(val).toLocaleString();
             }
         }
         function nullToBlank(val){
@@ -230,10 +230,10 @@
                             '                                 <div class="col-sm-4">\n' +
                             '                                     <span>平均播放（s）：'+nullToZero(item.averagePlayTimePerPlay)+'</span>\n' +
                             '                                 </div>\n' +
-                            '                                 <div class="col-sm-3">\n' +
+                            '                                 <div class="col-sm-4">\n' +
                             '                                     <span>总播放：'+nullToZero(item.totalPlay)+'</span>\n' +
                             '                                 </div>\n' +
-                            '                                 <div class="col-sm-3">\n' +
+                            '                                 <div class="col-sm-4">\n' +
                             '                                     <span>总消耗：'+nullToZero(item.reportCost)+'</span>\n' +
                             '                                 </div>\n' +
                             '                             </div>\n' +

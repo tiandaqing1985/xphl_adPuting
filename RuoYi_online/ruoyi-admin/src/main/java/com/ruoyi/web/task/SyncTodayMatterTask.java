@@ -53,7 +53,7 @@ public class SyncTodayMatterTask extends MultiThreadExecutor<ThTodayMatter> {
                 ThTodayMatter thTodayMatter = new ThTodayMatter();
                 while (totalPage < 0 || page <= totalPage) {
                     request.setPage(page);
-                    ResponseVO resp = (ResponseVO) touTiaoAdCenterService.getImages(request);
+                    ResponseVO resp = (ResponseVO) touTiaoAdCenterService.getVideo(request);
                     if (resp.getCode().equals("0")) {
                         totalPage = resp.getData().getJSONObject("page_info").getIntValue("total_page");
                         page++;
@@ -61,9 +61,9 @@ public class SyncTodayMatterTask extends MultiThreadExecutor<ThTodayMatter> {
                         for (int i = 0; i < list.size(); i++) {
                             thTodayMatter = new ThTodayMatter();
                             thTodayMatter.setAdvertiserId(advertieserId);
-                            thTodayMatter.setType("image");
+                            thTodayMatter.setType("video");
                             thTodayMatter.setSignature(list.getJSONObject(i).getString("signature"));
-                            thTodayMatter.setTodayId(list.getJSONObject(i).getString("id"));
+                            thTodayMatter.setTodayId(list.getJSONObject(i).getString("material_id"));
                             thTodayMatter.setCreateTime(DateUtils.getNowDate());
                             storage.put(thTodayMatter);
                         }

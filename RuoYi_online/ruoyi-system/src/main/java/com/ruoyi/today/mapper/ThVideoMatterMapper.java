@@ -28,6 +28,7 @@ public interface ThVideoMatterMapper
      * @return 订单交付素材关联集合
      */
     public List<ThVideoMatter> selectThVideoMatterList(ThVideoMatter thVideoMatter);
+    public List<ThVideoMatter> selectThVideoMatterList1();
 
     /**
      * 新增订单交付素材关联
@@ -68,4 +69,6 @@ public interface ThVideoMatterMapper
     void deleteThVideoMatter(ThVideoMatter thVideoMatter);
 
     List<ThMediaVideoCountVO> selectThVideoMatterGroupByMedia(ThMediaVideoCountVO thMediaVideoCountVO);
+
+    void insert(ThVideoMatter ThVideoMatter);
 }

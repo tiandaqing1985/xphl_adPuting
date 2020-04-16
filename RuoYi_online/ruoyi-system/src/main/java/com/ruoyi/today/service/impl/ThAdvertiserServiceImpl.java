@@ -121,31 +121,35 @@ public class ThAdvertiserServiceImpl implements IThAdvertiserService {
         String access_token = thTokens.get(0).getAccessToken();
 
         thAdvertiserMapper.deleteThAdvertiserById(null);
+        int page = 1;
+        int totalPage = 1;
+        int totalNum = 0;
+        while (page <= totalPage) {
 
-        JSONObject object = (JSONObject) selectAgentAdvertiser(access_token).get("data");
+            JSONObject object = (JSONObject) selectAgentAdvertiser(access_token, page).get("data");
+            totalPage = object.getJSONObject("page_info").getIntValue("total_page");
+            JSONArray list = (JSONArray) object.get("list");
+            page++;
+            totalNum = totalNum + list.size();
+            for (int i = 0; i < list.size(); i++) {
+                Long id = list.getLong(i);
+                JSONObject object1 = getAdvertiserInfo(access_token, id);
 
-        JSONArray list = (JSONArray) object.get("list");
+                JSONArray object2 = (JSONArray) object1.get("data");
+                JSONObject object3 = (JSONObject) object2.get(0);
 
+                ThAdvertiser ta = new ThAdvertiser();
 
-        for (int i = 0; i < list.size(); i++) {
-            Long id = list.getLong(i);
-            JSONObject object1 = getAdvertiserInfo(access_token, id);
+                ta.setId(object3.getLong("id"));
+                ta.setName(object3.getString("name"));
+                ta.setStatus(object3.getString("status"));
+                ta.setCreateBy(createBy);
+                ta.setCreateTime(new Date());
 
-            JSONArray object2 = (JSONArray) object1.get("data");
-            JSONObject object3 = (JSONObject) object2.get(0);
-
-            ThAdvertiser ta = new ThAdvertiser();
-
-            ta.setId(object3.getLong("id"));
-            ta.setName(object3.getString("name"));
-            ta.setStatus(object3.getString("status"));
-            ta.setCreateBy(createBy);
-            ta.setCreateTime(new Date());
-
-            thAdvertiserMapper.insertThAdvertiser(ta);
+                thAdvertiserMapper.insertThAdvertiser(ta);
+            }
         }
-
-        return list.size();
+        return totalNum;
     }
 
 
@@ -154,18 +158,17 @@ public class ThAdvertiserServiceImpl implements IThAdvertiserService {
      *
      * @return
      */
-    public JSONObject selectAgentAdvertiser(String access_token) {
+    public JSONObject selectAgentAdvertiser(String access_token, int page) {
         final Long advertiser_id = 1630607157951491L;
 
         // 请求地址 https://ad.toutiao.com/open_api/2/agent/advertiser/select/
         String open_api_url_prefix = "https://ad.toutiao.com/open_api/2/";
         String uri = "agent/advertiser/select/";
-
         // 请求参数
         Map<String, Object> data = new HashMap<String, Object>() {
             {
                 put("advertiser_id", advertiser_id);
-                put("page", 1);
+                put("page", page);
                 put("page_size", 1000);
             }
         };
@@ -291,7 +294,7 @@ public class ThAdvertiserServiceImpl implements IThAdvertiserService {
      */
     public ThAdvertiser selectThAdvertiserByName(ThAdvertiser advertiser) {
 
-    	return thAdvertiserMapper.selectThAdvertiserByName(advertiser);
+        return thAdvertiserMapper.selectThAdvertiserByName(advertiser);
 
     }
 
