@@ -246,6 +246,12 @@
                             '                                 <div class="col-sm-4">\n' +
                             '                                     <span>素材链接：<a href="/today/video/downloadFile/'+item.id+'">下载</a></span>\n' +
                             '                                 </div>\n' +
+                            '                                 <div class="col-sm-4">\n' +
+                            '                                     <span>归属部门：'+transDept(item.videoGroup)+'</span>\n' +
+                            '                                 </div>\n' +
+                            '                                 <div class="col-sm-4">\n' +
+                            '                                     <span>交付日期：'+item.createTime+'</span>\n' +
+                            '                                 </div>\n' +
                             '                             </div>\n' +
                             '                             <div class="row">\n' +
                             '                                 <div class="col-sm-4">\n' +
@@ -270,7 +276,17 @@
             $.ajax(config)
 
         }
-
+        var videoGroup = [[${@sysDictTypeServiceImpl.selectDictTypeListByType('ta_video_group_')}]];//视频部门
+        function transDept(value){
+            var val = null;
+            $.each(videoGroup, function(index, dict) {
+                if (dict.dictType == ('' + value)) {
+                    val = dict.dictName;
+                    return false;
+                }
+            });
+            return val;
+        }
         $(function() {
             currPage = 1;
             initBox({});

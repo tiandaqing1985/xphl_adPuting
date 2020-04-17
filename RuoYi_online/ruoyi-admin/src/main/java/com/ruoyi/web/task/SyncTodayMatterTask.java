@@ -148,7 +148,7 @@ public class SyncTodayMatterTask extends MultiThreadExecutor<ThTodayMatter> {
 
     public void syncMatter() throws Exception {
 
-        logger.info("开始同步广告主图片素材" + DateUtils.getDate());
+        logger.info("开始同步广告主视频素材" + DateUtils.getDate());
         thTodayMatterService.deleteAllThTodayMatter();
         productExceptionMsg = new StringBuffer();
         comsumeExceptionMsg = new StringBuffer();
@@ -169,7 +169,7 @@ public class SyncTodayMatterTask extends MultiThreadExecutor<ThTodayMatter> {
             throw new Exception(comsumeExceptionMsg.toString());
         }
 
-        logger.info("同步广告主图片素材结束" + DateUtils.getDate());
+        logger.info("同步广告主视频素材结束" + DateUtils.getDate());
 
     }
 
