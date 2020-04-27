@@ -221,6 +221,9 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
             videoMatter.setMatter(matter);
             videoMatter.setOrderId(thVideoOrder.getId());
             videoMatter.setFileName(fileName);
+            if (thVideoOrder.getType().equals("image")) {
+                matterCover = matter;
+            }
             videoMatter.setVideoCover(matterCover);
             videoMatter.setCreateBy((String) PermissionUtils.getPrincipalProperty("userName"));
             videoMatter.setCreateTime(DateUtils.getNowDate());
@@ -258,7 +261,7 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
             logger.info("订单" + thVideoOrder.getId() + "，开始接收文件");
             File file = thFileService.receiveFile(thVideoOrder.getScript());
             String matterCover = null;
-            if(!thVideoOrder.getType().equals("image")){
+            if (!thVideoOrder.getType().equals("image")) {
                 //获取视频截图作为封面
                 File coverFile = new File(file.getParent() + "封面-" + file.getName());
                 VideoUtils.fetchFrame(file.getAbsolutePath(), coverFile.getAbsolutePath());
@@ -273,6 +276,9 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
             videoMatter.setMatter(matter);
             videoMatter.setOrderId(thVideoOrder.getId());
             videoMatter.setFileName(fileName);
+            if (thVideoOrder.getType().equals("image")) {
+                matterCover = matter;
+            }
             videoMatter.setVideoCover(matterCover);
             videoMatter.setCreateBy((String) PermissionUtils.getPrincipalProperty("userName"));
             videoMatter.setCreateTime(DateUtils.getNowDate());

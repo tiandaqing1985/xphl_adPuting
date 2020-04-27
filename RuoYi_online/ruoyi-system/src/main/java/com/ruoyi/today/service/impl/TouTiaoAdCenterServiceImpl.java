@@ -330,7 +330,7 @@ public class TouTiaoAdCenterServiceImpl implements AdCenterService {
             }
         }
         if (responseObject == null) {
-            throw new Exception("超时");
+            throw new Exception(syncRequest.getAdvertiser_id() + "超时");
         }
         logger.info("同步广告计划报表信息响应报文：" + responseObject.getBody().toJSONString());
         ResponseVO response = JSON.parseObject(responseObject.getBody().toJSONString(), ResponseVO.class);
