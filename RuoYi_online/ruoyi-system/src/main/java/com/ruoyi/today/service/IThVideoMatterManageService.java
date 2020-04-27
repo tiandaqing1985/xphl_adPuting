@@ -10,4 +10,10 @@ public interface IThVideoMatterManageService {
     int selectMatterCount(ThMatterManage thMatterManage);
 
     String selectMatterCostSum(ThMatterManage thMatterManage);
+
+    List<ThMatterManage> selectImageMatter(ThMatterManage thMatterManage);
+
+    String selectImageMatterCostSum(ThMatterManage thMatterManage);
+
+    int selectImageMatterCount(ThMatterManage thMatterManage);
 }

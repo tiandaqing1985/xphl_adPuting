@@ -56,10 +56,20 @@ public class ThMatterManage
 
     private Date createTime;
 
+    private String create_by;
+
     private Integer page;
 
     //素材投放天数
     private Integer putDayNum;
+
+    public String getCreate_by() {
+        return create_by;
+    }
+
+    public void setCreate_by(String create_by) {
+        this.create_by = create_by;
+    }
 
     public Integer getPutDayNum() {
         return putDayNum;

@@ -80,13 +80,14 @@ public class ThVideoOrderController extends BaseController {
     @PostMapping("/materia")
     @ResponseBody
     public List<ThMatterManage> materia(ThMatterManage thMatterManage) {
-        if(thMatterManage.getSql()==null){
+        if (thMatterManage.getSql() == null) {
             thMatterManage.setSql("");
         }
-        thMatterManage.setSql(thMatterManage.getSql()+" limit "+((thMatterManage.getPage()-1)*6)+",6");
+        thMatterManage.setSql(thMatterManage.getSql() + " limit " + ((thMatterManage.getPage() - 1) * 6) + ",6");
         List<ThMatterManage> list = thVideoMatterManageService.selectMatter(thMatterManage);
         return list;
     }
+
     @PostMapping("/materiaCostSum")
     @ResponseBody
     public String materiaCostSum(ThMatterManage thMatterManage) {
@@ -101,6 +102,35 @@ public class ThVideoOrderController extends BaseController {
         return i;
     }
 
+    @GetMapping("/materiaImage")
+    public String materiaImage(ModelMap modelMap) {
+        return prefix + "/materiaImage";
+    }
+
+    @PostMapping("/materiaImage")
+    @ResponseBody
+    public List<ThMatterManage> materiaImage(ThMatterManage thMatterManage) {
+        if (thMatterManage.getSql() == null) {
+            thMatterManage.setSql("order by a.id desc");
+        }
+        thMatterManage.setSql(thMatterManage.getSql() + " limit " + ((thMatterManage.getPage() - 1) * 6) + ",6");
+        List<ThMatterManage> list = thVideoMatterManageService.selectImageMatter(thMatterManage);
+        return list;
+    }
+
+    @PostMapping("/materiaImageCostSum")
+    @ResponseBody
+    public String materiaImageCostSum(ThMatterManage thMatterManage) {
+        String sum = thVideoMatterManageService.selectImageMatterCostSum(thMatterManage);
+        return sum;
+    }
+
+    @PostMapping("/materiaImageCount")
+    @ResponseBody
+    public int materiaImageCount(ThMatterManage thMatterManage) {
+        int i = thVideoMatterManageService.selectImageMatterCount(thMatterManage);
+        return i;
+    }
 
     @RequiresPermissions("today:order:view")
     @GetMapping()
@@ -234,7 +264,7 @@ public class ThVideoOrderController extends BaseController {
     @ResponseBody
     public TableDataInfo list(ThVideoOrder thVideoOrder) {
         List<SysRole> roles = ShiroUtils.getSysUser().getRoles();
-        if(thVideoOrder.getSql()==null||thVideoOrder.getSql().equals("")){
+        if (thVideoOrder.getSql() == null || thVideoOrder.getSql().equals("")) {
             thVideoOrder.setSql("order by a.id desc");
         }
         //是否有视频组角色
@@ -400,6 +430,7 @@ public class ThVideoOrderController extends BaseController {
         mmap.put("thVideoOrder", thVideoOrder);
         return prefix + "/delivery";
     }
+
     /**
      * 补交付视频订单
      */
@@ -478,7 +509,11 @@ public class ThVideoOrderController extends BaseController {
             // 下载名称
             response.setCharacterEncoding("utf-8");
             response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("xphlsc" + DateUtils.parseDateToStr("yyyyMMdd", thVideoOrder.getNeed().getEndTime()) + thVideoMatter.getId() + "-" + thVideoMatter.getFileName(), "utf-8"));
+            if (thVideoMatter.getVideoCover() == null) {
+                response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("xphlsc" + DateUtils.parseDateToStr("yyyyMMdd", new Date()) + "-" + thVideoMatter.getFileName(), "utf-8"));
+            } else {
+                response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("xphlsc" + DateUtils.parseDateToStr("yyyyMMdd", thVideoOrder.getNeed().getEndTime()) + thVideoMatter.getId() + "-" + thVideoMatter.getFileName(), "utf-8"));
+            }
             outputStream = response.getOutputStream();
             FileUtils.writeBytes(file.getAbsolutePath(), outputStream);
         } catch (Exception e) {

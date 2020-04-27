@@ -221,9 +221,6 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
             videoMatter.setMatter(matter);
             videoMatter.setOrderId(thVideoOrder.getId());
             videoMatter.setFileName(fileName);
-            if (thVideoOrder.getType().equals("image")) {
-                matterCover = matter;
-            }
             videoMatter.setVideoCover(matterCover);
             videoMatter.setCreateBy((String) PermissionUtils.getPrincipalProperty("userName"));
             videoMatter.setCreateTime(DateUtils.getNowDate());
@@ -276,9 +273,6 @@ public class ThVideoOrderServiceImpl implements IThVideoOrderService {
             videoMatter.setMatter(matter);
             videoMatter.setOrderId(thVideoOrder.getId());
             videoMatter.setFileName(fileName);
-            if (thVideoOrder.getType().equals("image")) {
-                matterCover = matter;
-            }
             videoMatter.setVideoCover(matterCover);
             videoMatter.setCreateBy((String) PermissionUtils.getPrincipalProperty("userName"));
             videoMatter.setCreateTime(DateUtils.getNowDate());

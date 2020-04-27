@@ -16,4 +16,10 @@ public interface ThVideoMatterManageMapper {
     Integer selectMatterPutDayNumByMatterId(ThMatterManage thMatterManage);
 
     String selectMaxReportTime();
+
+    List<ThMatterManage> selectImageMatter(ThMatterManage thMatterManage);
+
+    String selectImageMatterCostSum(ThMatterManage thMatterManage);
+
+    int selectImageMatterCount(ThMatterManage thMatterManage);
 }

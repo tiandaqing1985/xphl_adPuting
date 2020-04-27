@@ -49,6 +49,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             ${sql}
         </if>
     </select>
+    <select id="selectImageMatter" parameterType="ThMatterManage" resultMap="ThMatterManageMap">
+
+        select a.create_by,a.create_time createTime,a.id,a.file_name fileName,a.matter,a.order_id orderId,a.`status`,a.video_cover videoCover,d.averagePlayTimePerPlay,d.reportCost,d.totalPlay,d.reportShow
+        from th_video_matter a
+        left join (select matter_id, truncate(avg(average_play_time_per_play),2) averagePlayTimePerPlay,sum(total_play) totalPlay,sum(report_cost) reportCost,sum(report_show) reportShow from th_video_matter_report
+        <where>
+            <if test="timeRange != null  and timeRange != ''">
+                and report_time >= left (#{timeRange},10) and report_time &lt;= right(#{timeRange},10)
+            </if>
+        </where>
+        group by matter_id) d on a.id = d.matter_id
+        <where>
+            a.video_cover is null
+            <if test="fileName != null and fileName != ''">
+                and a.file_name like concat('%', #{fileName}, '%')
+            </if>
+        </where>
+        <if test="sql != null and sql != ''">
+            ${sql}
+        </if>
+    </select>
     <select id="selectMatterCostSum" parameterType="ThMatterManage" resultType="String">
 
         select ifnull(sum(d.reportCost),'0') from th_video_matter a left join th_video_order b on a.order_id = b.id
@@ -78,6 +99,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <!--            </if>-->
         </where>
     </select>
+    <select id="selectImageMatterCostSum" parameterType="ThMatterManage" resultType="String">
+
+        select ifnull(sum(d.reportCost),'0') from th_video_matter a
+        left join (select matter_id, truncate(avg(average_play_time_per_play),2) averagePlayTimePerPlay,sum(total_play) totalPlay,sum(report_cost) reportCost,sum(report_show) reportShow from th_video_matter_report
+            <where>
+                <if test="timeRange != null  and timeRange != ''">
+                    and report_time >= left (#{timeRange},10) and report_time &lt;= right(#{timeRange},10)
+                </if>
+            </where>
+            group by matter_id) d on a.id = d.matter_id
+        <where>
+            a.video_cover is null
+            <if test="fileName != null and fileName != ''">
+                and a.file_name like concat('%', #{fileName}, '%')
+            </if>
+<!--            <if test="timeRange != null  and timeRange != ''">-->
+<!--                and a.create_time >= left (#{timeRange},10) and a.create_time &lt;= right(#{timeRange},10)-->
+<!--            </if>-->
+        </where>
+    </select>
+
+
+
     <select id="selectMatterCount" parameterType="ThMatterManage" resultType="Integer">
 
         select count(a.id) from th_video_matter a left join th_video_order b on a.order_id = b.id
@@ -93,6 +137,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="videoGroup != null and videoGroup != ''">
                 and c.video_group = #{videoGroup}
             </if>
+            <if test="fileName != null and fileName != ''">
+                and a.file_name like concat('%', #{fileName}, '%')
+            </if>
+<!--            <if test="timeRange != null  and timeRange != ''">-->
+<!--                and a.create_time >= left (#{timeRange},10) and a.create_time &lt;= right(#{timeRange},10)-->
+<!--            </if>-->
+        </where>
+    </select>
+    <select id="selectImageMatterCount" parameterType="ThMatterManage" resultType="Integer">
+
+        select count(a.id) from th_video_matter a
+        <where>
+            a.video_cover is null
             <if test="fileName != null and fileName != ''">
                 and a.file_name like concat('%', #{fileName}, '%')
             </if>
