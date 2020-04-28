@@ -70,5 +70,5 @@ public interface IThAdvertiserService
      * 从头条同步广告主数据
      * @return
      */
-    public int adMutual(String createBy);
+    public int adMutual(String createBy) throws Exception;
 }

@@ -10,7 +10,7 @@ public class SyncTodayAdvertiserTask {
     @Autowired
     private IThAdvertiserService thAdvertiserService;
 
-    public void syncAdvertiser() {
+    public void syncAdvertiser() throws Exception {
         thAdvertiserService.adMutual("task");
     }
 

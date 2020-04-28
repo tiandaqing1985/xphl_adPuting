@@ -21,6 +21,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +46,8 @@ public class ThAdvertiserServiceImpl implements IThAdvertiserService {
     private ThAdvertiserMapper thAdvertiserMapper;
     @Autowired
     private IThTokenService thTokenService;
+
+    private Logger logger = LoggerFactory.getLogger(ThAdvertiserServiceImpl.class);
 
     /**
      * 查询广告主
@@ -113,13 +117,12 @@ public class ThAdvertiserServiceImpl implements IThAdvertiserService {
     }
 
     @Override
-    @Transactional
-    public int adMutual(String createBy) {
-
+    @Transactional(rollbackFor = Exception.class)
+    public int adMutual(String createBy) throws Exception {
         List<ThToken> thTokens = thTokenService.selectThTokenList(new ThToken());
 
         String access_token = thTokens.get(0).getAccessToken();
-
+        StringBuffer error = new StringBuffer();
         thAdvertiserMapper.deleteThAdvertiserById(null);
         int page = 1;
         int totalPage = 1;
@@ -132,22 +135,30 @@ public class ThAdvertiserServiceImpl implements IThAdvertiserService {
             page++;
             totalNum = totalNum + list.size();
             for (int i = 0; i < list.size(); i++) {
-                Long id = list.getLong(i);
-                JSONObject object1 = getAdvertiserInfo(access_token, id);
+                try {
+                    Long id = list.getLong(i);
+                    JSONObject object1 = getAdvertiserInfo(access_token, id);
 
-                JSONArray object2 = (JSONArray) object1.get("data");
-                JSONObject object3 = (JSONObject) object2.get(0);
+                    JSONArray object2 = (JSONArray) object1.get("data");
+                    JSONObject object3 = (JSONObject) object2.get(0);
 
-                ThAdvertiser ta = new ThAdvertiser();
+                    ThAdvertiser ta = new ThAdvertiser();
 
-                ta.setId(object3.getLong("id"));
-                ta.setName(object3.getString("name"));
-                ta.setStatus(object3.getString("status"));
-                ta.setCreateBy(createBy);
-                ta.setCreateTime(new Date());
+                    ta.setId(object3.getLong("id"));
+                    ta.setName(object3.getString("name"));
+                    ta.setStatus(object3.getString("status"));
+                    ta.setCreateBy(createBy);
+                    ta.setCreateTime(new Date());
 
-                thAdvertiserMapper.insertThAdvertiser(ta);
+                    thAdvertiserMapper.insertThAdvertiser(ta);
+                } catch (Exception e) {
+                    logger.error(list.getLong(i) + "出现错误：", e);
+                    error.append(list.getLong(i) + ":" + e.getMessage() + "\n");
+                }
             }
+        }
+        if (error.length() != 0) {
+            throw new Exception(error.toString());
         }
         return totalNum;
     }

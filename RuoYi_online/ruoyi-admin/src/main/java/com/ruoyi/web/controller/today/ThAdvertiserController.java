@@ -134,6 +134,12 @@ public class ThAdvertiserController extends BaseController {
     @PostMapping("/adMutual")
     @ResponseBody
     public AjaxResult adMutual() {
-        return toAjax(thAdvertiserService.adMutual(ShiroUtils.getSysUser().getUserName()));
+        int i = 0;
+        try {
+            i = thAdvertiserService.adMutual(ShiroUtils.getSysUser().getUserName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return toAjax(i);
     }
 }
