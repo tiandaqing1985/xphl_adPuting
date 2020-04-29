@@ -28,7 +28,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
     <select id="selectThTodayMatterByType" parameterType="String" resultMap="ThTodayMatterResult">
-        select a.advertiser_id,b.id matter_id,a.today_id from th_today_matter a left join th_video_matter b on a.signature = b.signature where b.id is not null and a.type = #{param1}
+        select a.advertiser_id,b.id matter_id,a.today_id from th_today_matter a left join th_video_matter b on a.signature = b.signature
+        <where>
+            b.id is not null
+            <if test="type != null and type != ''">
+                and a.type = #{type}
+            </if>
+        </where>
     </select>
 
     <insert id="insertThTodayMatter" parameterType="ThTodayMatter" useGeneratedKeys="true" keyProperty="id">

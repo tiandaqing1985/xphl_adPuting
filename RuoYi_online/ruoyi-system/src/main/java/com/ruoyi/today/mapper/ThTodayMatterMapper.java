@@ -1,6 +1,7 @@
 package com.ruoyi.today.mapper;
 
 import com.ruoyi.today.domain.ThTodayMatter;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -62,5 +63,5 @@ public interface ThTodayMatterMapper
 
     public void deleteAllThTodayMatter();
 
-    List<ThTodayMatter> selectThTodayMatterByType(String s);
+    List<ThTodayMatter> selectThTodayMatterByType(@Param("type") String s);
 }

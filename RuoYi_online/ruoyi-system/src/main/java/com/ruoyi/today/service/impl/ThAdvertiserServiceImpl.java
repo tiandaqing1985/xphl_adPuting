@@ -117,7 +117,6 @@ public class ThAdvertiserServiceImpl implements IThAdvertiserService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public int adMutual(String createBy) throws Exception {
         List<ThToken> thTokens = thTokenService.selectThTokenList(new ThToken());
 
@@ -139,6 +138,9 @@ public class ThAdvertiserServiceImpl implements IThAdvertiserService {
                     Long id = list.getLong(i);
                     JSONObject object1 = getAdvertiserInfo(access_token, id);
 
+                    if(!object1.getString("code").equals("0")){
+                        continue;
+                    }
                     JSONArray object2 = (JSONArray) object1.get("data");
                     JSONObject object3 = (JSONObject) object2.get(0);
 
