@@ -73,6 +73,38 @@ public class SyncTodayMatterTask extends MultiThreadExecutor<ThTodayMatter> {
                         throw new Exception(advertieserId + ":" + resp.getCode() + resp.getMessage());
                     }
                 }
+
+                page = 1;
+                pageSize = 100;
+                totalPage = -1;
+                request = new GetImagesRequest();
+                request.setAdvertiser_id(advertieserId);
+                request.setPage_size(pageSize);
+                thTodayMatter = new ThTodayMatter();
+                while (totalPage < 0 || page <= totalPage) {
+                    request.setPage(page);
+                    ResponseVO resp = (ResponseVO) touTiaoAdCenterService.getImages(request);
+                    if (resp.getCode().equals("0")) {
+                        totalPage = resp.getData().getJSONObject("page_info").getIntValue("total_page");
+                        page++;
+                        JSONArray list = resp.getData().getJSONArray("list");
+                        for (int i = 0; i < list.size(); i++) {
+                            thTodayMatter = new ThTodayMatter();
+                            thTodayMatter.setAdvertiserId(advertieserId);
+                            thTodayMatter.setType("image");
+                            thTodayMatter.setSignature(list.getJSONObject(i).getString("signature"));
+                            thTodayMatter.setTodayId(list.getJSONObject(i).getString("material_id"));
+                            thTodayMatter.setCreateTime(DateUtils.getNowDate());
+                            storage.put(thTodayMatter);
+                        }
+                    } else if (resp.getCode().equals("40100")) {
+                        continue;
+                    } else {
+                        throw new Exception(advertieserId + ":" + resp.getCode() + resp.getMessage());
+                    }
+                }
+
+
                 advertieserId = advertieserQueue.take();
             }
             advertieserQueue.put("");
@@ -115,40 +147,10 @@ public class SyncTodayMatterTask extends MultiThreadExecutor<ThTodayMatter> {
 
     }
 
-    public void syncAdvertieserMatter(ThAdvertiser thAdvertiser) throws Exception {
-        int page = 1;
-        int pageSize = 100;
-        int totalPage = -1;
-        GetImagesRequest request = new GetImagesRequest();
-        request.setAdvertiser_id(thAdvertiser.getId().toString());
-        request.setPage_size(pageSize);
-        ThTodayMatter thTodayMatter = new ThTodayMatter();
-        thTodayMatter.setAdvertiserId(thAdvertiser.getId().toString());
-        thTodayMatter.setType("image");
-        while (totalPage < 0 || page <= totalPage) {
-            request.setPage(page);
-            ResponseVO resp = (ResponseVO) touTiaoAdCenterService.getImages(request);
-            if (resp.getCode().equals("0")) {
-                totalPage = resp.getData().getJSONObject("page_info").getIntValue("total_page");
-                page++;
-                JSONArray list = resp.getData().getJSONArray("list");
-                for (int i = 0; i < list.size(); i++) {
-                    thTodayMatter.setId(null);
-                    thTodayMatter.setSignature(list.getJSONObject(i).getString("signature"));
-                    thTodayMatter.setTodayId(list.getJSONObject(i).getString("id"));
-                    thTodayMatter.setCreateTime(DateUtils.getNowDate());
-                    thTodayMatterService.insertThTodayMatter(thTodayMatter);
-                }
-            } else {
-                throw new Exception(resp.getCode() + resp.getMessage());
-            }
-        }
-
-    }
-
+    //定时执行方法
     public void syncMatter() throws Exception {
 
-        logger.info("开始同步广告主视频素材" + DateUtils.getDate());
+        logger.info("开始同步广告主素材" + DateUtils.getDate());
         thTodayMatterService.deleteAllThTodayMatter();
         productExceptionMsg = new StringBuffer();
         comsumeExceptionMsg = new StringBuffer();
@@ -169,7 +171,7 @@ public class SyncTodayMatterTask extends MultiThreadExecutor<ThTodayMatter> {
             throw new Exception(comsumeExceptionMsg.toString());
         }
 
-        logger.info("同步广告主视频素材结束" + DateUtils.getDate());
+        logger.info("同步广告主素材结束" + DateUtils.getDate());
 
     }
 

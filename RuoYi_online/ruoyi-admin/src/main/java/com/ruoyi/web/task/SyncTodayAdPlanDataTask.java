@@ -101,17 +101,26 @@ public class SyncTodayAdPlanDataTask extends MultiThreadExecutor<ThVideoMatterRe
         }
     }
 
-    public void syncMatterReport() throws Exception {
+    public void syncMatterReport(Integer offset) throws Exception {
 
         //查询素材 广告主 广告计划对应关系（视频的）
         errorBuffer = new StringBuffer();
-        List<ThTodayMatter> thTodayMatters = thTodayMatterServicel.selectThTodayMatterByType("video");
+        List<ThTodayMatter> thTodayMattersVideo = thTodayMatterServicel.selectThTodayMatterByType("video");
+        List<ThTodayMatter> thTodayMattersImage = thTodayMatterServicel.selectThTodayMatterByType("image");
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, -1);
+        calendar.add(Calendar.DATE, offset);
         time = calendar.getTime();
         timeStr = DateUtils.parseDateToStr("yyyy-MM-dd", calendar.getTime());
         start(5, 1, 10);
-        for (ThTodayMatter adMatterVO : thTodayMatters) {
+        for (ThTodayMatter adMatterVO : thTodayMattersVideo) {
+            try {
+                thTodayMatterQueue.put(adMatterVO);
+            } catch (Exception e) {
+                logger.error("出现错误：", e);
+                errorBuffer.append(adMatterVO.getAdvertiserId() + ":" + adMatterVO.getMatterId() + ":" + adMatterVO.getTodayId() + e.getMessage() + "\n");
+            }
+        }
+        for (ThTodayMatter adMatterVO : thTodayMattersImage) {
             try {
                 thTodayMatterQueue.put(adMatterVO);
             } catch (Exception e) {

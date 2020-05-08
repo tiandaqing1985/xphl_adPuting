@@ -21,6 +21,7 @@ public class ThMatterManage
     private String videoDept;
 
     private String reportCost;
+    private String reportClick;
 
     private String reportShow;
 
@@ -62,6 +63,14 @@ public class ThMatterManage
 
     //素材投放天数
     private Integer putDayNum;
+
+    public String getReportClick() {
+        return reportClick;
+    }
+
+    public void setReportClick(String reportClick) {
+        this.reportClick = reportClick;
+    }
 
     public String getCreate_by() {
         return create_by;

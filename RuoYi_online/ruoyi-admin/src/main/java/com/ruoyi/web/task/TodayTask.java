@@ -131,7 +131,7 @@ public class TodayTask {
 	    Map<String,Object>data = new HashMap<String,Object>() {
 	        {
 	            put("app_id", app_id);
-	            put("secret", "d8d831d26a6f5b71eca765db44e9a39120f92a0f");
+	            put("secret", "31c870abbe108f05fe70828977ed23393b945e77");
 	            put("grant_type", "refresh_token");
 	            put("refresh_token", refresh_token);
 	        }
