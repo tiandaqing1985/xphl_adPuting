@@ -142,7 +142,7 @@
         });
 
         function iniMediaCount(subtext){
-
+            debugger
             var mediaList = [];
             var data = [];
             var config = {
@@ -153,9 +153,11 @@
                 async: false,
                 success: function(result) {
                     $.each(result,function (index,item) {
-                        mediaList.push(item.name);
+                        if(item.name!=null){
+                            data.push(result[index]);
+                            mediaList.push(item.name);
+                        }
                     });
-                    data = result;
                 }
             };
             $.ajax(config);

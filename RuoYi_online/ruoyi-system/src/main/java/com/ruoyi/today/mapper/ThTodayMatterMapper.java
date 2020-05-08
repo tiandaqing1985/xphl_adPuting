@@ -64,4 +64,6 @@ public interface ThTodayMatterMapper
     public void deleteAllThTodayMatter();
 
     List<ThTodayMatter> selectThTodayMatterByType(@Param("type") String s);
+
+    int insertThTodayMatterList(List<ThTodayMatter> thTodayMatters);
 }

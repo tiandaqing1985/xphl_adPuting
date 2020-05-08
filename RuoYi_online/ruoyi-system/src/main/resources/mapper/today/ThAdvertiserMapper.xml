@@ -62,6 +62,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null  and remark != ''">#{remark},</if>
          </trim>
     </insert>
+    <insert id="insertThAdvertiserList" parameterType="List">
+        insert into th_advertiser(id)
+        <foreach collection="list" open="values" separator="," item="item">
+            (#{item.id})
+        </foreach>
+
+    </insert>
 
     <update id="updateThAdvertiser" parameterType="ThAdvertiser">
         update th_advertiser

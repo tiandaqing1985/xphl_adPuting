@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -46,6 +47,8 @@ public class SyncTodayAdPlanDataTask extends MultiThreadExecutor<ThVideoMatterRe
     private Date time;
     private String timeStr;
     private StringBuffer errorBuffer;
+
+    private static String endFlg = "endFlg";
 
     public ThVideoMatterReport syncVideoReport(ThTodayMatter thTodayMatter, String timeStr, Date time) throws Exception {
         //查询并插入新的广告计划报表数据(视频的)
@@ -128,7 +131,9 @@ public class SyncTodayAdPlanDataTask extends MultiThreadExecutor<ThVideoMatterRe
                 errorBuffer.append(adMatterVO.getAdvertiserId() + ":" + adMatterVO.getMatterId() + ":" + adMatterVO.getTodayId() + e.getMessage() + "\n");
             }
         }
-        thTodayMatterQueue.put(new ThTodayMatter());
+        ThTodayMatter flg = new ThTodayMatter();
+        flg.setTodayId(endFlg);
+        thTodayMatterQueue.put(flg);
         await();
         if (errorBuffer.length() != 0) {
             throw new Exception(errorBuffer.toString());
@@ -143,20 +148,21 @@ public class SyncTodayAdPlanDataTask extends MultiThreadExecutor<ThVideoMatterRe
         ThVideoMatterReport thVideoMatterReport = null;
         try {
             thTodayMatter = thTodayMatterQueue.take();
-            while (thTodayMatter.getAdvertiserId() != null) {
+            while (!thTodayMatter.getTodayId().equals(endFlg)) {
                 try {
 
                     thVideoMatterReport = syncVideoReport(thTodayMatter, timeStr, time);
                     if (thVideoMatterReport != null) {
                         storage.put(thVideoMatterReport);
                     }
-                    thTodayMatter = thTodayMatterQueue.take();
-                    thVideoMatterReport = null;
                 } catch (Exception e) {
                     logger.error("出现错误：", e);
                     errorBuffer.append(thTodayMatter.getAdvertiserId() + ":" + thTodayMatter.getTodayId() + ":" + thTodayMatter.getMatterId() + e.getMessage() + "\n");
                 }
+                thTodayMatter = thTodayMatterQueue.take();
+                thVideoMatterReport = null;
             }
+
             thTodayMatterQueue.put(thTodayMatter);
         } catch (Exception e) {
             logger.error("出现错误：", e);
@@ -180,6 +186,7 @@ public class SyncTodayAdPlanDataTask extends MultiThreadExecutor<ThVideoMatterRe
     protected void consume(LinkedBlockingQueue<ThVideoMatterReport> storage) {
         logger.info("消费者线程" + Thread.currentThread().getName() + "开始");
         ThVideoMatterReport videoMatterReport = null;
+        List<ThVideoMatterReport> thVideoMatterReports = new ArrayList<>();
         try {
             videoMatterReport = storage.take();
             while (videoMatterReport.getAdvertiserId() != null) {

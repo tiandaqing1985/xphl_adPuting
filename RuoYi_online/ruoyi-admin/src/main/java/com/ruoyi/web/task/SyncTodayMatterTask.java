@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -35,6 +36,8 @@ public class SyncTodayMatterTask extends MultiThreadExecutor<ThTodayMatter> {
     private StringBuffer productExceptionMsg;
     private StringBuffer comsumeExceptionMsg;
     private LinkedBlockingQueue<String> advertieserQueue;
+
+    private static int maxBatch = 1000;
 
     @Override
     protected void product(LinkedBlockingQueue<ThTodayMatter> storage) {
@@ -131,11 +134,19 @@ public class SyncTodayMatterTask extends MultiThreadExecutor<ThTodayMatter> {
     protected void consume(LinkedBlockingQueue<ThTodayMatter> storage) {
         logger.info("消费者线程" + Thread.currentThread().getName() + "开始");
         ThTodayMatter thTodayMatter = null;
+        List<ThTodayMatter> thTodayMatters = new ArrayList<>(maxBatch);
         try {
             thTodayMatter = storage.take();
             while (thTodayMatter.getAdvertiserId() != null) {
-                thTodayMatterService.insertThTodayMatter(thTodayMatter);
+                thTodayMatters.add(thTodayMatter);
+                if(thTodayMatters.size()>=maxBatch){
+                    int i = thTodayMatterService.insertThTodayMatterList(thTodayMatters);
+                    thTodayMatters = new ArrayList<>();
+                }
                 thTodayMatter = storage.take();
+            }
+            if(thTodayMatters.size()>0){
+                int i = thTodayMatterService.insertThTodayMatterList(thTodayMatters);
             }
             storage.put(thTodayMatter);
         } catch (Exception e) {
@@ -157,7 +168,7 @@ public class SyncTodayMatterTask extends MultiThreadExecutor<ThTodayMatter> {
         advertieserQueue = new LinkedBlockingQueue<>();
         List<ThAdvertiser> thAdvertisers = thAdvertiserService.selectThAdvertiserList(new ThAdvertiser());
 
-        start(6, 5, 600);
+        start(6, 2, 700);
         for (ThAdvertiser thAdvertiser : thAdvertisers) {
             advertieserQueue.put(thAdvertiser.getId().toString());
         }

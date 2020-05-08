@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.ruoyi.common.utils.DateUtils;
 
@@ -133,31 +130,30 @@ public class ThAdvertiserServiceImpl implements IThAdvertiserService {
             JSONArray list = (JSONArray) object.get("list");
             page++;
             totalNum = totalNum + list.size();
+            List<ThAdvertiser> thAdvertisers = new ArrayList<>();
             for (int i = 0; i < list.size(); i++) {
                 try {
                     Long id = list.getLong(i);
-                    JSONObject object1 = getAdvertiserInfo(access_token, id);
+//                    JSONObject object1 = getAdvertiserInfo(access_token, id);
 
-                    if(!object1.getString("code").equals("0")){
-                        continue;
-                    }
-                    JSONArray object2 = (JSONArray) object1.get("data");
-                    JSONObject object3 = (JSONObject) object2.get(0);
+//                    if(!object1.getString("code").equals("0")){
+//                        continue;
+//                    }
+//                    JSONArray object2 = (JSONArray) object1.get("data");
+//                    JSONObject object3 = (JSONObject) object2.get(0);
 
                     ThAdvertiser ta = new ThAdvertiser();
 
-                    ta.setId(object3.getLong("id"));
-                    ta.setName(object3.getString("name"));
-                    ta.setStatus(object3.getString("status"));
+                    ta.setId(id);
                     ta.setCreateBy(createBy);
                     ta.setCreateTime(new Date());
-
-                    thAdvertiserMapper.insertThAdvertiser(ta);
+                    thAdvertisers.add(ta);
                 } catch (Exception e) {
                     logger.error(list.getLong(i) + "出现错误：", e);
                     error.append(list.getLong(i) + ":" + e.getMessage() + "\n");
                 }
             }
+            thAdvertiserMapper.insertThAdvertiserList(thAdvertisers);
         }
         if (error.length() != 0) {
             throw new Exception(error.toString());

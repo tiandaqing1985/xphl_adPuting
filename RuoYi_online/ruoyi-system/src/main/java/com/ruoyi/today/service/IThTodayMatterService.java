@@ -63,4 +63,6 @@ public interface IThTodayMatterService
     void deleteAllThTodayMatter();
 
     List<ThTodayMatter> selectThTodayMatterByType(String s);
+
+    int insertThTodayMatterList(List<ThTodayMatter> thTodayMatters);
 }

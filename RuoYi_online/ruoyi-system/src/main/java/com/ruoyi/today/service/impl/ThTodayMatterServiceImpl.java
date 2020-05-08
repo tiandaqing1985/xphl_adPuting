@@ -101,4 +101,9 @@ public class ThTodayMatterServiceImpl implements IThTodayMatterService
     public List<ThTodayMatter> selectThTodayMatterByType(String s) {
         return thTodayMatterMapper.selectThTodayMatterByType(s);
     }
+
+    @Override
+    public int insertThTodayMatterList(List<ThTodayMatter> thTodayMatters) {
+        return thTodayMatterMapper.insertThTodayMatterList(thTodayMatters);
+    }
 }

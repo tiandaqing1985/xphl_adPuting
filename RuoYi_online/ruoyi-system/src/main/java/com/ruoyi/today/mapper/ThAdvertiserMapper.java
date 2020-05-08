@@ -60,4 +60,6 @@ public interface ThAdvertiserMapper
     public int deleteThAdvertiserByIds(String[] ids);
 
     public ThAdvertiser selectThAdvertiserByName(ThAdvertiser advertiser);
+
+    void insertThAdvertiserList(List<ThAdvertiser> thAdvertisers);
 }

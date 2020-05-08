@@ -54,6 +54,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
          </trim>
     </insert>
+    <insert id="insertThTodayMatterList" parameterType="ThTodayMatter" useGeneratedKeys="true" keyProperty="id">
+        insert into th_today_matter(advertiser_id,signature,type,today_id,create_time)
+        <foreach collection="list" item="item" separator="," open="values">
+            (#{item.advertiserId},#{item.signature},#{item.type},#{item.todayId},#{item.createTime})
+        </foreach>
+    </insert>
 
     <update id="updateThTodayMatter" parameterType="ThTodayMatter">
         update th_today_matter
