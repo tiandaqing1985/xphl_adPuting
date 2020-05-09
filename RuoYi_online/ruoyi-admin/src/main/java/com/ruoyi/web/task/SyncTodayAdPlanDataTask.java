@@ -44,76 +44,65 @@ public class SyncTodayAdPlanDataTask extends MultiThreadExecutor<ThVideoMatterRe
 
     private LinkedBlockingQueue<ThTodayMatter> thTodayMatterQueue = new LinkedBlockingQueue<>(100);
 
-    private Date time;
-    private String timeStr;
+    private String startStr;
+    private String endStr;
+
     private StringBuffer errorBuffer;
 
     private static String endFlg = "endFlg";
 
-    public ThVideoMatterReport syncVideoReport(ThTodayMatter thTodayMatter, String timeStr, Date time) throws Exception {
+    //返回更新某段时间的数据(区间超过100天需要自动翻页，这里没有实现)
+    public List<ThVideoMatterReport> syncVideoReport(ThTodayMatter thTodayMatter, String startStr, String endStr) throws Exception {
         //查询并插入新的广告计划报表数据(视频的)
         PlanReportSyncRequest reportSyncRequest = new PlanReportSyncRequest();
         reportSyncRequest.setAdvertiser_id(thTodayMatter.getAdvertiserId());
-        reportSyncRequest.setStart_date(timeStr);
-        reportSyncRequest.setEnd_date(timeStr);
-        reportSyncRequest.setGroup_by(new String[]{"STAT_GROUP_BY_MATERIAL_ID"});
+        reportSyncRequest.setStart_date(startStr);
+        reportSyncRequest.setEnd_date(endStr);
+        reportSyncRequest.setGroup_by(new String[]{"STAT_GROUP_BY_MATERIAL_ID", "STAT_GROUP_BY_TIME_DAY"});
         reportSyncRequest.setMaterial_id(new String[]{thTodayMatter.getTodayId()});
+        reportSyncRequest.setPage_size(100);
         ResponseVO responseVO = (ResponseVO) touTiaoAdCenterService.reportMatter(reportSyncRequest);
         ThVideoMatterReport report = null;
+        List<ThVideoMatterReport> result = new ArrayList<>();
         if (responseVO.getCode().equals("0")) {
             JSONArray list = responseVO.getData().getJSONArray("list");
             if (list.size() != 0) {
-                report = list.getJSONObject(0).getJSONObject("metrics").toJavaObject(ThVideoMatterReport.class);
-                if (!report.isAllZero()) {
-                    report.setTime(time);
-                    report.setAdvertiserId(thTodayMatter.getAdvertiserId());
-                    report.setMatterId(Long.valueOf(thTodayMatter.getMatterId()));
-                    return report;
-//                    thVideoMatterReportService.insertThVideoMatterReport(report);
+                for (int i = 0; i < list.size(); i++) {
+                    report = list.getJSONObject(i).getJSONObject("metrics").toJavaObject(ThVideoMatterReport.class);
+                    if (!report.isAllZero()) {
+                        report.setTime(list.getJSONObject(i).getJSONObject("dimensions").getDate("stat_datetime"));
+                        report.setAdvertiserId(thTodayMatter.getAdvertiserId());
+                        report.setMatterId(Long.valueOf(thTodayMatter.getMatterId()));
+                        result.add(report);
+                    }
                 }
             }
         } else {
-            throw new Exception("广告主：" + thTodayMatter.getAdvertiserId() + ",素材：" + thTodayMatter.getTodayId() + responseVO.getCode() + "-" + responseVO.getMessage());
+            throw new Exception("广告主：" + thTodayMatter.getAdvertiserId() + ",素材：" + thTodayMatter.getTodayId() + ":" + responseVO.getCode() + "-" + responseVO.getMessage());
         }
-        return null;
+        return result;
     }
 
-    public void syncImageReport(ThTodayMatter thTodayMatter, String timeStr, Date time) throws Exception {
-        //查询并插入新的素材报表数据(图片的)
-        PlanReportSyncRequest reportSyncRequest = new PlanReportSyncRequest();
-        reportSyncRequest.setAdvertiser_id(thTodayMatter.getAdvertiserId());
-        reportSyncRequest.setStart_date(timeStr);
-        reportSyncRequest.setEnd_date(timeStr);
-        reportSyncRequest.setGroup_by(new String[]{"STAT_GROUP_BY_MATERIAL_ID"});
-        reportSyncRequest.setMaterial_id(new String[]{thTodayMatter.getTodayId()});
-        ResponseVO responseVO = (ResponseVO) touTiaoAdCenterService.reportMatter(reportSyncRequest);
-        ThVideoMatterReport report = null;
-        if (responseVO.getCode().equals("0")) {
-            JSONArray list = responseVO.getData().getJSONArray("list");
-            if (list.size() != 0) {
-                report = list.getJSONObject(0).getJSONObject("metrics").toJavaObject(ThVideoMatterReport.class);
-                if (!report.isAllZero()) {
-                    report.setTime(time);
-                    report.setAdvertiserId(thTodayMatter.getAdvertiserId());
-                    report.setMatterId(Long.valueOf(thTodayMatter.getMatterId()));
-                    thVideoMatterReportService.insertThVideoMatterReport(report);
-                }
-            }
-        } else {
-            throw new Exception("广告主：" + thTodayMatter.getAdvertiserId() + ",素材：" + thTodayMatter.getTodayId() + responseVO.getCode() + "-" + responseVO.getMessage());
-        }
-    }
 
-    public void syncMatterReport(Integer offset) throws Exception {
+    //获取某段时间的数据 参数为日期
+    public void syncMatterReport(Integer offset, String startTime, String endTime) throws Exception {
 
         //查询素材 广告主 广告计划对应关系（视频的）
         errorBuffer = new StringBuffer();
+        startStr = null;
+        endStr = null;
+        thTodayMatterQueue = new LinkedBlockingQueue<>(100);
         List<ThTodayMatter> thTodayMattersVideo = thTodayMatterServicel.selectThTodayMatterByType("video");
         List<ThTodayMatter> thTodayMattersImage = thTodayMatterServicel.selectThTodayMatterByType("image");
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, offset);
-        time = calendar.getTime();
-        timeStr = DateUtils.parseDateToStr("yyyy-MM-dd", calendar.getTime());
+        if (startTime == null || startTime.equals("") || endTime == null || endTime.equals("")) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DATE, offset);
+            startStr = DateUtils.parseDateToStr("yyyy-MM-dd", calendar.getTime());
+            endStr = startStr;
+        } else {
+            startStr = startTime;
+            endStr = endTime;
+        }
         start(5, 1, 10);
         for (ThTodayMatter adMatterVO : thTodayMattersVideo) {
             try {
@@ -133,7 +122,14 @@ public class SyncTodayAdPlanDataTask extends MultiThreadExecutor<ThVideoMatterRe
         }
         ThTodayMatter flg = new ThTodayMatter();
         flg.setTodayId(endFlg);
-        thTodayMatterQueue.put(flg);
+        while (true){
+            if(thTodayMatterQueue.size()==0){
+                thTodayMatterQueue.put(flg);
+                break;
+            }else {
+                Thread.sleep(3000);
+            }
+        }
         await();
         if (errorBuffer.length() != 0) {
             throw new Exception(errorBuffer.toString());
@@ -145,22 +141,24 @@ public class SyncTodayAdPlanDataTask extends MultiThreadExecutor<ThVideoMatterRe
     protected void product(LinkedBlockingQueue<ThVideoMatterReport> storage) {
         logger.info("生产者线程" + Thread.currentThread().getName() + "开始");
         ThTodayMatter thTodayMatter = null;
-        ThVideoMatterReport thVideoMatterReport = null;
+        List<ThVideoMatterReport> thVideoMatterReports = null;
         try {
             thTodayMatter = thTodayMatterQueue.take();
             while (!thTodayMatter.getTodayId().equals(endFlg)) {
                 try {
 
-                    thVideoMatterReport = syncVideoReport(thTodayMatter, timeStr, time);
-                    if (thVideoMatterReport != null) {
-                        storage.put(thVideoMatterReport);
+                    thVideoMatterReports = syncVideoReport(thTodayMatter, startStr, endStr);
+                    if (thVideoMatterReports != null) {
+                        for (int i = 0; i < thVideoMatterReports.size(); i++) {
+                            storage.put(thVideoMatterReports.get(i));
+                        }
                     }
                 } catch (Exception e) {
                     logger.error("出现错误：", e);
                     errorBuffer.append(thTodayMatter.getAdvertiserId() + ":" + thTodayMatter.getTodayId() + ":" + thTodayMatter.getMatterId() + e.getMessage() + "\n");
                 }
                 thTodayMatter = thTodayMatterQueue.take();
-                thVideoMatterReport = null;
+                thVideoMatterReports = null;
             }
 
             thTodayMatterQueue.put(thTodayMatter);
