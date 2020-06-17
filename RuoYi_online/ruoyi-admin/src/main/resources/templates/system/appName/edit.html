@@ -7,53 +7,102 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-appName-edit" th:object="${actorAppname}">
             <input name="id" th:field="*{id}" type="hidden">
+            <input id="detailid" name="detailid" class="form-control-static" type="hidden" th:value="${detailid}">
             <div class="form-group">    
                 <label class="col-sm-3 control-label">App名称编号：</label>
                 <div class="col-sm-8">
                     <input name="applyId" th:field="*{applyId}" class="form-control" type="text" readonly>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">组别：</label>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">演员姓名：</label>
                 <div class="col-sm-8">
-<!--                    <input name="type" th:field="*{type}" class="form-control" type="text">-->
-
-                    <select name="type" th:field="*{type}" class="form-control m-b">
-                        <option value="A组">A组</option>
-                        <option value="B组">B组</option>
-                        <option value="C组">C组</option>
-                        <option value="D组">D组</option>
-                        <option value="E组">E组</option>
-                    </select>
-
+                    <input name="actorName" th:field="*{actorName}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">app名称：</label>
+                <label class="col-sm-3 control-label">金额：</label>
                 <div class="col-sm-8">
-                    <input name="appName" th:field="*{appName}" class="form-control" type="text">
+                    <input name="amount" th:field="*{amount}" class="form-control" type="text">
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">app数量：</label>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">身份证号：</label>
                 <div class="col-sm-8">
-                    <input name="appNumber" th:field="*{appNumber}" class="form-control" type="text">
+                    <input name="idNumber" th:field="*{idNumber}" class="form-control" type="text">
                 </div>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <a id="addzhusu" class="btn btn-success" onclick="zAdd(id)">
+                    <i class="fa fa-plus"></i> 拍摄详情信息
+                </a>
+                <table id="bootstrap-table-1" data-mobile-responsive="true"></table>
             </div>
         </form>
     </div>
-    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: footer"/>
     <script type="text/javascript">
         var prefix = ctx + "system/appName";
+        var prefixs = ctx + "system/details";
+
+        var detailids = $("#detailid").val();
+
         $("#form-appName-edit").validate({
             focusCleanup: true
         });
 
+        $(function() {
+            var options = {
+                url: prefixs + "/listApplyId?applyId=" + detailids,
+                id: "bootstrap-table-1",
+                createUrl: prefixs + "/add",
+                updateUrl: prefixs + "/edit/{id}",
+                removeUrl: prefixs + "/remove",
+                exportUrl: prefixs+ "/export",
+                modalName: "视频拍摄详情",
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field : 'id',
+                        title : 'id',
+                        visible: false
+                    },
+                    {
+                        field : 'applyId',
+                        title : '拍摄app数量统计表id'
+                    },
+                    {
+                        field : 'groups',
+                        title : '组别'
+                    },
+                    {
+                        field : 'advertiser',
+                        title : '拍摄广告主'
+                    },
+                    {
+                        field : 'appNumber',
+                        title : '拍摄条数'
+                    },
+                    {
+                        title: '操作',
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            var actions = [];
+                            actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                            actions.push('<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                            return actions.join('');
+                        }
+                    }]
+            };
+            $.table.init(options);
+        });
         function submitHandler() {
             if ($.validate.form()) {
                 $.operate.save(prefix + "/edit", $('#form-appName-edit').serialize());
             }
         }
+
     </script>
 </body>
 </html>

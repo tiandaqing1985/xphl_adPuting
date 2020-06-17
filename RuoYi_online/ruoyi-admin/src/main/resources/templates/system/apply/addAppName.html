@@ -10,14 +10,6 @@
         <input name="id" th:field="*{id}" type="hidden">
         <div class="col-md-6">
         <div class="form-group">
-            <label class="col-sm-3 control-label">协议编号：</label>
-            <div class="col-sm-8">
-                <input name="num" th:field="*{num}" class="form-control" type="text" readonly>
-            </div>
-        </div>
-        </div>
-        <div class="col-md-6">
-        <div class="form-group">
             <label class="col-sm-3 control-label">拍摄时间：</label>
             <div class="col-sm-8">
                 <div class="input-group date">
@@ -29,23 +21,27 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
+                <label class="col-sm-3 control-label">申请支付日期：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input name="actualPaymentTime" th:value="${#dates.format(actorShotApply.actualPaymentTime, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
                 <label class="col-sm-3 control-label">单条金额：</label>
                 <div class="col-sm-8">
                     <input name="singleAmount" th:field="*{singleAmount}" class="form-control" type="text" readonly>
                 </div>
             </div>
         </div>
+
         <div class="col-md-6">
         <div class="form-group">
-            <label class="col-sm-3 control-label">演员姓名：</label>
-            <div class="col-sm-8">
-                <input name="actorName" th:field="*{actorName}" class="form-control" type="text" readonly>
-            </div>
-        </div>
-        </div>
-        <div class="col-md-6">
-        <div class="form-group">
-            <label class="col-sm-3 control-label">价格：</label>
+            <label class="col-sm-3 control-label">本次拍摄总金额：</label>
             <div class="col-sm-8">
                 <input name="amount" th:field="*{amount}" class="form-control" type="text" readonly>
             </div>
@@ -53,53 +49,44 @@
         </div>
         <div class="col-md-6">
         <div class="form-group">
-            <label class="col-sm-3 control-label">联系方式：</label>
+            <label class="col-sm-3 control-label">演员人数：</label>
             <div class="col-sm-8">
-                <input name="phoneNumber" th:field="*{phoneNumber}" class="form-control" type="text" readonly>
+                <input name="actornumber" th:field="*{actornumber}" class="form-control" type="text" readonly>
             </div>
         </div>
         </div>
         <div class="col-md-6">
         <div class="form-group">
-            <label class="col-sm-3 control-label">是否有收据：</label>
+            <label class="col-sm-3 control-label">税率：</label>
             <div class="col-sm-8">
-                <input name="isReceipt" th:field="*{isReceipt}" class="form-control" type="text" readonly>
+                <input name="taxRate" th:field="*{taxRate}" class="form-control" type="text" readonly>
             </div>
         </div>
         </div>
         <div class="col-md-6">
-        <div class="form-group">
-            <label class="col-sm-3 control-label">是否报销/支付：</label>
-            <div class="col-sm-8">
-                <input name="isReimbur" th:field="*{isReimbur}" class="form-control" type="text" readonly>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">含税金额：</label>
+                <div class="col-sm-8">
+                    <input name="taxAmount" th:field="*{taxAmount}" class="form-control" type="text" readonly>
+                </div>
             </div>
-        </div>
         </div>
         <div class="col-md-6">
         <div class="form-group">
-            <label class="col-sm-3 control-label">总拍摄条数：</label>
+            <label class="col-sm-3 control-label">本次拍摄总条数：</label>
             <div class="col-sm-8">
                 <input name="shotsNumber" th:field="*{shotsNumber}" class="form-control" type="text" readonly>
             </div>
         </div>
         </div>
         <div class="col-md-6">
-<!--            -->
-<!--        <div class="form-group">-->
-<!--            <label class="col-sm-3 control-label">单条金额：</label>-->
-<!--            <div class="col-sm-8">-->
-<!--                <input name="singleAmount" th:field="*{singleAmount}" class="form-control" type="text" readonly>-->
-<!--            </div>-->
-<!--        </div>-->
-
                 <div class="form-group">
-                    <!--                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>app名称编号：</label>-->
+                    <!--     <label class="col-sm-3 control-label"><span style="color: red; ">*</span>app名称编号：</label>-->
                     <div class="col-sm-9">
-                        <input  id="appNameId"  name="appNameId" class="form-control" type="hidden"    th:value="*{appNameId}" readonly="readonly">
+                        <input  id="appnameId"  name="appnameId" class="form-control" type="hidden"    th:value="*{appnameId}" readonly="readonly">
                     </div>
                 </div>
         </div>
-
         <div class="col-sm-12 select-table table-striped">
             <a id="addzhusu" class="btn btn-success" onclick="zAdd(id)">
                 <i class="fa fa-plus"></i> App详细信息
@@ -113,7 +100,7 @@
 <script type="text/javascript">
     var prefix = ctx + "system/apply";
 
-    var appNameId = $("#appNameId").val();
+    var appnameId = $("#appnameId").val();
     var prefixs = ctx + "system/appName"
 
     function zAdd() {
@@ -121,7 +108,7 @@
     }
     $(function() {
         var options = {
-            url: prefixs + "/listAppNameId",
+            url: prefixs + "/listAppNameId?appNameId=" + appnameId,
             id: "bootstrap-table-1",
             createUrl: prefixs + "/add",
             updateUrl: prefixs + "/edit/{id}",
@@ -137,17 +124,17 @@
                     visible: false
                 },
                 {
-                    field: 'type',
-                    title: '组别'
-                },
-                {
-                    field : 'appName',
-                    title : 'app名称'
-                },
-                {
                     field : 'appNumber',
                     title : 'app数量'
-                } ]
+                },
+                {
+                    field : 'actorName',
+                    title : '演员姓名'
+                },
+                {
+                    field : 'amount',
+                    title : '金额'
+                }  ]
         };
         $.table.init(options);
     });
@@ -165,11 +152,17 @@
         }
     }
 
-    $("input[name='shotTime']").datetimepicker({
-        format: "yyyy-mm-dd",
-        minView: "month",
-        autoclose: true
-    });
+    // $("input[name='shotTime']").datetimepicker({
+    //     format: "yyyy-mm-dd",
+    //     minView: "month",
+    //     autoclose: true
+    // });
+    //
+    // $("input[name='actualPaymentTime']").datetimepicker({
+    //     format: "yyyy-mm-dd",
+    //     minView: "month",
+    //     autoclose: true
+    // });
 </script>
 </body>
 </html>

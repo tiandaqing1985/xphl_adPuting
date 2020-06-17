@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ActorFileMapper">
+    
+    <resultMap type="ActorFile" id="ActorFileResult">
+        <result property="id"    column="id"    />
+        <result property="loadid"    column="loadId"    />
+        <result property="num"    column="num"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectActorFileVo">
+        select id, loadId, num, file_name, file_path, create_time from actor_file
+    </sql>
+
+    <select id="selectActorFileList" parameterType="ActorFile" resultMap="ActorFileResult">
+        <include refid="selectActorFileVo"/>
+        <where>  
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectActorFileById" parameterType="Long" resultMap="ActorFileResult">
+        <include refid="selectActorFileVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertActorFile" parameterType="ActorFile" useGeneratedKeys="true" keyProperty="id">
+        insert into actor_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="loadid != null ">loadId,</if>
+            <if test="num != null  and num != ''">num,</if>
+            <if test="fileName != null  and fileName != ''">file_name,</if>
+            <if test="filePath != null  and filePath != ''">file_path,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="loadid != null ">#{loadid},</if>
+            <if test="num != null  and num != ''">#{num},</if>
+            <if test="fileName != null  and fileName != ''">#{fileName},</if>
+            <if test="filePath != null  and filePath != ''">#{filePath},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActorFile" parameterType="ActorFile">
+        update actor_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="loadid != null ">loadId = #{loadid},</if>
+            <if test="fileName != null  and fileName != ''">file_name = #{fileName},</if>
+            <if test="filePath != null  and filePath != ''">file_path = #{filePath},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            num = #{num},
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActorFileById" parameterType="Long">
+        delete from actor_file where id = #{id}
+    </delete>
+
+    <delete id="deleteActorFileByIds" parameterType="String">
+        delete from actor_file where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectPicList" parameterType="Long" resultMap="ActorFileResult">
+        <include refid="selectActorFileVo"/>
+        <where>
+            num is null
+            and loadId = #{loadid}
+        </where>
+    </select>
+</mapper>

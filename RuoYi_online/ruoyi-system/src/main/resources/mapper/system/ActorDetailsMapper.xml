@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ActorDetailsMapper">
+    
+    <resultMap type="ActorDetails" id="ActorDetailsResult">
+        <result property="id"    column="id"    />
+        <result property="applyId"    column="apply_id"    />
+        <result property="groups"    column="groups"    />
+        <result property="advertiser"    column="advertiser"    />
+        <result property="appNumber"    column="app_number"    />
+    </resultMap>
+
+    <sql id="selectActorDetailsVo">
+        select id, apply_id, groups, advertiser, app_number from actor_details
+    </sql>
+
+    <select id="selectActorDetailsList" parameterType="ActorDetails" resultMap="ActorDetailsResult">
+        <include refid="selectActorDetailsVo"/>
+        <where>
+            <if test="applyId != null "> and  apply_id = #{applyId}</if>
+        </where>
+    </select>
+    
+    <select id="selectActorDetailsById" parameterType="Long" resultMap="ActorDetailsResult">
+        <include refid="selectActorDetailsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertActorDetails" parameterType="ActorDetails" useGeneratedKeys="true" keyProperty="id">
+        insert into actor_details
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="applyId != null ">apply_id,</if>
+            <if test="groups != null  and groups != ''">groups,</if>
+            <if test="advertiser != null  and advertiser != ''">advertiser,</if>
+            <if test="appNumber != null ">app_number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="applyId != null ">#{applyId},</if>
+            <if test="groups != null  and groups != ''">#{groups},</if>
+            <if test="advertiser != null  and advertiser != ''">#{advertiser},</if>
+            <if test="appNumber != null ">#{appNumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updateActorDetails" parameterType="ActorDetails">
+        update actor_details
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="applyId != null ">apply_id = #{applyId},</if>
+            <if test="groups != null  and groups != ''">group = #{groups},</if>
+            <if test="advertiser != null  and advertiser != ''">advertiser = #{advertiser},</if>
+            <if test="appNumber != null ">app_number = #{appNumber},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteActorDetailsById" parameterType="Long">
+        delete from actor_details where id = #{id}
+    </delete>
+
+    <delete id="deleteActorDetailsByIds" parameterType="String">
+        delete from actor_details where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

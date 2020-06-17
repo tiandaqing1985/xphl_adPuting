@@ -7,13 +7,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="ActorAppname" id="ActorAppnameResult">
         <result property="id"    column="id"    />
         <result property="applyId"    column="apply_id"    />
-        <result property="type"    column="type"    />
         <result property="appName"    column="app_name"    />
         <result property="appNumber"    column="app_number"    />
+        <result property="type"    column="type"    />
+        <result property="actorName"    column="actor_name"    />
+        <result property="amount"    column="amount"    />
+        <result property="idNumber"    column="id_number"    />
+        <result property="isfile"    column="isfile"    />
+        <result property="addTime"    column="add_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="detailid"    column="detailid"    />
     </resultMap>
 
     <sql id="selectActorAppnameVo">
-        select id, apply_id, type, app_name, app_number from actor_appName
+          select id, apply_id, app_name, app_number, type, actor_name, amount, id_number, isfile, add_time, update_time, detailid from actor_appName
     </sql>
 
     <select id="selectActorAppnameList" parameterType="ActorAppname" resultMap="ActorAppnameResult">
@@ -33,15 +40,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="applyId != null ">apply_id,</if>
             <if test="appName != null  and appName != ''">app_name,</if>
-            <if test="type != null  and type != ''">type,</if>
             <if test="appNumber != null ">app_number,</if>
-         </trim>
+            <if test="type != null  and type != ''">type,</if>
+            <if test="actorName != null  and actorName != ''">actor_name,</if>
+            <if test="amount != null ">amount,</if>
+            <if test="idNumber != null  and idNumber != ''">id_number,</if>
+            <if test="isfile != null  and isfile != ''">isfile,</if>
+            <if test="addTime != null ">add_time,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="detailid != null ">detailid,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="applyId != null ">#{applyId},</if>
             <if test="appName != null  and appName != ''">#{appName},</if>
-            <if test="type != null  and type != ''">#{type},</if>
             <if test="appNumber != null ">#{appNumber},</if>
-         </trim>
+            <if test="type != null  and type != ''">#{type},</if>
+            <if test="actorName != null  and actorName != ''">#{actorName},</if>
+            <if test="amount != null ">#{amount},</if>
+            <if test="idNumber != null  and idNumber != ''">#{idNumber},</if>
+            <if test="isfile != null  and isfile != ''">#{isfile},</if>
+            <if test="addTime != null ">#{addTime},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="detailid != null ">#{detailid},</if>
+        </trim>
     </insert>
 
     <update id="updateActorAppname" parameterType="ActorAppname">
@@ -49,8 +70,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="applyId != null ">apply_id = #{applyId},</if>
             <if test="appName != null  and appName != ''">app_name = #{appName},</if>
-            <if test="type != null  and type != ''">type = #{type},</if>
             <if test="appNumber != null ">app_number = #{appNumber},</if>
+            <if test="type != null  and type != ''">type = #{type},</if>
+            <if test="actorName != null  and actorName != ''">actor_name = #{actorName},</if>
+            <if test="amount != null ">amount = #{amount},</if>
+            <if test="idNumber != null  and idNumber != ''">id_number = #{idNumber},</if>
+            <if test="isfile != null  and isfile != ''">isfile = #{isfile},</if>
+            <if test="addTime != null ">add_time = #{addTime},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="detailid != null ">detailid = #{detailid},</if>
         </trim>
         where id = #{id}
     </update>
@@ -69,5 +97,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectAppname" parameterType="Long" resultMap="ActorAppnameResult">
         <include refid="selectActorAppnameVo"/>
         where apply_id = #{id}
+    </select>
+
+    <select id="selectquChong" parameterType="Long" resultMap="ActorAppnameResult">
+        <include refid="selectActorAppnameVo"/>
+        where apply_id = #{id}  GROUP BY id_number;
     </select>
 </mapper>

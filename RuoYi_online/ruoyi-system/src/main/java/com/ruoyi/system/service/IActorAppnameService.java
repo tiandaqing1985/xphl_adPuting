@@ -61,4 +61,6 @@ public interface IActorAppnameService
 
 
     public  List<ActorAppname> selectAppname(Long id);
+
+    public  List<ActorAppname> selectquChong(Long id);
 }

@@ -21,10 +21,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="addUser"    column="add_user"    />
         <result property="updateUser"    column="update_user"    />
         <result property="isfile"    column="isfile"    />
+        <result property="amountPayee"    column="amount_payee"    />
+        <result property="amountTelephone"    column="amount_telephone"    />
+        <result property="relationship"    column="relationship"    />
+        <result property="amountIdnumber"    column="amount_idNumber"    />
     </resultMap>
 
     <sql id="selectActorInformationVo">
-        select id, name, number, verification, idNumber, telephone, telephones, affiliatedBank, documentType, remarks, num, add_time, update_time, add_user,isfile, update_user from actor_information
+        select id, name, number, verification, idNumber, telephone, telephones, affiliatedBank, documentType, remarks, add_time, update_time, add_user, update_user, num, isfile, amount_payee, amount_telephone, relationship, amount_idNumber from actor_information
     </sql>
 
     <select id="selectActorInformationList" parameterType="ActorInformation" resultMap="ActorInformationResult">
@@ -52,7 +56,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into actor_information
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="name != null  and name != ''">name,</if>
-            <if test="num != null  and num != ''">num,</if>
             <if test="number != null  and number != ''">number,</if>
             <if test="verification != null  and verification != ''">verification,</if>
             <if test="idnumber != null  and idnumber != ''">idNumber,</if>
@@ -65,11 +68,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">update_time,</if>
             <if test="addUser != null  and addUser != ''">add_user,</if>
             <if test="updateUser != null  and updateUser != ''">update_user,</if>
+            <if test="num != null  and num != ''">num,</if>
             <if test="isfile != null  and isfile != ''">isfile,</if>
+            <if test="amountPayee != null  and amountPayee != ''">amount_payee,</if>
+            <if test="amountTelephone != null  and amountTelephone != ''">amount_telephone,</if>
+            <if test="relationship != null  and relationship != ''">relationship,</if>
+            <if test="amountIdnumber != null  and amountIdnumber != ''">amount_idNumber,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null  and name != ''">#{name},</if>
-            <if test="num != null  and num != ''">#{num},</if>
             <if test="number != null  and number != ''">#{number},</if>
             <if test="verification != null  and verification != ''">#{verification},</if>
             <if test="idnumber != null  and idnumber != ''">#{idnumber},</if>
@@ -82,7 +89,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">#{updateTime},</if>
             <if test="addUser != null  and addUser != ''">#{addUser},</if>
             <if test="updateUser != null  and updateUser != ''">#{updateUser},</if>
+            <if test="num != null  and num != ''">#{num},</if>
             <if test="isfile != null  and isfile != ''">#{isfile},</if>
+            <if test="amountPayee != null  and amountPayee != ''">#{amountPayee},</if>
+            <if test="amountTelephone != null  and amountTelephone != ''">#{amountTelephone},</if>
+            <if test="relationship != null  and relationship != ''">#{relationship},</if>
+            <if test="amountIdnumber != null  and amountIdnumber != ''">#{amountIdnumber},</if>
          </trim>
     </insert>
 
@@ -90,7 +102,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update actor_information
         <trim prefix="SET" suffixOverrides=",">
             <if test="name != null  and name != ''">name = #{name},</if>
-            <if test="num != null  and num != ''">name = #{num},</if>
             <if test="number != null  and number != ''">number = #{number},</if>
             <if test="verification != null  and verification != ''">verification = #{verification},</if>
             <if test="idnumber != null  and idnumber != ''">idNumber = #{idnumber},</if>
@@ -103,7 +114,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="addUser != null  and addUser != ''">add_user = #{addUser},</if>
             <if test="updateUser != null  and updateUser != ''">update_user = #{updateUser},</if>
+            <if test="num != null  and num != ''">num = #{num},</if>
             <if test="isfile != null  and isfile != ''">isfile = #{isfile},</if>
+            <if test="amountPayee != null  and amountPayee != ''">amount_payee = #{amountPayee},</if>
+            <if test="amountTelephone != null  and amountTelephone != ''">amount_telephone = #{amountTelephone},</if>
+            <if test="relationship != null  and relationship != ''">relationship = #{relationship},</if>
+            <if test="amountIdnumber != null  and amountIdnumber != ''">amount_idNumber = #{amountIdnumber},</if>
         </trim>
         where id = #{id}
     </update>

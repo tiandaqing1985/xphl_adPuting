@@ -85,31 +85,36 @@
                 },
                 {
                     field: 'number',
-                    title: '演员银行卡号'
+                    title: '实际收款人银行卡号'
                 },
                 {
                     field: 'idnumber',
                     title: '身份证号'
                 },
+                // {
+                //     field: 'telephone',
+                //     title: '手机号(银行)'
+                // },
                 {
-                    field: 'telephone',
-                    title: '手机号(銀行)'
-                }, {
                     field: 'telephone',
                     title: '手机号(日常)'
                 },
+                // {
+                //     field: 'affiliatedbank',
+                //     title: '所属银行'
+                // },
+                // {
+                //     field: 'documenttype',
+                //     title: '证件类型'
+                // },
                 {
-                    field: 'affiliatedbank',
-                    title: '所属银行'
+                    field: 'num',
+                    title: '协议编号'
                 },
-                {
-                    field: 'documenttype',
-                    title: '证件类型'
-                },
-                {
-                    field: 'remarks',
-                    title: '备注'
-                },
+                // {
+                //     field: 'remarks',
+                //     title: '备注'
+                // },
                 {
                     field: 'addTime',
                     title: '添加时间',
@@ -123,6 +128,22 @@
                     title: '添加人'
 
                 },
+                // {
+                //     field : 'amountPayee',
+                //     title : '实际收款人姓名'
+                // },
+                // {
+                //     field : 'amountTelephone',
+                //     title : '实际收款人手机号'
+                // },
+                // {
+                //     field : 'relationship',
+                //     title : '实际收款人与演员关系'
+                // },
+                // {
+                //     field : 'amountIdnumber',
+                //     title : '实际收款人身份证号'
+                // },
                 {
                     field: 'display',
                     title: '归档展示',
@@ -152,6 +173,7 @@
                             }
 
                         }
+                        actions.push('<a class="btn btn-success btn-xs " href="file/xaizai?id='+row.id+'"><i class="fa fa-detail"></i>图片下载</a>');
                         return actions.join('');
                     }
                 }]

@@ -22,12 +22,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="username"    column="userName"    />
         <result property="updatename"    column="updateName"    />
-        <result property="appNameId"    column="appName_id"    />
+        <result property="appnameId"    column="appName_id"    />
         <result property="start"    column="start"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="taxAmount"    column="tax_amount"    />
+        <result property="actornumber"    column="actorNumber"    />
     </resultMap>
 
     <sql id="selectActorShotApplyVo">
-        select id, num, shot_time, actual_payment_time, type, actor_name, amount, phone_number, is_receipt, is_reimbur, shots_number, single_amount, shot_trueNumber, start_time, update_time, userName, updateName,appName_id, start  from actor_shot_apply
+        select id, num, shot_time, actual_payment_time, type, actor_name, amount, phone_number, is_receipt, is_reimbur, shots_number, single_amount, shot_trueNumber, start_time, update_time, userName, updateName, appName_id, start, tax_rate, tax_amount, actorNumber from actor_shot_apply
     </sql>
 
     <select id="selectActorShotApplyList" parameterType="ActorShotApply" resultMap="ActorShotApplyResult">
@@ -58,7 +61,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="actorName != null  and actorName != ''">actor_name,</if>
             <if test="amount != null ">amount,</if>
             <if test="phoneNumber != null ">phone_number,</if>
-            <if test="appNameId != null ">appName_id,</if>
             <if test="isReceipt != null  and isReceipt != ''">is_receipt,</if>
             <if test="isReimbur != null  and isReimbur != ''">is_reimbur,</if>
             <if test="shotsNumber != null ">shots_number,</if>
@@ -68,7 +70,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">update_time,</if>
             <if test="username != null  and username != ''">userName,</if>
             <if test="updatename != null  and updatename != ''">updateName,</if>
+            <if test="appnameId != null ">appName_id,</if>
             <if test="start != null  and start != ''">start,</if>
+            <if test="taxRate != null ">tax_rate,</if>
+            <if test="taxAmount != null ">tax_amount,</if>
+            <if test="actornumber != null ">actorNumber,</if>
 
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -79,7 +85,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="actorName != null  and actorName != ''">#{actorName},</if>
             <if test="amount != null ">#{amount},</if>
             <if test="phoneNumber != null ">#{phoneNumber},</if>
-            <if test="appNameId != null ">#{appNameId},</if>
             <if test="isReceipt != null  and isReceipt != ''">#{isReceipt},</if>
             <if test="isReimbur != null  and isReimbur != ''">#{isReimbur},</if>
             <if test="shotsNumber != null ">#{shotsNumber},</if>
@@ -89,7 +94,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">#{updateTime},</if>
             <if test="username != null  and username != ''">#{username},</if>
             <if test="updatename != null  and updatename != ''">#{updatename},</if>
+            <if test="appnameId != null ">#{appnameId},</if>
             <if test="start != null  and start != ''">#{start},</if>
+            <if test="taxRate != null ">#{taxRate},</if>
+            <if test="taxAmount != null ">#{taxAmount},</if>
+            <if test="actornumber != null ">#{actornumber},</if>
 
          </trim>
     </insert>
@@ -113,7 +122,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="username != null  and username != ''">userName = #{username},</if>
             <if test="updatename != null  and updatename != ''">updateName = #{updatename},</if>
+            <if test="appnameId != null ">appName_id = #{appnameId},</if>
             <if test="start != null  and start != ''">start = #{start},</if>
+            <if test="taxRate != null ">tax_rate = #{taxRate},</if>
+            <if test="taxAmount != null ">tax_amount = #{taxAmount},</if>
+            <if test="actornumber != null ">actorNumber = #{actornumber},</if>
         </trim>
         where id = #{id}
     </update>

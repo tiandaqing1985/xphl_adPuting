@@ -1,6 +1,9 @@
 package com.ruoyi.web.controller.system;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.ActorNumber;
+import com.ruoyi.system.service.IActorNumberService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +32,8 @@ public class ActorAppnameController extends BaseController
 
     @Autowired
     private IActorAppnameService actorAppnameService;
+    @Autowired
+    private IActorNumberService actorNumberService;
 
 
     @GetMapping()
@@ -99,13 +104,17 @@ public class ActorAppnameController extends BaseController
         return toAjax(actorAppnameService.insertActorAppname(actorAppname));
     }
 
-    /**
+    /**applyId
      * 新增拍摄app数量统计
      */
     @GetMapping("/addName")
     public String addName(@RequestParam("id") Long id, ModelMap map)
     {
         map.put("applyId",id);
+        map.put("detailid", actorNumberService.selectId().getAppnameId());
+        ActorNumber actorNumber = new ActorNumber();
+        actorNumber.setAppnameId(actorNumberService.selectId().getAppnameId() + 1);
+        actorNumberService.insertActorNumber(actorNumber);
         return prefix + "/add";
     }
 
@@ -128,6 +137,7 @@ public class ActorAppnameController extends BaseController
     {
         ActorAppname actorAppname = actorAppnameService.selectActorAppnameById(id);
         mmap.put("actorAppname", actorAppname);
+        mmap.put("detailid", actorAppname.getDetailid());
         return prefix + "/edit";
     }
 

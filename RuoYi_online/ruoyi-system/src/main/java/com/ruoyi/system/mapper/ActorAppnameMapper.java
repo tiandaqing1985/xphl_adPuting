@@ -60,4 +60,6 @@ public interface ActorAppnameMapper
     public int deleteActorAppnameByIds(String[] ids);
 
     public List<ActorAppname>  selectAppname(Long id);
+
+    public List<ActorAppname>  selectquChong(Long id);
 }

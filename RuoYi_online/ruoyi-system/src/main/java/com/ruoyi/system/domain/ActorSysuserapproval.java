@@ -50,8 +50,32 @@ public class ActorSysuserapproval extends BaseEntity
     /** 备注 */
     @Excel(name = "备注")
     private String opi;
+    /** 金额 */
+    @Excel(name = "金额")
+    private Double amount;
 
-    public void setId(Long id) 
+    /** 拍摄时间 */
+    @Excel(name = "拍摄时间", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date shotTime;
+
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public Date getShotTime() {
+        return shotTime;
+    }
+
+    public void setShotTime(Date shotTime) {
+        this.shotTime = shotTime;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }

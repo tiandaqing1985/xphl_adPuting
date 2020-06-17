@@ -117,6 +117,55 @@ public class ActorInformation extends BaseEntity {
      * */
     private String display;
 
+    /** 实际收款人姓名 */
+    @Excel(name = "实际收款人姓名")
+    private String amountPayee;
+
+    /** 实际收款人手机号 */
+    @Excel(name = "实际收款人手机号")
+    private String amountTelephone;
+
+    /** 实际收款人与演员关系 */
+    @Excel(name = "实际收款人与演员关系")
+    private String relationship;
+
+    /** 实际收款人身份证号 */
+    @Excel(name = "实际收款人身份证号")
+    private String amountIdnumber;
+
+
+    public String getAmountPayee() {
+        return amountPayee;
+    }
+
+    public void setAmountPayee(String amountPayee) {
+        this.amountPayee = amountPayee;
+    }
+
+    public String getAmountTelephone() {
+        return amountTelephone;
+    }
+
+    public void setAmountTelephone(String amountTelephone) {
+        this.amountTelephone = amountTelephone;
+    }
+
+    public String getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(String relationship) {
+        this.relationship = relationship;
+    }
+
+    public String getAmountIdnumber() {
+        return amountIdnumber;
+    }
+
+    public void setAmountIdnumber(String amountIdnumber) {
+        this.amountIdnumber = amountIdnumber;
+    }
+
     public String getDisplay() {
         return display;
     }

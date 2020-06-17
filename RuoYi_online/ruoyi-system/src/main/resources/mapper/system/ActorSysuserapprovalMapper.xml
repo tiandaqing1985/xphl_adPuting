@@ -15,10 +15,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="approvalTime"    column="approval_time"    />
         <result property="approvalState"    column="approval_state"    />
         <result property="opi"    column="opi"    />
+        <result property="amount"    column="amount"    />
+        <result property="shotTime"    column="shot_time"    />
     </resultMap>
 
     <sql id="selectActorSysuserapprovalVo">
-        select id, apply_id, approver_name, applicant_name, approval_sight, approval_level, create_time, approval_time, approval_state, opi from actor_sysUserApproval
+        select id, apply_id, approver_name, applicant_name, approval_sight, approval_level, create_time, approval_time, approval_state, opi, amount, shot_time from actor_sysUserApproval
     </sql>
 
     <select id="selectActorSysuserapprovalList" parameterType="ActorSysuserapproval" resultMap="ActorSysuserapprovalResult">
@@ -78,6 +80,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="approvalTime != null ">approval_time,</if>
             <if test="approvalState != null  and approvalState != ''">approval_state,</if>
             <if test="opi != null  and opi != ''">opi,</if>
+            <if test="amount != null ">amount,</if>
+            <if test="shotTime != null ">shot_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="applyId != null ">#{applyId},</if>
@@ -89,6 +93,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="approvalTime != null ">#{approvalTime},</if>
             <if test="approvalState != null  and approvalState != ''">#{approvalState},</if>
             <if test="opi != null  and opi != ''">#{opi},</if>
+            <if test="amount != null ">#{amount},</if>
+            <if test="shotTime != null ">#{shotTime},</if>
          </trim>
     </insert>
 
@@ -104,6 +110,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="approvalTime != null ">approval_time = #{approvalTime},</if>
             <if test="approvalState != null  and approvalState != ''">approval_state = #{approvalState},</if>
             <if test="opi != null  and opi != ''">opi = #{opi},</if>
+            <if test="amount != null ">amount = #{amount},</if>
+            <if test="shotTime != null ">shot_time = #{shotTime},</if>
         </trim>
         where id = #{id}
     </update>

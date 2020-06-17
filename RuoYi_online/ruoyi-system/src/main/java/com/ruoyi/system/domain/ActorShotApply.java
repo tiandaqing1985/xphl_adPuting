@@ -1,92 +1,183 @@
 package com.ruoyi.system.domain;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+
 import java.util.Date;
 
 /**
  * 演员拍摄汇总对象 actor_shot_apply
- * 
+ *
  * @author ruoyi
  * @date 2020-01-06
  */
-public class ActorShotApply extends BaseEntity
-{
+public class ActorShotApply extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** id */
+    /**
+     * id
+     */
     private Long id;
 
-    /** 协议编号 */
+    /**
+     * 协议编号
+     */
     @Excel(name = "协议编号")
     private String num;
 
-    /** 拍摄时间 */
+    /**
+     * 拍摄时间
+     */
     @Excel(name = "拍摄时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date shotTime;
 
-    /** 实际支付时间 */
+    /**
+     * 实际支付时间
+     */
     @Excel(name = "实际支付时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date actualPaymentTime;
 
-    /** 组别 */
+    /**
+     * 组别
+     */
     @Excel(name = "组别")
     private String type;
 
-    /** 演员姓名 */
+    /**
+     * 演员姓名
+     */
     @Excel(name = "演员姓名")
     private String actorName;
 
-    /** 价格 */
+    /**
+     * 价格
+     */
     @Excel(name = "价格")
     private Double amount;
 
-    /** 联系方式 */
+    /**
+     * 联系方式
+     */
     @Excel(name = "联系方式")
     private Long phoneNumber;
 
-    /** 是否有收据 */
+    /**
+     * 是哪个领导
+     */
     @Excel(name = "是否有收据")
     private String isReceipt;
 
-    /** 是否报销/支付 */
+    /**
+     * 是否报销/支付
+     */
     @Excel(name = "是否报销/支付")
     private String isReimbur;
 
-    /** 总拍摄条数 */
+    /**
+     * 总拍摄条数
+     */
     @Excel(name = "总拍摄条数")
     private Long shotsNumber;
 
-    /** 单条金额 */
+    /**
+     * 单条金额
+     */
     @Excel(name = "单条金额")
     private Double singleAmount;
 
-    /** 拍摄条数核对 */
+    /**
+     * 拍摄条数核对
+     */
     @Excel(name = "拍摄条数核对")
     private Long shotTruenumber;
 
-    /** 创建时间 */
+    /**
+     * 创建时间
+     */
     @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date startTime;
 
-    /** 创建人 */
+    /**
+     * 创建人
+     */
     @Excel(name = "创建人")
     private String username;
 
-    /** 修改人 */
+    /**
+     * 修改人
+     */
     @Excel(name = "修改人")
     private String updatename;
 
-    /** app名称id */
+    /**
+     * app名称id
+     */
     @Excel(name = "app名称id")
-    private Long appNameId;
+    private Long appnameId;
 
 
-    /** 审批状态 */
+    /**
+     * 审批状态
+     */
     @Excel(name = "审批状态")
     private String start;
+
+
+    /**
+     * 是否本人
+     */
+    private String istart;
+
+    /**
+     * 税率（7%）
+     */
+    @Excel(name = "税率", readConverterExp = "7=%")
+    private Double taxRate;
+
+    /**
+     * 含税金额=演员费用*（1+7%）
+     */
+    @Excel(name = "含税金额=演员费用*", readConverterExp = "1=+7%")
+    private Double taxAmount;
+
+    /**
+     * 演员人数
+     */
+    @Excel(name = "演员人数")
+    private Long actornumber;
+
+
+    public Double getTaxRate() {
+        return taxRate;
+    }
+
+    public void setTaxRate(Double taxRate) {
+        this.taxRate = taxRate;
+    }
+
+    public Double getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(Double taxAmount) {
+        this.taxAmount = taxAmount;
+    }
+
+    public Long getActornumber() {
+        return actornumber;
+    }
+
+    public void setActornumber(Long actornumber) {
+        this.actornumber = actornumber;
+    }
+
+    public String getIstart() {
+        return istart;
+    }
+
+    public void setIstart(String istart) {
+        this.istart = istart;
+    }
 
     public String getStart() {
         return start;
@@ -96,180 +187,141 @@ public class ActorShotApply extends BaseEntity
         this.start = start;
     }
 
-    public void setId(Long id)
-    {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() 
-    {
-        return id;
+    public String getNum() {
+        return num;
     }
-    public void setNum(String num) 
-    {
+
+    public void setNum(String num) {
         this.num = num;
     }
 
-    public String getNum() 
-    {
-        return num;
+    public Date getShotTime() {
+        return shotTime;
     }
-    public void setShotTime(Date shotTime) 
-    {
+
+    public void setShotTime(Date shotTime) {
         this.shotTime = shotTime;
     }
 
-    public Date getShotTime() 
-    {
-        return shotTime;
+    public Date getActualPaymentTime() {
+        return actualPaymentTime;
     }
-    public void setActualPaymentTime(Date actualPaymentTime) 
-    {
+
+    public void setActualPaymentTime(Date actualPaymentTime) {
         this.actualPaymentTime = actualPaymentTime;
     }
 
-    public Date getActualPaymentTime() 
-    {
-        return actualPaymentTime;
+    public String getType() {
+        return type;
     }
-    public void setType(String type) 
-    {
+
+    public void setType(String type) {
         this.type = type;
     }
 
-    public String getType() 
-    {
-        return type;
+    public String getActorName() {
+        return actorName;
     }
-    public void setActorName(String actorName) 
-    {
+
+    public void setActorName(String actorName) {
         this.actorName = actorName;
     }
 
-    public String getActorName() 
-    {
-        return actorName;
+    public Double getAmount() {
+        return amount;
     }
-    public void setAmount(Double amount) 
-    {
+
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public Double getAmount() 
-    {
-        return amount;
+    public Long getPhoneNumber() {
+        return phoneNumber;
     }
-    public void setPhoneNumber(Long phoneNumber) 
-    {
+
+    public void setPhoneNumber(Long phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getPhoneNumber() 
-    {
-        return phoneNumber;
+    public String getIsReceipt() {
+        return isReceipt;
     }
-    public void setIsReceipt(String isReceipt) 
-    {
+
+    public void setIsReceipt(String isReceipt) {
         this.isReceipt = isReceipt;
     }
 
-    public String getIsReceipt() 
-    {
-        return isReceipt;
+    public String getIsReimbur() {
+        return isReimbur;
     }
-    public void setIsReimbur(String isReimbur) 
-    {
+
+    public void setIsReimbur(String isReimbur) {
         this.isReimbur = isReimbur;
     }
 
-    public String getIsReimbur() 
-    {
-        return isReimbur;
+    public Long getShotsNumber() {
+        return shotsNumber;
     }
-    public void setShotsNumber(Long shotsNumber) 
-    {
+
+    public void setShotsNumber(Long shotsNumber) {
         this.shotsNumber = shotsNumber;
     }
 
-    public Long getShotsNumber() 
-    {
-        return shotsNumber;
+    public Double getSingleAmount() {
+        return singleAmount;
     }
-    public void setSingleAmount(Double singleAmount) 
-    {
+
+    public void setSingleAmount(Double singleAmount) {
         this.singleAmount = singleAmount;
     }
 
-    public Double getSingleAmount() 
-    {
-        return singleAmount;
+    public Long getShotTruenumber() {
+        return shotTruenumber;
     }
-    public void setShotTruenumber(Long shotTruenumber) 
-    {
+
+    public void setShotTruenumber(Long shotTruenumber) {
         this.shotTruenumber = shotTruenumber;
     }
 
-    public Long getShotTruenumber() 
-    {
-        return shotTruenumber;
+    public Date getStartTime() {
+        return startTime;
     }
-    public void setStartTime(Date startTime) 
-    {
+
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public Date getStartTime() 
-    {
-        return startTime;
+    public String getUsername() {
+        return username;
     }
-    public void setUsername(String username) 
-    {
+
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getUsername() 
-    {
-        return username;
-    }
-    public void setUpdatename(String updatename) 
-    {
-        this.updatename = updatename;
-    }
-
-    public String getUpdatename() 
-    {
+    public String getUpdatename() {
         return updatename;
     }
 
-    public Long getAppNameId() {
-        return appNameId;
+    public void setUpdatename(String updatename) {
+        this.updatename = updatename;
     }
 
-    public void setAppNameId(Long appNameId) {
-        this.appNameId = appNameId;
+    public Long getAppnameId() {
+        return appnameId;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("num", getNum())
-            .append("shotTime", getShotTime())
-            .append("actualPaymentTime", getActualPaymentTime())
-            .append("type", getType())
-            .append("actorName", getActorName())
-            .append("amount", getAmount())
-            .append("phoneNumber", getPhoneNumber())
-            .append("isReceipt", getIsReceipt())
-            .append("isReimbur", getIsReimbur())
-            .append("shotsNumber", getShotsNumber())
-            .append("singleAmount", getSingleAmount())
-            .append("shotTruenumber", getShotTruenumber())
-            .append("startTime", getStartTime())
-            .append("updateTime", getUpdateTime())
-            .append("username", getUsername())
-            .append("updatename", getUpdatename())
-                .append("appNameId", getAppNameId())
-            .toString();
+    public void setAppnameId(Long appnameId) {
+        this.appnameId = appnameId;
     }
+
+
 }

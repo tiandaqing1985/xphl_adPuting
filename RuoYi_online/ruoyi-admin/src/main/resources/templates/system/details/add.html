@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增视频拍摄详情')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-details-add">
+           <input name="applyId" class="form-control"  th:value="*{applyId}"  type="hidden" readonly>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">组别：</label>
+                <div class="col-sm-8">
+                    <select name="groups" class="form-control m-b">
+                        <option value="A组">A组</option>
+                        <option value="B组">B组</option>
+                        <option value="C组">C组</option>
+                        <option value="D组">D组</option>
+                        <option value="E组">E组</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">拍摄广告主：</label>
+                <div class="col-sm-8">
+                    <input name="advertiser" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">拍摄条数：</label>
+                <div class="col-sm-8">
+                    <input name="appNumber" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "system/details"
+        $("#form-details-add").validate({
+            focusCleanup: true
+        });
+alert(applyId)
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-details-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

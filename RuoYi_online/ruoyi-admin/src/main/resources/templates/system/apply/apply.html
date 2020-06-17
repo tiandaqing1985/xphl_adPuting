@@ -90,10 +90,6 @@
                     visible: false
                 },
                 {
-                    field: 'num',
-                    title: '协议编号1'
-                },
-                {
                     field: 'shotTime',
                     title: '拍摄时间',
                     formatter: function (value, row, index) {
@@ -110,16 +106,8 @@
                     }
                 },
                 {
-                    field: 'actorName',
-                    title: '演员姓名'
-                },
-                {
                     field: 'amount',
-                    title: '价格'
-                },
-                {
-                    field: 'phoneNumber',
-                    title: '联系方式'
+                    title: '总拍摄价格'
                 },
                 {
                     field: 'shotsNumber',
@@ -128,6 +116,27 @@
                 {
                     field: 'singleAmount',
                     title: '单条金额'
+                },
+                {
+                    field : 'taxRate',
+                    title : '税率'
+                },
+                {
+                    field : 'taxAmount',
+                    title : '含税金额'
+                },
+                {
+                    field : 'actornumber',
+                    title : '演员人数'
+                },
+                {
+                    field: 'username',
+                    title: '录入人员'
+                },
+                {
+                    field: 'istart',
+                    title: '是否本人',
+                    visible: false
                 },
                 // {
                 //     field: 'shotTruenumber',
@@ -164,7 +173,9 @@
                             actions.push('<a class="btn btn-primary btn-xs " href="javascript:void(0)" onclick="tijiao(\'' + row.id + '\')">提交审批</a>');
                         }
                         if (row.start == 3) {
-                            actions.push('<a class="btn btn-primary btn-xs " href="javascript:void(0)" onclick="fukuan(\'' + row.id + '\')">申请付款</a>');
+                            if (row.istart == '1') {
+                                actions.push('<a class="btn btn-primary btn-xs " href="javascript:void(0)" onclick="fukuan(\'' + row.id + '\')">申请付款</a>');
+                            }
                         }
                         if (row.start == 1) {
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改视频拍摄详情')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-details-edit" th:object="${actorDetails}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">拍摄app数量统计表id：</label>
+                <div class="col-sm-8">
+                    <input name="applyId" th:field="*{applyId}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">组别：</label>
+                <div class="col-sm-8">
+                    <input name="groups" th:field="*{groups}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">拍摄广告主：</label>
+                <div class="col-sm-8">
+                    <input name="advertiser" th:field="*{advertiser}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">拍摄条数：</label>
+                <div class="col-sm-8">
+                    <input name="appNumber" th:field="*{appNumber}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript">
+        var prefix = ctx + "system/details";
+        $("#form-details-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-details-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

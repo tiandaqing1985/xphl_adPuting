@@ -47,6 +47,9 @@ public class ActorShotApplyController extends BaseController {
     @Autowired
     private IActorSysuserapprovalService actorSysuserapprovalService;
 
+    @Autowired
+    private IActorDetailsService actorDetailsService;
+
     @GetMapping()
     public String apply() {
         return prefix + "/apply";
@@ -64,7 +67,12 @@ public class ActorShotApplyController extends BaseController {
         List<ActorShotApply> list = actorShotApplyService.selectActorShotApplyList(actorShotApply);
         for (ActorShotApply v : list) {
             ActorSysuserapproval ac = actorSysuserapprovalService.selectApplyById(v.getId());
-            if (v.getStart().equals("1")&&ac!=null) {
+            if (v.getUsername().equals(ShiroUtils.getUserName())) {
+                v.setIstart("1");
+            } else {
+                v.setIstart("2");
+            }
+            if (v.getStart().equals("1") && ac != null) {
 
                 if (ac.getApprovalState().equals("3")) {//审批成功
                     v.setStart("3");
@@ -79,17 +87,15 @@ public class ActorShotApplyController extends BaseController {
     }
 
 
-
     @PostMapping("/listuser")
     @ResponseBody
     public TableDataInfo listuser(Long id) {
         startPage();
-        ActorShotApply actorShotApply =new ActorShotApply();
+        ActorShotApply actorShotApply = new ActorShotApply();
         actorShotApply.setId(id);
         List<ActorShotApply> list = actorShotApplyService.selectActorShotApplyList(actorShotApply);
         return getDataTable(list);
     }
-
 
 
     /**
@@ -109,7 +115,7 @@ public class ActorShotApplyController extends BaseController {
      */
     @GetMapping("/add")
     public String add(ModelMap mmap) {
-        mmap.put("appNameId", actorNumberService.selectId().getAppnameId());
+        mmap.put("appnameId", actorNumberService.selectId().getAppnameId());
         ActorNumber actorNumber = new ActorNumber();
         actorNumber.setAppnameId(actorNumberService.selectId().getAppnameId() + 1);
         actorNumberService.insertActorNumber(actorNumber);
@@ -126,23 +132,40 @@ public class ActorShotApplyController extends BaseController {
     public AjaxResult addSave(ActorShotApply actorShotApply) {
         actorShotApply.setUsername(ShiroUtils.getUserName());
         actorShotApply.setStartTime(new Date());
-        ActorInformation actorInformation = actorInformationService.selectActorname(actorShotApply.getActorName());
-        if (actorInformation == null) {
-            return AjaxResult.success("此演员信息尚未录入");
-        }
-        actorShotApply.setPhoneNumber(Long.valueOf(actorInformation.getTelephone()));
-        List<ActorAppname> actorAppname = actorAppnameService.selectAppname(actorShotApply.getAppNameId());
-
-        Long a = 0L;
-        for (ActorAppname v : actorAppname) {
-            a = a + v.getAppNumber();
-        }
-        actorShotApply.setShotsNumber(a);
         actorShotApply.setStart("4");//未提交
-        actorShotApply.setSingleAmount(actorShotApply.getAmount() / actorShotApply.getShotsNumber());
-        actorShotApply.setNum(actorInformation.getNum());
         actorShotApply.setIsReceipt("是");
         actorShotApply.setIsReimbur("是");
+        actorShotApply.setTaxRate(0.07);//税率
+        actorShotApply.getAppnameId();
+        List<ActorAppname>  actor= actorAppnameService.selectAppname(actorShotApply.getAppnameId());
+        Long  num=0L;//总条数
+        if(actor !=null){
+            for (ActorAppname v:actor) {
+                List<ActorDetails> list = actorDetailsService.selectDetailsList(v.getDetailid());
+                for (ActorDetails l : list) {
+                    num = num + l.getAppNumber();
+                }
+                v.setAppNumber(num);
+                actorAppnameService.updateActorAppname(v);
+            }
+        }
+
+        List<ActorAppname> actorAppname = actorAppnameService.selectAppname(actorShotApply.getAppnameId());
+        Double amount=0.0;//总金额
+        Long   number=0L;//总条数
+        Long   actornumber=0L;//总人数
+        if (actorAppname != null) {
+            for (ActorAppname v:actorAppname) {
+                number=number+v.getAppNumber();
+                actornumber=actornumber+1;
+                amount=amount+v.getAmount();
+             }
+            actorShotApply.setShotsNumber(number); //总条数
+            actorShotApply.setAmount(amount);//总金额
+            actorShotApply.setTaxAmount(actorShotApply.getAmount()+actorShotApply.getAmount()*0.07);//含税金额
+            actorShotApply.setActornumber(actornumber);
+            actorShotApply.setSingleAmount(actorShotApply.getAmount() / actorShotApply.getShotsNumber());
+        }
         return toAjax(actorShotApplyService.insertActorShotApply(actorShotApply));
     }
 
@@ -188,24 +211,47 @@ public class ActorShotApplyController extends BaseController {
     @ResponseBody
     public AjaxResult tiJiao2(ActorShotApply actorShotApply) {
         actorShotApply.setStart("1");
+        if(actorShotApply.getIsReceipt().equals("1")){
+            ActorShotApply actorShot = actorShotApplyService.selectActorShotApplyById(actorShotApply.getId());
+            ActorSysuserapproval actor = new ActorSysuserapproval();
+            actor.setApplyId(actorShot.getId());
+            actor.setApplicantName(actorShot.getUsername());//审请人姓名
+            actor.setApproverName("马俊");
+            actor.setApprovalSight("1");
+            actor.setApprovalLevel(1);
+            actor.setApprovalState("1");
+            actor.setShotTime(actorShot.getShotTime());
+            actor.setAmount(actorShot.getAmount());
+            actorSysuserapprovalService.insertActorSysuserapproval(actor);
+            actor.setApproverName("孙庆");
+            actor.setApprovalSight("0");
+            actor.setApprovalLevel(2);
+            actor.setShotTime(actorShot.getShotTime());
+            actor.setAmount(actorShot.getAmount());
+            actorSysuserapprovalService.insertActorSysuserapproval(actor);
+        }else{
+            ActorShotApply actorShot = actorShotApplyService.selectActorShotApplyById(actorShotApply.getId());
+            ActorSysuserapproval actor = new ActorSysuserapproval();
+            actor.setApplyId(actorShot.getId());
+            actor.setApplicantName(actorShot.getUsername());//审请人姓名
+            actor.setApproverName("马俊");
+            actor.setApprovalSight("1");
+            actor.setApprovalLevel(1);
+            actor.setApprovalState("1");
+            actor.setShotTime(actorShot.getShotTime());
+            actor.setAmount(actorShot.getAmount());
+            actorSysuserapprovalService.insertActorSysuserapproval(actor);
+            actor.setApproverName("边明");
+            actor.setApprovalSight("0");
+            actor.setApprovalLevel(2);
+            actor.setShotTime(actorShot.getShotTime());
+            actor.setAmount(actorShot.getAmount());
+            actorSysuserapprovalService.insertActorSysuserapproval(actor);
+        }
 
-        ActorShotApply actorShot = actorShotApplyService.selectActorShotApplyById(actorShotApply.getId());
-        ActorSysuserapproval actor = new ActorSysuserapproval();
-        actor.setApplyId(actorShot.getId());
-        actor.setApplicantName(actorShot.getUsername());//审请人姓名
-        actor.setApproverName("马俊");
-        actor.setApprovalSight("1");
-        actor.setApprovalLevel(1);
-        actor.setApprovalState("1");
-        actorSysuserapprovalService.insertActorSysuserapproval(actor);
-        actor.setApproverName("孙庆");
-        actor.setApprovalSight("0");
-        actor.setApprovalLevel(2);
-        actorSysuserapprovalService.insertActorSysuserapproval(actor);
-        actor.setApproverName("穆凌强");
-        actor.setApprovalSight("0");
-        actor.setApprovalLevel(3);
-        actorSysuserapprovalService.insertActorSysuserapproval(actor);
+
+
+
 
         return toAjax(actorShotApplyService.updateActorShotApply(actorShotApply));
     }

@@ -8,18 +8,7 @@
 <div class="wrapper wrapper-content animated fadeInRight ibox-content">
     <form class="form-horizontal m" id="form-apply-add">
 
-        <!--        <div class="col-md-6">-->
-        <!--            <div class="form-group">-->
-        <!--                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>组别：</label>-->
-        <!--                <div class="col-sm-9">-->
-        <!--                    <select name="type" class="form-control m-b">-->
-        <!--                        <option value="A组">A组</option>-->
-        <!--                        <option value="B组">B组</option>-->
-        <!--                        <option value="C组">C组</option>-->
-        <!--                    </select>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
+
         <div class="col-md-6">
             <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red; ">*</span>拍摄时间：</label>
@@ -31,81 +20,23 @@
                 </div>
             </div>
         </div>
-        <!--        <div class="col-md-6">-->
-        <!--            <div class="form-group">-->
-        <!--                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>是否报销/支付：</label>-->
-        <!--                <div class="col-sm-9">-->
-        <!--                    <select name="isReimbur" class="form-control m-b">-->
-        <!--                        <option value="是">是</option>-->
-        <!--                        <option value="否">否</option>-->
-        <!--                    </select>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
-
-
-        <div class="col-md-6">
-            <div class="form-group">
-                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>演员姓名：</label>
-                <div class="col-sm-9" style="padding:0;">
-                    <div class="col-sm-9">
-                        <input id="actorName" name="actorName" class="form-control" type="text" required>
-                        <div class="input-group-btn" style="float: right">
-                            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown">
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label class="col-sm-3 control-label"><span style="color: red; ">*</span>预计支付时间：</label>
                 <div class="col-sm-9">
                     <div class="input-group date">
-                        <input name="actualPaymentTime" class="time-input form-control" placeholder="yyyy-MM-dd" type="text"
+                        <input name="actualPaymentTime" class="time-input form-control" placeholder="yyyy-MM-dd"
+                               type="text"
                                required>
                     </div>
                 </div>
             </div>
         </div>
 
-
         <div class="col-md-6">
             <div class="form-group">
-                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>价格：</label>
                 <div class="col-sm-9">
-                    <input id="amount" name="amount" class="form-control" type="text" required>
-                </div>
-            </div>
-        </div>
-        <!--        <div class="col-md-6">-->
-        <!--            <div class="form-group">-->
-        <!--                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>是否有收据：</label>-->
-        <!--                <div class="col-sm-9">-->
-        <!--                    <select name="isReceipt" class="form-control m-b">-->
-        <!--                        <option value="是">是</option>-->
-        <!--                        <option value="否">否</option>-->
-        <!--                    </select>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--        <div class="col-md-6">-->
-        <!--            <div class="form-group">-->
-        <!--                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>拍摄条数核对：</label>-->
-        <!--                <div class="col-sm-8">-->
-        <!--                    <input name="shotTruenumber" class="form-control" type="text" required>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <div class="col-md-6">
-            <div class="form-group">
-                <!--                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>app名称编号：</label>-->
-                <div class="col-sm-9">
-                    <input id="appNameId" name="appNameId" class="form-control" type="hidden" th:value="${appNameId}"
+                    <input id="appnameId" name="appnameId" class="form-control" type="hidden" th:value="${appnameId}"
                            readonly="readonly">
                 </div>
             </div>
@@ -129,7 +60,7 @@
     $("#form-apply-add").validate({
         focusCleanup: true
     });
-    var appNameId = $("#appNameId").val();
+    var appNameId = $("#appnameId").val();
 
     function zAdd() {
         $.modal.open("App名称", "/system/appName/addName?id=" + appNameId);
@@ -138,7 +69,7 @@
 
     $(function () {
         var options = {
-            url: prefixs + "/listAppNameId",
+            url: prefixs + "/listAppNameId?appNameId=" + appNameId,
             id: "bootstrap-table-1",
             createUrl: prefixs + "/add",
             updateUrl: prefixs + "/edit/{id}",
@@ -154,17 +85,22 @@
                     visible: false
                 },
                 {
-                    field: 'type',
-                    title: '组别'
+                    field: 'actorName',
+                    title: '演员姓名'
                 },
                 {
-                    field: 'appName',
-                    title: 'app名称'
+                    field: 'idNumber',
+                    title: '演员身份证号'
                 },
                 {
-                    field: 'appNumber',
-                    title: 'app数量'
+                    field: 'isfile',
+                    title: '是否归档'
                 },
+                {
+                    field: 'amount',
+                    title: '金额'
+                },
+
                 {
                     title: '操作',
                     align: 'center',
